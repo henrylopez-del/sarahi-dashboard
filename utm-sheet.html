@@ -4,12 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sarahí Jaramillo — UTM Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* GHL PAGE BUILDER OVERRIDES */
 html, body {
   margin: 0 !important;
   padding: 0 !important;
-  background: #ffffff !important;
+  background: #FAFAFA !important;
   overflow-x: hidden !important;
 }
 .c-section .inner, .c-row .inner, .c-column .inner,
@@ -37,99 +40,323 @@ html, body {
   width: 100vw !important;
 }
 
-/* VARIABLES */
+/* VARIABLES — Luis style */
 :root {
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --surface2: #f5f5f7;
-  --border: #e0e0e0;
-  --text: #1a1a1a;
-  --text-dim: #6b7280;
-  --accent: #2563eb;
-  --accent-glow: rgba(37, 99, 235, 0.15);
-  --green: #10b981;
-  --radius: 8px;
+  --gray-50:#FAFAFA;--gray-100:#F4F4F5;--gray-200:#E4E4E7;--gray-300:#D4D4D8;
+  --gray-400:#A1A1AA;--gray-500:#71717A;--gray-600:#52525B;--gray-700:#3F3F46;
+  --gray-800:#27272A;--gray-900:#18181B;
+  --success-50:#F0FDF4;--success-100:#DCFCE7;--success-500:#22C55E;--success-700:#15803D;
+  --violet-50:#F5F3FF;--violet-100:#EDE9FE;--violet-500:#8B5CF6;--violet-700:#6D28D9;
+  --bg: var(--gray-50);
+  --surface: #FFFFFF;
+  --surface2: var(--gray-100);
+  --border: var(--gray-200);
+  --border-strong: var(--gray-300);
+  --text: var(--gray-900);
+  --text-dim: var(--gray-500);
+  --text-subtle: var(--gray-400);
+  --accent: var(--violet-500);
+  --accent-dim: var(--violet-700);
+  --accent-glow: rgba(139, 92, 246, 0.15);
+  --green: var(--success-500);
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow-sm: 0 1px 3px 0 rgba(0,0,0,.06), 0 1px 2px -1px rgba(0,0,0,.04);
 }
 
+/* RESET & BASE */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
-  background: #ffffff !important;
-  color: #1a1a1a !important;
+  font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-feature-settings: "ss01", "cv11", "tnum";
+  background: var(--bg) !important;
+  color: var(--text) !important;
   line-height: 1.5 !important;
   -webkit-font-smoothing: antialiased !important;
+  min-height: 100vh;
 }
 
-.dashboard { max-width: 1400px; margin: 0 auto; padding: 24px 20px; }
-.header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
-.header h1 { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
-.header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.status { font-size: 12px; color: var(--text-dim); }
-.status .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 5px; animation: pulse 2s infinite; }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-.count-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 14px; font-size: 13px; color: var(--text-dim); }
-.count-badge strong { color: var(--text); }
+.dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
 
-.controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; align-items: stretch; }
-.search-box { flex: 1 1 260px; min-width: 200px; position: relative; }
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.header h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.status {
+  font-size: 12px;
+  color: var(--text-dim);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--success-50);
+  border: 1px solid var(--success-100);
+  border-radius: 999px;
+  color: var(--success-700);
+  font-weight: 500;
+}
+.status .dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 0 rgba(34,197,94,.5);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}
+  70%{box-shadow:0 0 0 6px rgba(34,197,94,0)}
+  100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
+}
+.count-badge {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-dim);
+}
+.count-badge strong { color: var(--text); font-weight: 600; }
+
+/* CONTROLS BAR */
+.controls {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: stretch;
+  margin-bottom: 14px;
+}
+.search-box {
+  flex: 1 1 260px;
+  min-width: 200px;
+  position: relative;
+}
 .search-box input {
-  width: 100%; padding: 10px 14px 10px 38px;
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s;
+  width: 100%;
+  padding: 9px 14px 9px 36px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.15s;
 }
-.search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-.search-box input::placeholder { color: var(--text-dim); }
-.search-box .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 14px; pointer-events: none; }
+.search-box input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.search-box input::placeholder { color: var(--text-subtle); }
+.search-box .icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-subtle);
+  pointer-events: none;
+  display: flex;
+}
+.search-box .icon svg { width: 14px; height: 14px; }
 
-.filter-select { flex: 0 1 170px; min-width: 130px; }
+.filter-select {
+  flex: 0 1 170px;
+  min-width: 130px;
+}
 .filter-select select {
-  width: 100%; padding: 10px 32px 10px 12px;
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  color: var(--text); font-size: 13px; outline: none; cursor: pointer;
-  appearance: none; -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238892a8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 10px center;
-  transition: border-color 0.2s;
+  width: 100%;
+  padding: 9px 30px 9px 11px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 500;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: all 0.15s;
 }
-.filter-select select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.filter-select select:hover { border-color: var(--border-strong); }
+.filter-select select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
 
-.btn-reset { padding: 10px 18px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-dim); font-size: 13px; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-.btn-reset:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: 12.5px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.12s;
+}
+.btn-reset:hover {
+  background: var(--gray-900);
+  color: #fff;
+  border-color: var(--gray-900);
+}
 
-.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: auto; max-height: 70vh; position: relative; }
-table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
-thead th { position: sticky; top: 0; z-index: 10; background: var(--surface2); padding: 12px 16px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-dim); border-bottom: 1px solid var(--border); white-space: nowrap; user-select: none; cursor: pointer; }
-thead th:hover { color: var(--text); }
-thead th .sort-arrow { margin-left: 4px; font-size: 10px; opacity: 0.4; }
-thead th.sorted .sort-arrow { opacity: 1; color: var(--accent); }
-tbody tr { transition: background 0.15s; }
-tbody tr:hover { background: rgba(37, 99, 235, 0.04); }
-tbody td { padding: 10px 16px; border-bottom: 1px solid #eee; color: var(--text); white-space: nowrap; max-width: 280px; overflow: hidden; text-overflow: ellipsis; }
-tbody td:hover { white-space: normal; word-break: break-word; overflow: visible; max-width: none; background: var(--surface2); position: relative; z-index: 5; }
+/* TABLE WRAPPER */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: auto;
+  max-height: 70vh;
+  position: relative;
+}
 
-.state-msg { text-align: center; padding: 60px 20px; color: var(--text-dim); font-size: 15px; }
-.state-msg .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 12px; }
+/* TABLE */
+table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--surface2);
+  padding: 11px 14px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: -0.005em;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+thead th:hover {
+  background: var(--border);
+  color: var(--text);
+}
+thead th .sort-arrow {
+  margin-left: 4px;
+  font-size: 10px;
+  opacity: 0.4;
+}
+thead th.sorted { background: var(--border); color: var(--text); font-weight: 600; }
+thead th.sorted .sort-arrow { opacity: 1; color: var(--accent-dim); }
+
+tbody tr { transition: background 0.12s; }
+tbody tr:hover { background: var(--gray-50); }
+tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+tbody td:hover {
+  white-space: normal;
+  word-break: break-word;
+  overflow: visible;
+  max-width: none;
+  background: var(--violet-50);
+  position: relative;
+  z-index: 5;
+}
+
+/* EMPTY / LOADING STATES */
+.state-msg {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+.state-msg .spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-bottom: 12px;
+}
 @keyframes spin { to { transform: rotate(360deg); } }
 
-@media (max-width: 768px) { .dashboard { padding: 16px 12px; } .header h1 { font-size: 18px; } .filter-select { flex: 1 1 calc(50% - 5px); } .table-wrap { max-height: 60vh; } tbody td { padding: 8px 12px; font-size: 12px; } thead th { padding: 10px 12px; font-size: 10px; } }
-@media (max-width: 480px) { .filter-select { flex: 1 1 100%; } .search-box { flex: 1 1 100%; } }
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .dashboard { padding: 16px 12px; }
+  .header h1 { font-size: 18px; }
+  .filter-select { flex: 1 1 calc(50% - 5px); }
+  .table-wrap { max-height: 60vh; }
+  tbody td { padding: 8px 10px; font-size: 12px; }
+  thead th { padding: 10px; font-size: 10.5px; }
+}
+@media (max-width: 480px) {
+  .filter-select { flex: 1 1 100%; }
+  .search-box { flex: 1 1 100%; }
+}
 </style>
 </head>
-<body style="margin:0!important;padding:0!important;background:#ffffff!important;">
+<body style="margin:0!important;padding:0!important;background:#FAFAFA!important;">
 <div class="dashboard">
 
+  <!-- HEADER -->
   <div class="header">
     <h1>UTM Dashboard</h1>
     <div class="header-right">
       <span class="count-badge" id="rowCount">—</span>
-      <span class="status"><span class="dot"></span>Live — <span id="lastUpdate">cargando...</span></span>
+      <span class="status"><span class="dot"></span>Live · <span id="lastUpdate">cargando…</span></span>
     </div>
   </div>
 
+  <!-- CONTROLS -->
   <div class="controls">
     <div class="search-box">
-      <span class="icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="Buscar por nombre, correo, teléfono...">
+      <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+      <input type="text" id="searchInput" placeholder="Buscar por nombre, correo, teléfono…">
     </div>
     <div class="filter-select"><select id="filter_estado"><option value="">Estado</option></select></div>
     <div class="filter-select"><select id="filter_utm_source"><option value="">utm_source</option></select></div>
@@ -139,8 +366,11 @@ tbody td:hover { white-space: normal; word-break: break-word; overflow: visible;
     <button class="btn-reset" id="btnReset">✕ Limpiar filtros</button>
   </div>
 
+  <!-- TABLE -->
   <div class="table-wrap" id="tableWrap">
-    <div class="state-msg" id="loadingState"><div class="spinner"></div><br>Cargando datos...</div>
+    <div class="state-msg" id="loadingState">
+      <div class="spinner"></div><br>Cargando datos…
+    </div>
   </div>
 
 </div>
@@ -164,26 +394,20 @@ tbody td:hover { white-space: normal; word-break: break-word; overflow: visible;
     filter_utm_campaign: 6,
     filter_utm_content: 8
   };
-  var DATE_COL = 0; // columna fecha
+  var DATE_COL = 0;
 
   var allRows = [];
-  // FIX: default sort por fecha DESC (más reciente arriba)
   var sortCol = DATE_COL;
-  var sortAsc = false;
+  var sortAsc = false; // default DESC (más reciente arriba)
   var refreshTimer = null;
   var callbackName = '_sheetCB_' + Math.random().toString(36).substr(2, 8);
 
-  /* ---- parseo de fecha del gviz ---- */
-  // gviz devuelve fechas como "Date(2026,3,23,12,30,45)" (mes 0-indexed)
   function parseGvizDate(v) {
     if (!v) return null;
     if (v instanceof Date) return v;
     var s = String(v);
     var m = s.match(/^Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+),(\d+))?\)$/);
-    if (m) {
-      return new Date(+m[1], +m[2], +m[3], +(m[4]||0), +(m[5]||0), +(m[6]||0));
-    }
-    // fallback: intentar Date() directo (ISO o formato libre)
+    if (m) return new Date(+m[1], +m[2], +m[3], +(m[4]||0), +(m[5]||0), +(m[6]||0));
     var d = new Date(s);
     return isNaN(d) ? null : d;
   }
@@ -197,7 +421,6 @@ tbody td:hover { white-space: normal; word-break: break-word; overflow: visible;
     return dd + '/' + mm + '/' + yy + ' ' + hh + ':' + mn;
   }
 
-  /* ---- JSONP CALLBACK ---- */
   window[callbackName] = function(response) {
     if (!response || !response.table) return;
     var table = response.table;
@@ -208,18 +431,11 @@ tbody td:hover { white-space: normal; word-break: break-word; overflow: visible;
       for (var c = 0; c < cells.length; c++) {
         var cell = cells[c];
         if (!cell) { row.push(''); continue; }
-
-        // para la columna fecha: parsear y guardar el Date como _date + string formateado
         if (c === DATE_COL) {
           var d = parseGvizDate(cell.v);
-          if (d) {
-            row.push(formatFecha(d));
-            row._date = d; // guardar Date real para sort correcto
-          } else {
-            row.push(cell.f || String(cell.v || ''));
-          }
+          if (d) { row.push(formatFecha(d)); row._date = d; }
+          else row.push(cell.f || String(cell.v || ''));
         } else {
-          // resto: usar valor formateado si está disponible, sino valor crudo
           row.push(cell.f != null ? cell.f : (cell.v != null ? String(cell.v) : ''));
         }
       }
@@ -294,13 +510,9 @@ tbody td:hover { white-space: normal; word-break: break-word; overflow: visible;
       filtered.push(row);
     }
 
-    // sort
     if (sortCol >= 0) {
       filtered.sort(function(a, b) {
-        // sort especial para fecha: usar _date si está disponible
-        if (sortCol === DATE_COL && a._date && b._date) {
-          return sortAsc ? (a._date - b._date) : (b._date - a._date);
-        }
+        if (sortCol === DATE_COL && a._date && b._date) return sortAsc ? (a._date - b._date) : (b._date - a._date);
         var va = (a[sortCol] || '').toLowerCase();
         var vb = (b[sortCol] || '').toLowerCase();
         if (va < vb) return sortAsc ? -1 : 1;
@@ -316,7 +528,7 @@ tbody td:hover { white-space: normal; word-break: break-word; overflow: visible;
   function renderTable(rows) {
     var wrap = document.getElementById('tableWrap');
     if (rows.length === 0 && allRows.length === 0) {
-      wrap.innerHTML = '<div class="state-msg"><div class="spinner"></div><br>Cargando datos...</div>';
+      wrap.innerHTML = '<div class="state-msg"><div class="spinner"></div><br>Cargando datos…</div>';
       return;
     }
     var html = '<table><thead><tr>';
@@ -358,15 +570,13 @@ tbody td:hover { white-space: normal; word-break: break-word; overflow: visible;
     var now = new Date();
     var h = ('0' + now.getHours()).slice(-2);
     var m = ('0' + now.getMinutes()).slice(-2);
-    var s = ('0' + now.getSeconds()).slice(-2);
-    document.getElementById('lastUpdate').textContent = h + ':' + m + ':' + s;
+    document.getElementById('lastUpdate').textContent = h + ':' + m;
   }
 
   document.getElementById('btnReset').addEventListener('click', function() {
     document.getElementById('searchInput').value = '';
     var keys = Object.keys(FILTER_FIELDS);
     for (var k = 0; k < keys.length; k++) document.getElementById(keys[k]).value = '';
-    // reset sort al default (fecha DESC)
     sortCol = DATE_COL; sortAsc = false;
     applyFilters();
   });
@@ -384,7 +594,6 @@ tbody td:hover { white-space: normal; word-break: break-word; overflow: visible;
 
   fetchData();
   refreshTimer = setInterval(fetchData, REFRESH_MS);
-
 })();
 </script>
 </body>
