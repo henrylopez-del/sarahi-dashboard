@@ -2,1002 +2,871 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sarahi Jaramillo - Meta Ads Analytics</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sarahi Jaramillo · Meta Ads · Ainnovation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ============ GHL Builder overrides ============ */
-html,body{margin:0!important;padding:0!important;background:#0a0612!important;overflow-x:hidden!important}
-.c-section .inner,.c-row .inner,.c-column .inner,.c-section>.inner,.c-row>.inner,.c-column>.inner,.inner,.vertical.inner{max-width:100vw!important;width:100vw!important;padding:0!important;margin:0!important}
-.c-section,.c-row,.c-column,.c-wrapper,.c-custom-code,.fullSection,[id^="section-"],[id^="row-"],[id^="col-"],[id^="custom-code-"],[class*="c-section"],[class*="c-row"],[class*="c-column"],[class*="c-wrapper"],[class*="c-custom-code"]{max-width:100vw!important;width:100vw!important;padding:0!important;margin:0!important;background:transparent!important;border:none!important;overflow:visible!important}
-.row-align-center{max-width:100vw!important;width:100vw!important}
+  :root {
+    --gray-50:#FAFAFA;--gray-100:#F4F4F5;--gray-200:#E4E4E7;--gray-300:#D4D4D8;
+    --gray-400:#A1A1AA;--gray-500:#71717A;--gray-600:#52525B;--gray-700:#3F3F46;
+    --gray-800:#27272A;--gray-900:#18181B;
+    --success-50:#F0FDF4;--success-100:#DCFCE7;--success-500:#22C55E;--success-600:#16A34A;--success-700:#15803D;
+    --warn-50:#FFFBEB;--warn-100:#FEF3C7;--warn-500:#F59E0B;--warn-700:#B45309;
+    --danger-50:#FEF2F2;--danger-100:#FEE2E2;--danger-500:#EF4444;--danger-700:#B91C1C;
+    --brand-50:#EFF6FF;--brand-100:#DBEAFE;--brand-500:#3B82F6;--brand-600:#2563EB;--brand-700:#1D4ED8;
+    --violet-50:#F5F3FF;--violet-100:#EDE9FE;--violet-200:#DDD6FE;--violet-500:#8B5CF6;--violet-700:#6D28D9;
+    --fb-500:#1877F2;--ig-500:#E1306C;
+    --bg:var(--gray-50);--surface:#FFFFFF;--border:var(--gray-200);--border-strong:var(--gray-300);
+    --text:var(--gray-900);--text-muted:var(--gray-500);--text-subtle:var(--gray-400);
+    --r-sm:6px;--r-md:10px;--r-lg:14px;--r-xl:20px;
+    --shadow-xs:0 1px 2px 0 rgba(0,0,0,.04);
+    --shadow-sm:0 1px 3px 0 rgba(0,0,0,.06),0 1px 2px -1px rgba(0,0,0,.04);
+    --shadow-md:0 4px 12px -2px rgba(0,0,0,.06),0 2px 4px -2px rgba(0,0,0,.04);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:'Inter Tight',-apple-system,sans-serif;font-feature-settings:"ss01","cv11","tnum";-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh}
+  body{padding:24px}
+  .wrap{max-width:1440px;margin:0 auto}
 
-/* ============ Tokens ============ */
-:root{
-  --bg:#0a0612;--surface:#110d1c;--surface2:#1a1428;--border:#2a2040;
-  --text:#e8e4f0;--text2:#9088a6;--text3:#5d5573;
-  --primary:#9984EE;--primary2:#8A2BE2;--accent:#CCFF00;
-  --amber:#FFBF00;--red:#f0615e;--cyan:#00D4FF;
-  --fb:#1877f2;--ig:#e1306c;
-  --font-display:'Sora',system-ui,sans-serif;
-  --font-body:'Manrope',system-ui,sans-serif;
-  --font-mono:'JetBrains Mono',monospace;
-  --glow:0 0 20px rgba(153,132,238,.18);
-  --radius:14px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:var(--font-body);color:var(--text);background:var(--bg);min-height:100vh;
-  background-image:
-    radial-gradient(ellipse at 30% -10%,rgba(138,43,226,.10) 0%,transparent 55%),
-    radial-gradient(ellipse at 70% 5%,rgba(153,132,238,.06) 0%,transparent 45%),
-    radial-gradient(ellipse at 50% 100%,rgba(10,6,18,1) 0%,transparent 60%);
-}
-#app{max-width:1240px;margin:0 auto;padding:20px 20px 60px}
+  /* HEADER */
+  .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{width:40px;height:40px;border-radius:var(--r-md);background:var(--gray-900);color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px;letter-spacing:-.02em}
+  .brand-meta .eyebrow{font-size:12px;font-weight:500;color:var(--text-muted);letter-spacing:-.005em;line-height:1.2}
+  .brand-meta h1{font-size:20px;font-weight:600;letter-spacing:-.02em;line-height:1.3;color:var(--text)}
+  .header-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+  .status-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;background:var(--success-50);border:1px solid var(--success-100);border-radius:999px;font-size:12px;font-weight:500;color:var(--success-700)}
+  .status-chip .dot{width:6px;height:6px;background:var(--success-500);border-radius:50%;box-shadow:0 0 0 0 rgba(34,197,94,.5);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}70%{box-shadow:0 0 0 6px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+  .meta-date{font-size:12px;color:var(--text-muted);font-variant-numeric:tabular-nums}
 
-/* ============ Header ============ */
-.top-bar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px}
-.top-bar h1{font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:-.5px;color:#fff;background:linear-gradient(135deg,#fff 55%,var(--primary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1}
-.top-bar .meta{font-size:12px;color:var(--text2);margin-top:4px}
-.badge-live{display:inline-flex;align-items:center;gap:6px;background:rgba(204,255,0,.06);color:var(--accent);border:1px solid rgba(204,255,0,.18);border-radius:20px;padding:5px 12px;font-size:10px;font-weight:700;font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase}
-.badge-live .pulse{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pulse 2s ease infinite}
-.badge-warn{display:inline-flex;align-items:center;gap:6px;background:rgba(240,97,94,.08);color:var(--red);border:1px solid rgba(240,97,94,.2);border-radius:20px;padding:5px 12px;font-size:10px;font-weight:700;font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  /* FILTER BAR */
+  .fbar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 16px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+  .fgroup{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .fgroup>label{font-size:11px;font-weight:500;color:var(--text-muted);margin-right:4px;letter-spacing:-.005em}
+  .fbar .sep{width:1px;height:22px;background:var(--border)}
+  .chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border:1px solid var(--border);background:var(--surface);border-radius:var(--r-sm);font-size:12px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .12s;font-family:inherit;white-space:nowrap}
+  .chip:hover{background:var(--gray-50);border-color:var(--border-strong);color:var(--text)}
+  .chip.active{background:var(--gray-900);border-color:var(--gray-900);color:#fff}
+  .chip.ghost{background:transparent}
+  .chip.danger{color:var(--danger-700);border-color:var(--danger-100);background:var(--danger-50)}
+  .chip.danger:hover{background:var(--danger-100)}
+  .chip svg{width:12px;height:12px}
+  .date-input{font-family:inherit;font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);background:var(--surface);font-variant-numeric:tabular-nums;cursor:pointer}
+  .date-input.month-pick{min-width:120px;font-weight:500}
+  .date-input:hover{border-color:var(--border-strong)}
+  .date-input:focus{outline:2px solid var(--violet-200);outline-offset:-1px;border-color:var(--violet-500)}
+  .date-range-pop{display:none;gap:6px;align-items:center}
+  .date-range-pop.on{display:inline-flex}
+  .compare-wrap{background:var(--violet-50);padding:6px 10px;border-radius:var(--r-md);display:none;gap:10px 14px;align-items:center;flex-wrap:wrap;border:1px dashed var(--violet-200)}
+  .compare-wrap.on{display:inline-flex}
+  .compare-wrap>label{font-size:11px;font-weight:500;color:var(--violet-700);letter-spacing:-.005em}
 
-/* ============ Sticky Nav ============ */
-.sticky-nav{position:sticky;top:0;z-index:50;margin:-4px -6px 18px;padding:8px 6px;background:rgba(10,6,18,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(42,32,64,.6)}
-.nav-wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
-.nav-wrap::-webkit-scrollbar{display:none}
-.nav-btn{flex-shrink:0;padding:9px 16px;border-radius:10px;font-size:12px;font-weight:700;color:var(--text3);background:transparent;border:1px solid transparent;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:var(--font-body)}
-.nav-btn:hover{color:var(--text);background:rgba(153,132,238,.05)}
-.nav-btn.active{color:#fff;background:rgba(153,132,238,.14);border-color:rgba(153,132,238,.32);box-shadow:var(--glow)}
-.nav-btn .tn{font-family:var(--font-mono);font-size:10px;margin-right:6px;opacity:.55}
-.nav-btn.active .tn{opacity:.85;color:var(--primary)}
+  /* CONTENT */
+  .content{display:grid;grid-template-columns:1fr;gap:14px}
+  .content.compare{grid-template-columns:1fr 1fr}
+  @media(max-width:1200px){.content.compare{grid-template-columns:1fr}}
+  .col-head{font-size:11px;font-weight:600;color:var(--text-muted);padding:6px 12px;background:var(--gray-100);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+  .col-head .rng{color:var(--text-subtle);font-weight:400;font-variant-numeric:tabular-nums}
+  .col.A .col-head{background:var(--violet-50);border-color:var(--violet-100);color:var(--violet-700)}
+  .col.B .col-head{background:var(--brand-50);border-color:var(--brand-100);color:var(--brand-700)}
 
-/* ============ Exec summary ============ */
-.exec-summary{background:linear-gradient(135deg,rgba(138,43,226,.10),rgba(204,255,0,.04));border:1px solid rgba(153,132,238,.22);border-radius:var(--radius);padding:20px;margin-bottom:18px}
-.exec-summary h2{font-family:var(--font-display);font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.exec-summary h2::before{content:'';width:18px;height:2px;background:var(--primary);border-radius:2px}
-.exec-summary .bullets{display:flex;flex-direction:column;gap:11px}
-.exec-summary .b{display:flex;align-items:flex-start;gap:12px;font-size:13.5px;line-height:1.55;color:var(--text)}
-.exec-summary .b-num{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);margin-top:1px}
+  /* SECTION */
+  .sec{margin-bottom:12px}
 
-/* ============ Reconciliation ============ */
-.reco-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:18px;position:relative;overflow:hidden}
-.reco-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(153,132,238,.25),transparent)}
-.reco-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap}
-.reco-head h3{font-family:var(--font-display);font-size:15px;font-weight:700;color:#fff}
-.reco-head .sub{font-size:11px;color:var(--text3);margin-top:4px;max-width:520px;line-height:1.5}
-.count-triad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.count-triad .ct{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;position:relative}
-.count-triad .ct .n{font-family:var(--font-display);font-size:34px;font-weight:800;line-height:1;margin-bottom:6px;color:#fff}
-.count-triad .ct.crm .n{color:var(--accent)}
-.count-triad .ct.utm .n{color:var(--primary)}
-.count-triad .ct.pixel .n{color:var(--cyan)}
-.count-triad .ct .l{font-size:11px;font-weight:700;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:.08em}
-.count-triad .ct .d{font-size:10px;color:var(--text3);margin-top:6px;line-height:1.4}
+  /* KPIs */
+  .kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  .compare .kpi-row{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:1024px){.kpi-row,.compare .kpi-row{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:640px){.kpi-row,.compare .kpi-row{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;transition:border-color .15s,box-shadow .15s}
+  .kpi:hover{border-color:var(--border-strong);box-shadow:var(--shadow-sm)}
+  .kpi-label{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:500;color:var(--text-muted);margin-bottom:10px;letter-spacing:-.005em}
+  .kpi-icon{width:20px;height:20px;border-radius:var(--r-sm);display:grid;place-items:center;background:var(--gray-100);color:var(--gray-600);flex-shrink:0}
+  .kpi-icon svg{width:12px;height:12px}
+  .kpi-value{font-size:24px;font-weight:600;letter-spacing:-.03em;line-height:1;color:var(--text);font-variant-numeric:tabular-nums}
+  .kpi-sub{margin-top:6px;font-size:11px;color:var(--text-muted)}
+  .kpi-sub .trend-up{color:var(--success-600);font-weight:500}
+  .kpi-sub .trend-dn{color:var(--danger-700);font-weight:500}
+  .kpi-sub .trend-flat{color:var(--text-subtle);font-weight:500}
+  .kpi.primary{background:var(--gray-900);border-color:var(--gray-900)}
+  .kpi.primary .kpi-label{color:var(--gray-400)}
+  .kpi.primary .kpi-icon{background:var(--gray-800);color:var(--gray-300)}
+  .kpi.primary .kpi-value{color:#fff}
+  .kpi.primary .kpi-sub{color:var(--gray-400)}
+  .kpi.primary .kpi-sub .trend-up{color:var(--success-500)}
 
-/* ============ Cards, grids ============ */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(153,132,238,.08) 50%,transparent 90%)}
-.card h3{font-family:var(--font-display);font-size:14px;font-weight:700;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.card h3 .sub{color:var(--text3);font-size:11px;font-weight:500;font-family:var(--font-body)}
-.section-title{font-family:var(--font-display);font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.12em;margin:24px 2px 10px;display:flex;align-items:center;gap:10px}
-.section-title::before{content:'';width:18px;height:2px;background:var(--primary);border-radius:2px}
-.view-title{font-family:var(--font-display);font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:-.2px}
-.view-desc{font-size:12.5px;color:var(--text3);margin-bottom:16px;line-height:1.55;max-width:720px}
-.view{animation:viewIn .35s cubic-bezier(.16,1,.3,1)}
-@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  /* PANEL */
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px}
+  .panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+  .panel-title{font-size:14px;font-weight:600;color:var(--text);letter-spacing:-.01em}
+  .panel-sub{font-size:12px;color:var(--text-muted);margin-top:2px}
+  .panel-badge{font-size:11px;font-weight:500;color:var(--text-muted);padding:3px 10px;background:var(--gray-100);border-radius:999px;white-space:nowrap}
 
-/* ============ KPI grid ============ */
-.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
-.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;position:relative;overflow:hidden;transition:all .2s}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--primary);border-radius:12px 12px 0 0}
-.kpi-card.accent::before{background:var(--accent)}
-.kpi-card.cyan::before{background:var(--cyan)}
-.kpi-card:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(153,132,238,.14)}
-.kpi-card .kv{font-family:var(--font-display);font-size:26px;font-weight:800;line-height:1;margin-bottom:4px;color:#fff}
-.kpi-card .kl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2)}
-.kpi-card .ks{font-size:10px;color:var(--text3);margin-top:4px;font-family:var(--font-mono)}
-.kpi-card .bench{display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;font-family:var(--font-mono);letter-spacing:.04em}
-.bench.good{background:rgba(204,255,0,.1);color:var(--accent)}
-.bench.bad{background:rgba(240,97,94,.1);color:var(--red)}
-.bench.neutral{background:rgba(144,136,166,.1);color:var(--text2)}
+  /* 2-column grid */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .compare .grid-2{grid-template-columns:1fr}
+  @media(max-width:900px){.grid-2{grid-template-columns:1fr}}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .compare .grid-3{grid-template-columns:1fr}
+  @media(max-width:900px){.grid-3{grid-template-columns:1fr}}
 
-/* ============ Filter bar ============ */
-.filter-bar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px}
-.filter-bar label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-right:2px}
-.btn{background:rgba(153,132,238,.08);border:1px solid rgba(153,132,238,.18);border-radius:8px;color:var(--text);font-family:var(--font-body);font-size:11px;font-weight:700;padding:7px 12px;cursor:pointer;transition:all .15s;white-space:nowrap}
-.btn:hover{background:rgba(153,132,238,.16);color:#fff}
-.btn.active{background:var(--primary);border-color:var(--primary);color:#0a0612;box-shadow:var(--glow)}
-.btn-group{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
-.btn-sm{padding:5px 10px;font-size:10px;border-radius:6px}
-.input{background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-mono);font-size:11px;padding:6px 10px;outline:none}
-.input:focus{border-color:var(--primary)}
-.chk{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);cursor:pointer;user-select:none}
-.chk input{accent-color:var(--primary)}
+  /* Platform cards (panel variant) */
+  .plat-card .panel-head{margin-bottom:12px}
+  .plat-card.fb .plat-icon{background:#DBEAFE;color:var(--fb-500)}
+  .plat-card.ig .plat-icon{background:#FCE7F3;color:var(--ig-500)}
+  .plat-icon{width:28px;height:28px;border-radius:var(--r-sm);display:grid;place-items:center;flex-shrink:0}
+  .plat-icon svg{width:15px;height:15px}
+  .plat-mg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .plat-mi{padding:10px 12px;background:var(--gray-50);border:1px solid var(--border);border-radius:var(--r-md)}
+  .plat-mi .n{font-size:18px;font-weight:600;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums;color:var(--text)}
+  .plat-mi .l{font-size:10px;font-weight:500;color:var(--text-muted);margin-top:4px;letter-spacing:-.005em}
 
-/* ============ Tables ============ */
-.dtable-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
-.dtable{width:100%;border-collapse:collapse;font-size:12px;min-width:760px}
-.dtable th{text-align:left;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:12px 10px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;background:var(--surface2);position:sticky;top:0}
-.dtable th.sort-desc::after{content:' \2193';color:var(--primary)}
-.dtable th.sort-asc::after{content:' \2191';color:var(--primary)}
-.dtable td{padding:11px 10px;border-bottom:1px solid rgba(42,32,64,.5);vertical-align:middle}
-.dtable tr:last-child td{border-bottom:none}
-.dtable tr:hover td{background:rgba(153,132,238,.04)}
-.dtable .mono{font-family:var(--font-mono);font-size:11px}
-.dtable .num{font-family:var(--font-mono);font-weight:700;text-align:right;color:#fff}
-.dtable .name-cell{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font-weight:600}
-.ad-row{cursor:pointer}
-.ad-row.open td{background:rgba(153,132,238,.08)}
-.ad-detail{display:none}
-.ad-detail.open{display:table-row}
-.ad-detail-wrap{padding:18px;background:rgba(153,132,238,.04);border-left:2px solid var(--primary);display:grid;grid-template-columns:140px 1fr;gap:18px;align-items:start}
-@media(max-width:640px){.ad-detail-wrap{grid-template-columns:1fr}}
-.ad-thumb{width:140px;height:140px;border-radius:10px;object-fit:cover;background:var(--surface2);border:1px solid var(--border)}
-.ad-thumb-ph{width:140px;height:140px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--text3)}
-.ad-body-text{font-size:12px;color:var(--text2);line-height:1.55;margin:8px 0;max-height:100px;overflow-y:auto;padding-right:6px}
-.ad-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:12px}
-.ad-meta-grid .mi{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
-.ad-meta-grid .mi .n{font-family:var(--font-mono);font-size:14px;font-weight:700;color:#fff}
-.ad-meta-grid .mi .l{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-top:2px}
-.ad-platforms{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-@media(max-width:640px){.ad-platforms{grid-template-columns:1fr}}
-.ad-plat{padding:10px 12px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid var(--border)}
-.ad-plat.fb{border-left:3px solid var(--fb)}
-.ad-plat.ig{border-left:3px solid var(--ig)}
-.ad-plat .h{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
-.ad-plat .r{display:flex;justify-content:space-between;font-size:11px;padding:2px 0}
-.ad-plat .r .k{color:var(--text3)}
-.ad-plat .r .v{font-family:var(--font-mono);font-weight:700;color:#fff}
-.status-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;font-family:var(--font-mono);letter-spacing:.04em}
-.status-badge.active{background:rgba(204,255,0,.1);color:var(--accent)}
-.status-badge.paused{background:rgba(255,191,0,.1);color:var(--amber)}
-.status-badge.deleted{background:rgba(85,91,115,.08);color:var(--text3)}
-.delta{display:inline-block;margin-left:4px;font-size:9px;font-family:var(--font-mono);font-weight:700;padding:1px 4px;border-radius:3px}
-.delta.up{background:rgba(204,255,0,.1);color:var(--accent)}
-.delta.down{background:rgba(240,97,94,.1);color:var(--red)}
-.delta.flat{background:rgba(144,136,166,.08);color:var(--text3)}
+  /* TABLE */
+  .table-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+  .table-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .table-head h2{font-size:14px;font-weight:600;letter-spacing:-.01em;color:var(--text)}
+  .table-head .actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .tblwrap{max-height:560px;overflow:auto}
+  .compare .tblwrap{max-height:460px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead th{text-align:left;padding:10px 14px;background:var(--gray-50);font-size:11px;font-weight:500;color:var(--text-muted);letter-spacing:-.005em;border-bottom:1px solid var(--border);user-select:none;cursor:pointer;position:sticky;top:0;z-index:1;white-space:nowrap}
+  thead th:hover{background:var(--gray-100);color:var(--text)}
+  thead th.sorted{background:var(--gray-100);color:var(--text);font-weight:600}
+  thead th.sorted::after{content:attr(data-arr);margin-left:4px;font-size:10px}
+  thead th.num{text-align:right}
+  tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+  tbody tr:last-child{border-bottom:0}
+  tbody tr:hover td{background:var(--gray-50)}
+  tbody td{padding:10px 14px;color:var(--text);font-variant-numeric:tabular-nums;font-size:13px;vertical-align:middle}
+  tbody td.name{font-weight:500}
+  tbody td.num{text-align:right;white-space:nowrap}
+  tbody td.muted{color:var(--text-muted)}
+  .ad-row{cursor:pointer}
+  .ad-row.open td{background:var(--violet-50)}
+  .ad-detail-row{display:none}
+  .ad-detail-row.open{display:table-row}
+  .ad-detail-wrap{padding:16px 18px;background:var(--gray-50);border-top:1px solid var(--border)}
+  .ad-detail-head{display:flex;gap:14px;margin-bottom:12px;align-items:flex-start}
+  .ad-thumb{width:88px;height:88px;flex-shrink:0;background:var(--gray-100);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--text-subtle);font-size:12px}
+  .ad-thumb img{width:100%;height:100%;object-fit:cover}
+  .ad-body{font-size:12px;color:var(--text);line-height:1.5;max-height:74px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;margin-bottom:8px}
+  .ad-meta{font-size:11px;color:var(--text-muted);font-variant-numeric:tabular-nums}
+  .mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:6px;margin-top:8px}
+  .mi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 10px}
+  .mi .n{font-size:13px;font-weight:600;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+  .mi .l{font-size:10px;color:var(--text-muted);margin-top:3px;font-weight:500}
+  .plat-split-line{margin-top:10px;display:flex;gap:16px;font-size:11px;color:var(--text-muted);font-variant-numeric:tabular-nums;flex-wrap:wrap}
 
-/* ============ Events / bars ============ */
-.event-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.event-label{width:200px;flex-shrink:0;font-size:12.5px;font-weight:600}
-.event-bar-wrap{flex:1;height:30px;background:rgba(255,255,255,.02);border-radius:6px;overflow:hidden;position:relative;border:1px solid var(--border)}
-.event-bar{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 10px;transition:width .6s ease}
-.event-bar span{font-family:var(--font-mono);font-size:12px;font-weight:700;color:#0a0612;text-shadow:none}
-.event-bar.muted span{color:#fff}
-.event-pct{width:70px;flex-shrink:0;text-align:right;font-family:var(--font-mono);font-size:11px;color:var(--text3)}
-.purchase-placeholder{background:repeating-linear-gradient(45deg,var(--surface2),var(--surface2) 10px,var(--border) 10px,var(--border) 12px);border-radius:6px;padding:8px 10px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:11px;font-weight:600;min-height:30px}
-@media(max-width:640px){.event-label{width:130px;font-size:11.5px}}
+  /* Badges */
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:500;letter-spacing:-.005em;border:1px solid transparent;white-space:nowrap}
+  .badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.7}
+  .badge-success{background:var(--success-50);color:var(--success-700);border-color:var(--success-100)}
+  .badge-warn{background:var(--warn-50);color:var(--warn-700);border-color:var(--warn-100)}
+  .badge-danger{background:var(--danger-50);color:var(--danger-700);border-color:var(--danger-100)}
+  .badge-neutral{background:var(--gray-100);color:var(--gray-500);border-color:var(--border)}
+  .badge-brand{background:var(--brand-50);color:var(--brand-700);border-color:var(--brand-100)}
+  .badge-violet{background:var(--violet-50);color:var(--violet-700);border-color:var(--violet-100)}
+  .badge-fb{background:#DBEAFE;color:#1D4ED8;border-color:#BFDBFE}
+  .badge-ig{background:#FCE7F3;color:#9D174D;border-color:#FBCFE8}
 
-/* ============ Chart wrap ============ */
-.chart-wrap{width:100%;height:280px;position:relative}
-.chart-wrap.small{height:160px}
+  /* Funnel bars */
+  .funnel-list{display:flex;flex-direction:column;gap:12px}
+  .funnel-row{display:flex;flex-direction:column;gap:5px}
+  .funnel-row .g-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .funnel-row .g-name{font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px}
+  .funnel-row .g-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+  .funnel-row .g-nums{font-size:13px;font-variant-numeric:tabular-nums;color:var(--text);font-weight:500}
+  .funnel-row .g-nums .total{color:var(--text-muted);font-weight:400;margin-left:2px}
+  .funnel-row .g-track{height:6px;background:var(--gray-100);border-radius:999px;overflow:hidden}
+  .funnel-row .g-fill{height:100%;transition:width .7s cubic-bezier(.22,1,.36,1)}
+  .funnel-row .g-meta{display:flex;gap:10px;font-size:11px;color:var(--text-muted)}
+  .funnel-row .g-meta .src{font-style:normal}
+  .funnel-row .g-meta .conv{margin-left:auto;font-variant-numeric:tabular-nums}
 
-/* ============ Breakdowns ============ */
-.split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.split-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
-@media(max-width:900px){.split-3{grid-template-columns:1fr 1fr}}
-@media(max-width:640px){.split,.split-3{grid-template-columns:1fr}}
-.breakdown-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(42,32,64,.4);font-size:11.5px}
-.breakdown-row:last-child{border-bottom:none}
-.breakdown-row .bl{color:var(--text2);font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.breakdown-row .bbar{flex:0 0 90px;height:6px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;position:relative}
-.breakdown-row .bbar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));border-radius:3px}
-.breakdown-row .bv{font-family:var(--font-mono);font-weight:700;color:var(--text);flex:0 0 auto;min-width:50px;text-align:right}
+  /* Event bars (stacked style) */
+  .ev-list{display:flex;flex-direction:column;gap:10px}
+  .ev-row{display:flex;flex-direction:column;gap:4px}
+  .ev-head{display:flex;justify-content:space-between;align-items:center}
+  .ev-label{font-size:12px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px}
+  .ev-label .g-dot{width:8px;height:8px;border-radius:2px}
+  .ev-desc{font-size:11px;color:var(--text-muted);margin-top:-2px}
+  .ev-nums{font-size:12px;font-variant-numeric:tabular-nums;color:var(--text);font-weight:500}
+  .ev-nums .pct{color:var(--text-muted);font-weight:400;margin-left:4px;font-size:11px}
+  .ev-track{height:6px;background:var(--gray-100);border-radius:999px;overflow:hidden}
+  .ev-fill{height:100%;transition:width .6s cubic-bezier(.22,1,.36,1)}
 
-/* ============ Action items ============ */
-.action-card{display:grid;grid-template-columns:32px 1fr auto;gap:14px;padding:16px 0;border-bottom:1px solid var(--border);align-items:start}
-.action-card:last-child{border-bottom:none}
-.action-num{font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--primary);line-height:1}
-.action-title{font-family:var(--font-display);font-size:14px;font-weight:700;color:#fff;margin-bottom:5px}
-.action-desc{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:8px}
-.action-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:10px;font-family:var(--font-mono)}
-.action-meta .am{background:rgba(153,132,238,.08);border:1px solid rgba(153,132,238,.15);border-radius:4px;padding:3px 8px;color:var(--text2)}
-.action-meta .am.owner{color:var(--primary)}
-.action-meta .am.deadline{color:var(--amber)}
-.action-meta .am.impact{color:var(--accent)}
-.action-status{font-size:9px;font-family:var(--font-mono);font-weight:700;padding:4px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
-.action-status.pending{background:rgba(255,191,0,.1);color:var(--amber)}
-.action-status.in_progress{background:rgba(0,212,255,.1);color:var(--cyan)}
-.action-status.done{background:rgba(204,255,0,.1);color:var(--accent)}
+  /* Traffic cards */
+  .traffic-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .compare .traffic-grid{grid-template-columns:1fr}
+  @media(max-width:900px){.traffic-grid{grid-template-columns:1fr}}
+  .tcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px}
+  .tcard .tc-label{font-size:11px;font-weight:500;color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .tcard .tc-label .g-dot{width:8px;height:8px;border-radius:2px}
+  .tcard .tc-value{font-size:26px;font-weight:600;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;color:var(--text)}
+  .tcard .tc-sub{font-size:11px;color:var(--text-muted);margin-top:6px;font-variant-numeric:tabular-nums}
 
-/* ============ Empty / loading states ============ */
-.empty{padding:28px;text-align:center;color:var(--text3);font-size:12px;font-style:italic}
-.skeleton{background:linear-gradient(90deg,var(--surface2) 25%,rgba(153,132,238,.06) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.6s infinite;border-radius:6px}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.global-loader{position:fixed;inset:0;background:rgba(10,6,18,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:999;transition:opacity .3s}
-.global-loader.hide{opacity:0;pointer-events:none}
-.spinner{width:42px;height:42px;border:3px solid rgba(153,132,238,.15);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.global-loader .msg{font-family:var(--font-mono);font-size:11px;color:var(--text2);letter-spacing:.06em;text-transform:uppercase}
+  /* Breakdown rows */
+  .br-list{display:flex;flex-direction:column}
+  .br-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+  .br-row:last-child{border-bottom:none}
+  .br-row .l{color:var(--text);font-weight:500;max-width:62%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .br-row .v{font-variant-numeric:tabular-nums;font-weight:500;color:var(--text)}
+  .br-row .v .leads{color:var(--success-600);margin-left:6px;font-size:11px;font-weight:500}
 
-/* ============ Footer ============ */
-.footer{margin-top:32px;padding:20px 0;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text3);font-family:var(--font-mono)}
-.footer .right{display:flex;gap:10px;align-items:center}
+  /* Empty */
+  .empty{padding:20px;text-align:center;color:var(--text-subtle);font-size:12px;background:var(--gray-50);border:1px dashed var(--border);border-radius:var(--r-md)}
 
-/* ============ View visibility ============ */
-.view{display:none}
-.view.active{display:block}
+  /* Loader */
+  .loader{text-align:center;padding:80px 20px;color:var(--text-muted);font-size:13px}
+  .loader-dot{display:inline-block;width:6px;height:6px;background:var(--gray-400);border-radius:50%;margin:0 2px;animation:ld 1.4s infinite ease-in-out}
+  .loader-dot:nth-child(2){animation-delay:.2s}.loader-dot:nth-child(3){animation-delay:.4s}
+  @keyframes ld{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
 
-/* ============ Hide sections by default ============ */
-@media(max-width:640px){
-  #app{padding:16px 10px 40px}
-  .top-bar h1{font-size:22px}
-  .kpi-grid{grid-template-columns:repeat(2,1fr)}
-  .count-triad{grid-template-columns:1fr}
-  .exec-summary{padding:16px}
-  .ad-meta-grid{grid-template-columns:repeat(2,1fr)}
-}
+  .footer{margin-top:24px;display:flex;justify-content:space-between;font-size:12px;color:var(--text-subtle)}
+
+  /* Pagination */
+  .paginate{padding:10px;display:flex;justify-content:center;gap:6px;border-top:1px solid var(--border);background:var(--gray-50)}
+
+  /* Tooltip — JS attached to body */
+  #tt{position:fixed;background:var(--gray-900);color:#fff;padding:8px 10px;border-radius:var(--r-sm);font-size:11px;font-weight:400;letter-spacing:-.005em;white-space:normal;max-width:260px;z-index:9999;pointer-events:none;box-shadow:var(--shadow-md);line-height:1.45;font-family:'Inter Tight',sans-serif;opacity:0;transition:opacity .12s;transform:translateY(2px)}
+  #tt.on{opacity:1;transform:translateY(0)}
+  #tt::before{content:'';position:absolute;top:-4px;left:12px;border:4px solid transparent;border-bottom-color:var(--gray-900);border-top:0}
+
+  /* GHL overrides */
+  .c-section .inner,.c-row .inner,.c-column .inner,.c-section>.inner,.c-row>.inner,.c-column>.inner,.inner,.vertical.inner{max-width:100vw!important;width:100vw!important;padding:0!important;margin:0!important}
+  .c-section,.c-row,.c-column,.c-wrapper,.c-custom-code,.fullSection,[id^="section-"],[id^="row-"],[id^="col-"],[id^="custom-code-"]{max-width:100vw!important;width:100vw!important;padding:0!important;margin:0!important;background:transparent!important;border:none!important;overflow:visible!important}
 </style>
 </head>
-<body style="margin:0!important;padding:0!important;background:#0a0612!important;">
+<body>
+<div class="wrap">
 
-<div class="global-loader" id="loader">
-  <div class="spinner"></div>
-  <div class="msg">Cargando datos desde Supabase...</div>
-</div>
-
-<div id="app">
-  <div class="top-bar">
-    <div>
-      <h1>Sarahi Jaramillo &mdash; Meta Ads Analytics</h1>
-      <div class="meta" id="period-meta">Periodo: <span id="period-label">&mdash;</span></div>
-    </div>
-    <div id="live-badge-slot"></div>
-  </div>
-
-  <!-- Exec summary -->
-  <div class="exec-summary" id="exec-summary">
-    <h2>Resumen Ejecutivo</h2>
-    <div class="bullets" id="exec-bullets">
-      <div class="b"><div class="b-num">&hellip;</div><div class="skeleton" style="height:18px;width:80%"></div></div>
-    </div>
-  </div>
-
-  <!-- Reconciliation -->
-  <div class="reco-card" id="reco-card">
-    <div class="reco-head">
-      <div>
-        <h3>Fuentes de Leads &mdash; Reconciliaci&oacute;n</h3>
-        <div class="sub" id="reco-sub">Cargando explicaci&oacute;n&hellip;</div>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand">
+      <div class="logo">A.</div>
+      <div class="brand-meta">
+        <div class="eyebrow">Ainnovation · Meta Ads Reporting</div>
+        <h1>Sarahi Jaramillo</h1>
       </div>
     </div>
-    <div class="count-triad" id="reco-triad">
-      <div class="ct crm"><div class="n skeleton" style="height:34px">&nbsp;</div><div class="l">CRM</div><div class="d">Total hist&oacute;rico registrado</div></div>
-      <div class="ct utm"><div class="n skeleton" style="height:34px">&nbsp;</div><div class="l">UTM Sheet</div><div class="d">Leads con tracking UTM capturado</div></div>
-      <div class="ct pixel"><div class="n skeleton" style="height:34px">&nbsp;</div><div class="l">Pixel</div><div class="d">Eventos Lead detectados por Meta</div></div>
+    <div class="header-actions">
+      <span class="meta-date" id="syncMeta">cargando…</span>
+      <span class="status-chip"><span class="dot"></span>En vivo</span>
+    </div>
+  </header>
+
+  <!-- FILTER BAR -->
+  <div class="fbar">
+    <div class="fgroup">
+      <label>Periodo A</label>
+      <button class="chip preset" data-col="A" data-preset="7d" data-tip="Últimos 7 días: de hoy menos 6 días hasta hoy">7d</button>
+      <button class="chip preset" data-col="A" data-preset="30d" data-tip="Últimos 30 días: rolling window desde hoy hacia atrás">30d</button>
+      <button class="chip preset active" data-col="A" data-preset="mtd" data-tip="Month-to-date: del día 1 del mes actual hasta hoy">MTD</button>
+      <button class="chip preset" data-col="A" data-preset="lm" data-tip="Mes calendario pasado completo (día 1 al último día)">Mes pasado</button>
+      <input type="month" class="date-input month-pick" data-col="A" data-tip="Selecciona cualquier mes calendario completo (ene, feb, mar…)">
+      <button class="chip preset" data-col="A" data-preset="all" data-tip="Todo el histórico disponible desde que inició el tracking (sept 2025)">Histórico</button>
+      <button class="chip preset" data-col="A" data-preset="custom" data-tip="Elige fechas específicas de inicio y fin">Personalizado</button>
+      <span class="date-range-pop" id="rangeA"><input type="date" class="date-input" id="fromA"><span style="color:var(--text-subtle);font-size:11px">→</span><input type="date" class="date-input" id="toA"></span>
+    </div>
+    <div class="sep"></div>
+    <div class="fgroup">
+      <label>Plataforma</label>
+      <button class="chip plat active" data-plat="all" data-tip="Mostrar ads de ambas plataformas y totales combinados">Todas</button>
+      <button class="chip plat" data-plat="facebook" data-tip="Solo ads cuya mayoría de gasto fue en Facebook (fb_spend ≥ ig_spend)">Facebook</button>
+      <button class="chip plat" data-plat="instagram" data-tip="Solo ads cuya mayoría de gasto fue en Instagram (ig_spend > fb_spend)">Instagram</button>
+    </div>
+    <div class="sep"></div>
+    <div class="fgroup">
+      <button class="chip ghost" id="toggleCompare" data-tip="Abre una segunda vista lado a lado con otro periodo para comparar. Los KPIs muestran delta % entre ambos."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15-4-4 4-4"/><path d="M21 11H3"/><path d="m17 9 4 4-4 4"/><path d="M3 13h18"/></svg>Comparar</button>
+    </div>
+    <div class="compare-wrap" id="compareCtl">
+      <label>Periodo B</label>
+      <button class="chip preset" data-col="B" data-preset="7d">7d</button>
+      <button class="chip preset active" data-col="B" data-preset="lm">Mes pasado</button>
+      <input type="month" class="date-input month-pick" data-col="B" data-tip="Selecciona cualquier mes calendario para comparar">
+      <button class="chip preset" data-col="B" data-preset="all">Histórico</button>
+      <button class="chip preset" data-col="B" data-preset="custom">Personalizado</button>
+      <span class="date-range-pop" id="rangeB"><input type="date" class="date-input" id="fromB"><span style="color:var(--text-subtle);font-size:11px">→</span><input type="date" class="date-input" id="toB"></span>
+      <button class="chip danger" id="closeCompare">× Cerrar</button>
     </div>
   </div>
 
-  <!-- Sticky nav -->
-  <div class="sticky-nav">
-    <div class="nav-wrap">
-      <button class="nav-btn active" data-view="web"><span class="tn">01</span>P&aacute;gina Web &amp; Pixel</button>
-      <button class="nav-btn" data-view="ads"><span class="tn">02</span>Anuncios</button>
-      <button class="nav-btn" data-view="audience"><span class="tn">03</span>Audiencia</button>
-      <button class="nav-btn" data-view="plan"><span class="tn">04</span>Plan de Acci&oacute;n</button>
-    </div>
+  <div class="content" id="content">
+    <div class="loader"><span class="loader-dot"></span><span class="loader-dot"></span><span class="loader-dot"></span><br><br>Cargando datos…</div>
   </div>
 
-  <!-- ===================== VIEW 1: WEB / PIXEL ===================== -->
-  <div class="view active" id="view-web">
-    <h2 class="view-title">Performance P&aacute;gina Web &amp; Pixel</h2>
-    <p class="view-desc">Eventos disparados por el pixel de Meta en el landing. Aqu&iacute; medimos la secuencia del embudo: visita &rarr; contenido visto &rarr; lead &rarr; cita agendada &rarr; compra. El pixel es la fuente m&aacute;s precisa para entender qu&eacute; pasa despu&eacute;s del click.</p>
-
-    <div class="filter-bar">
-      <label>Rango:</label>
-      <div class="btn-group" id="web-range-btns">
-        <button class="btn btn-sm" data-range="7">7d</button>
-        <button class="btn btn-sm" data-range="30">30d</button>
-        <button class="btn btn-sm active" data-range="90">90d</button>
-        <button class="btn btn-sm" data-range="all">Todo</button>
-      </div>
-      <span style="color:var(--text3);font-size:11px">o</span>
-      <label>Desde:</label>
-      <input type="date" class="input" id="web-from">
-      <label>Hasta:</label>
-      <input type="date" class="input" id="web-to">
-      <label class="chk"><input type="checkbox" id="web-compare"> Comparar con periodo anterior</label>
-    </div>
-
-    <div class="section-title">Eventos Pixel</div>
-    <div class="card">
-      <div id="pixel-events"></div>
-    </div>
-
-    <div class="section-title">Tendencia Diaria</div>
-    <div class="card">
-      <div class="chart-wrap" id="pixel-trend-wrap"><canvas id="pixel-trend"></canvas></div>
-    </div>
-
-    <div class="section-title">Breakdowns (Rolling 90d)</div>
-    <div class="split-3">
-      <div class="card"><h3>Navegador</h3><div id="bd-browser"></div></div>
-      <div class="card"><h3>Sistema Operativo</h3><div id="bd-os"></div></div>
-      <div class="card"><h3>Host (Dominio)</h3><div id="bd-host"></div></div>
-    </div>
-    <div class="card"><h3>Top URLs</h3><div id="bd-url"></div></div>
-  </div>
-
-  <!-- ===================== VIEW 2: ADS ===================== -->
-  <div class="view" id="view-ads">
-    <h2 class="view-title">Anuncios</h2>
-    <p class="view-desc">Cada anuncio creativo con m&eacute;tricas completas. Haz click en una fila para ver detalle, thumbnail, copy y split Facebook vs Instagram. Filtra por plataforma y recalcula m&eacute;tricas en rango de fecha.</p>
-
-    <div class="filter-bar">
-      <label>Plataforma:</label>
-      <div class="btn-group" id="ads-platform-btns">
-        <button class="btn btn-sm active" data-plat="all">Ambas</button>
-        <button class="btn btn-sm" data-plat="fb">Facebook</button>
-        <button class="btn btn-sm" data-plat="ig">Instagram</button>
-      </div>
-      <label>Rango:</label>
-      <div class="btn-group" id="ads-range-btns">
-        <button class="btn btn-sm" data-range="7">7d</button>
-        <button class="btn btn-sm" data-range="30">30d</button>
-        <button class="btn btn-sm active" data-range="90">90d</button>
-        <button class="btn btn-sm" data-range="all">Lifetime</button>
-      </div>
-      <label>Desde:</label>
-      <input type="date" class="input" id="ads-from">
-      <label>Hasta:</label>
-      <input type="date" class="input" id="ads-to">
-      <label class="chk"><input type="checkbox" id="ads-compare"> Comparar A vs B</label>
-    </div>
-
-    <div class="filter-bar">
-      <label>Mostrar:</label>
-      <div class="btn-group" id="ads-top-btns">
-        <button class="btn btn-sm" data-top="5">Top 5</button>
-        <button class="btn btn-sm active" data-top="10">Top 10</button>
-        <button class="btn btn-sm" data-top="25">Top 25</button>
-        <button class="btn btn-sm" data-top="all">Todos</button>
-      </div>
-      <label>Ordenar por:</label>
-      <select class="input" id="ads-sort">
-        <option value="leads_utm">Leads UTM</option>
-        <option value="spend" selected>Inversi&oacute;n</option>
-        <option value="lpv">Visitas LP</option>
-        <option value="lead_pixel">Leads (Pixel)</option>
-        <option value="wa_conv">Conv. WhatsApp</option>
-        <option value="ctr">CTR</option>
-        <option value="cpc">CPC</option>
-        <option value="post_engagement">Engagement</option>
-      </select>
-    </div>
-
-    <div class="card" style="padding:0">
-      <div class="dtable-wrap">
-        <table class="dtable" id="ads-table">
-          <thead>
-            <tr>
-              <th data-sort="name">Anuncio</th>
-              <th data-sort="status">Estado</th>
-              <th data-sort="spend" class="sort-desc">Inversi&oacute;n</th>
-              <th data-sort="impressions">Impresiones</th>
-              <th data-sort="clicks">Clicks</th>
-              <th data-sort="ctr">CTR</th>
-              <th data-sort="cpc">CPC</th>
-              <th data-sort="lpv">LPV</th>
-              <th data-sort="lead_pixel">Leads</th>
-              <th data-sort="wa_conv">WA</th>
-            </tr>
-          </thead>
-          <tbody id="ads-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===================== VIEW 3: AUDIENCE ===================== -->
-  <div class="view" id="view-audience">
-    <h2 class="view-title">Audiencia</h2>
-    <p class="view-desc">Qui&eacute;n es la audiencia que recibe los anuncios: edad, g&eacute;nero, ubicaci&oacute;n geogr&aacute;fica y d&oacute;nde se muestran (placements). Estos datos son rolling de los &uacute;ltimos 90 d&iacute;as y ayudan a decidir a d&oacute;nde optimizar inversi&oacute;n.</p>
-
-    <div class="card"><h3>Periodo cubierto <span class="sub" id="audience-period">&mdash;</span></h3></div>
-
-    <div class="section-title">Demograf&iacute;a (Edad &amp; G&eacute;nero)</div>
-    <div class="card">
-      <div class="chart-wrap" id="demo-wrap"><canvas id="demo-chart"></canvas></div>
-      <div id="demo-rows" style="margin-top:14px"></div>
-    </div>
-
-    <div class="section-title">Geograf&iacute;a</div>
-    <div class="card"><div id="geo-rows"></div></div>
-
-    <div class="section-title">Placements</div>
-    <div class="card"><div id="plac-rows"></div></div>
-  </div>
-
-  <!-- ===================== VIEW 4: PLAN ===================== -->
-  <div class="view" id="view-plan">
-    <h2 class="view-title">Plan de Acci&oacute;n</h2>
-    <p class="view-desc">Pr&oacute;ximos pasos priorizados por impacto. Cada tarea tiene responsable, fecha l&iacute;mite e impacto esperado. Marca tu avance con el equipo de marketing.</p>
-    <div class="card" style="padding:0 20px"><div id="plan-list"></div></div>
-  </div>
-
-  <!-- Footer -->
   <div class="footer">
-    <div>Sarahi Jaramillo Analytics &middot; Powered by Supabase + Meta Marketing API</div>
-    <div class="right">
-      <span id="sync-status">&Uacute;ltima actualizaci&oacute;n: &mdash;</span>
-    </div>
+    <span>Ainnovation · Deduplicado por email</span>
+    <span>Datos: Meta Ads + pixel + GHL CRM · actualización automática</span>
   </div>
+
 </div>
 
 <script>
-/* ========================= CONFIG ========================= */
-const SUPA_URL = 'https://fneppfjeywhayknrgahe.supabase.co';
-const SUPA_KEY = 'sb_publishable_zLroeuC3ZrE-K_zVGFwi3Q_UyYG6ZYB';
-const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+const SB_URL='https://fneppfjeywhayknrgahe.supabase.co';
+const SB_KEY='sb_publishable_zLroeuC3ZrE-K_zVGFwi3Q_UyYG6ZYB';
+const FB_ICO='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>';
+const IG_ICO='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>';
 
-/* ========================= STATE ========================= */
-const S = {
-  accountDaily: [], ads: [], adDaily: [], pixelDaily: [], pixelBreakdowns: [],
-  utmLeads: [], breakdowns: [], narrative: [], actionItems: [], benchmarks: [], syncLog: [],
-  web: { range: '90', from: null, to: null, compare: false },
-  ads: { range: '90', from: null, to: null, compare: false, platform: 'all', top: '10', sort: 'spend', dir: 'desc' },
-  charts: {}
+const RAW={};
+const ST={
+  plat:'all',compare:false,
+  A:{preset:'mtd',from:null,to:null,sort:'spend',dir:-1,limit:15,openAds:new Set(),orgSort:'engagement',orgDir:-1},
+  B:{preset:'lm',from:null,to:null,sort:'spend',dir:-1,limit:15,openAds:new Set(),orgSort:'engagement',orgDir:-1}
 };
 
-/* ========================= UTILS ========================= */
-const fmt = {
-  money: (n) => '$' + (Number(n) || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' MXN',
-  moneyShort: (n) => { const v = Number(n) || 0; if (v >= 1e6) return '$' + (v/1e6).toFixed(2) + 'M'; if (v >= 1e3) return '$' + (v/1e3).toFixed(1) + 'K'; return '$' + v.toFixed(0); },
-  int: (n) => (Number(n) || 0).toLocaleString('en-US'),
-  big: (n) => { const v = Number(n) || 0; if (v >= 1e6) return (v/1e6).toFixed(2) + 'M'; if (v >= 1e3) return (v/1e3).toFixed(1) + 'K'; return String(Math.round(v)); },
-  pct: (n, d = 2) => (Number(n) || 0).toFixed(d) + '%',
-  date: (s) => { if (!s) return ''; const d = new Date(s); return d.toLocaleDateString('es-MX', {year:'numeric', month:'short', day:'numeric'}); },
-  dateShort: (s) => { if (!s) return ''; const d = new Date(s); return d.toLocaleDateString('es-MX', {month:'short', day:'numeric'}); },
-  relTime: (s) => { if (!s) return ''; const d = new Date(s); const now = new Date(); const diff = (now - d) / 1000; if (diff < 60) return 'hace segundos'; if (diff < 3600) return 'hace ' + Math.floor(diff/60) + ' min'; if (diff < 86400) return 'hace ' + Math.floor(diff/3600) + ' h'; return 'hace ' + Math.floor(diff/86400) + ' d\u00edas'; }
-};
-const sum = (arr, k) => arr.reduce((a, x) => a + (Number(x[k]) || 0), 0);
-const today = () => { const d = new Date(); return d.toISOString().slice(0, 10); };
-const daysAgo = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); };
-const inRange = (day, from, to) => { if (!day) return false; return day >= from && day <= to; };
-const deltaPct = (a, b) => { if (!b) return null; return ((a - b) / b) * 100; };
-const narrText = (key) => { const r = S.narrative.find(n => n.key === key); return r ? (r.body || r.title || '') : ''; };
-
-/* ========================= FETCH ========================= */
-async function fetchAll() {
-  const tables = [
-    { key: 'accountDaily', name: 'sarahi_meta_account_daily', opts: { order: 'day' } },
-    { key: 'ads', name: 'sarahi_meta_ads', opts: {} },
-    { key: 'adDaily', name: 'sarahi_meta_ad_daily', opts: {} },
-    { key: 'pixelDaily', name: 'sarahi_meta_pixel_daily', opts: { order: 'day' } },
-    { key: 'pixelBreakdowns', name: 'sarahi_meta_pixel_breakdowns', opts: {} },
-    { key: 'utmLeads', name: 'sarahi_meta_utm_leads', opts: {} },
-    { key: 'breakdowns', name: 'sarahi_meta_breakdowns', opts: {} },
-    { key: 'narrative', name: 'sarahi_meta_narrative', opts: { order: 'order' } },
-    { key: 'actionItems', name: 'sarahi_meta_action_items', opts: { order: 'order_num' } },
-    { key: 'benchmarks', name: 'sarahi_meta_benchmarks', opts: {} },
-    { key: 'syncLog', name: 'sarahi_meta_sync_log', opts: { order: 'pulled_at', desc: true, limit: 20 } },
-  ];
-  const results = await Promise.all(tables.map(async t => {
-    let q = sb.from(t.name).select('*');
-    if (t.opts.order) q = q.order(t.opts.order, { ascending: !t.opts.desc });
-    if (t.opts.limit) q = q.limit(t.opts.limit);
-    else q = q.limit(10000);
-    const { data, error } = await q;
-    if (error) { console.error('Error loading', t.name, error); return []; }
-    return data || [];
-  }));
-  tables.forEach((t, i) => { S[t.key] = results[i]; });
+async function sb(t,p=''){const u=`${SB_URL}/rest/v1/${t}?${p}`;const r=await fetch(u,{headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY}});return r.json()}
+const fmt=n=>{if(n==null||isNaN(n))return '0';n=Number(n);if(Math.abs(n)>=1e6)return (n/1e6).toFixed(1)+'M';if(Math.abs(n)>=1e3)return (n/1e3).toFixed(1)+'k';return Math.round(n).toLocaleString('es-MX')};
+const money=n=>'$'+Number(n||0).toLocaleString('es-MX',{minimumFractionDigits:0,maximumFractionDigits:0});
+const pct=(a,b)=>b>0?((a/b)*100).toFixed(1)+'%':'—';
+const esc=s=>{const d=document.createElement('div');d.textContent=s||'';return d.innerHTML};
+const iso=d=>d.toISOString().slice(0,10);
+const today=()=>new Date();
+function presetRange(p){
+  const t=today();const start=new Date(t);
+  if(p==='today')return [iso(t),iso(t)];
+  if(p==='7d'){start.setDate(t.getDate()-6);return [iso(start),iso(t)]}
+  if(p==='30d'){start.setDate(t.getDate()-29);return [iso(start),iso(t)]}
+  if(p==='mtd')return [iso(new Date(t.getFullYear(),t.getMonth(),1)),iso(t)];
+  if(p==='lm'){const s=new Date(t.getFullYear(),t.getMonth()-1,1),e=new Date(t.getFullYear(),t.getMonth(),0);return [iso(s),iso(e)]}
+  if(p==='all')return ['2020-01-01',iso(t)];
+  return [iso(start),iso(t)];
 }
 
-/* ========================= EXEC SUMMARY ========================= */
-function renderExecSummary() {
-  const rows = S.narrative.filter(n => (n.key || '').startsWith('exec_summary_')).sort((a, b) => (a.order || 0) - (b.order || 0));
-  const host = document.getElementById('exec-bullets');
-  if (!rows.length) { host.innerHTML = '<div class="empty">Sin resumen ejecutivo configurado. Agrega filas con key exec_summary_* en sarahi_meta_narrative.</div>'; return; }
-  host.innerHTML = rows.map((r, i) => `<div class="b"><div class="b-num">${i + 1}</div><div>${escapeHtml(r.body || r.title || '')}</div></div>`).join('');
+async function loadAll(){
+  const [ads,adDaily,acctDaily,pixelDaily,utm,tags,opps,breakdowns,organic,sync,customFields]=await Promise.all([
+    sb('sarahi_meta_ads','select=*'),
+    sb('sarahi_meta_ad_daily','select=*&limit=5000'),
+    sb('sarahi_meta_account_daily','select=*&limit=500'),
+    sb('sarahi_meta_pixel_daily','select=*&limit=500'),
+    sb('sarahi_meta_utm_leads','select=id,fecha,correo,utm_source_normalized,utm_content,utm_campaign&limit=5000'),
+    sb('sarahi_ghl_contact_tags','select=*&limit=2000'),
+    sb('sarahi_ghl_opportunities','select=contact_id,stage_name,status,monetary_value,created_at&limit=500'),
+    sb('sarahi_meta_breakdowns','select=*&order=spend.desc'),
+    sb('sarahi_meta_organic_posts','select=*&order=created_time.desc.nullslast&limit=500'),
+    sb('sarahi_meta_sync_log','select=*&order=pulled_at.desc&limit=1'),
+    sb('sarahi_ghl_custom_field_values','select=contact_id,field_name,value&field_name=in.(Utm_content,Utm_content_first_click)&limit=5000')
+  ]);
+  Object.assign(RAW,{ads,adDaily,acctDaily,pixelDaily,utm,tags,opps,breakdowns,organic,sync,customFields});
+  const dates=[...adDaily,...acctDaily,...pixelDaily].map(r=>r.day).filter(Boolean).sort();
+  RAW.minDate=dates[0]||'2026-03-01';RAW.maxDate=dates[dates.length-1]||iso(today());
+  const s=(sync[0]||{});
+  const st=s.pulled_at?new Date(s.pulled_at).toLocaleString('es-MX',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'—';
+  document.getElementById('syncMeta').textContent=`Sync: ${st} · rango ${RAW.minDate} → ${RAW.maxDate}`;
+  applyAllPresets();render();
 }
 
-/* ========================= RECONCILIATION ========================= */
-function renderReco() {
-  const crm = 503;
-  const utm = S.utmLeads.length;
-  const pixel = S.pixelDaily.filter(p => (p.event_name || '').toLowerCase() === 'lead').reduce((a, x) => a + (Number(x.count) || 0), 0);
-  const triad = document.getElementById('reco-triad');
-  triad.innerHTML = `
-    <div class="ct crm"><div class="n">${fmt.int(crm)}</div><div class="l">CRM</div><div class="d">Total hist&oacute;rico (referencia base)</div></div>
-    <div class="ct utm"><div class="n">${fmt.int(utm)}</div><div class="l">UTM Sheet</div><div class="d">Leads con tracking UTM capturado</div></div>
-    <div class="ct pixel"><div class="n">${fmt.int(pixel)}</div><div class="l">Pixel</div><div class="d">Eventos Lead detectados por Meta</div></div>`;
-  document.getElementById('reco-sub').textContent = narrText('reconciliation_explainer') || 'Tres fuentes distintas miden leads. La divergencia entre ellas es normal: CRM incluye todos los hist\u00f3ricos, UTM solo los que entraron con tracking, Pixel solo los que dispararon el evento configurado en el landing.';
-}
-
-/* ========================= SYNC FOOTER ========================= */
-function renderSync() {
-  const ok = S.syncLog.filter(l => l.status === 'success');
-  const last = ok.length ? ok[0].pulled_at : null;
-  const slot = document.getElementById('live-badge-slot');
-  const footSlot = document.getElementById('sync-status');
-  if (!last) { slot.innerHTML = '<span class="badge-warn">Sin sync registrado</span>'; footSlot.textContent = '\u00daltima actualizaci\u00f3n: desconocida'; return; }
-  const lastDate = new Date(last);
-  const daysDiff = (Date.now() - lastDate) / 86400000;
-  if (daysDiff > 10) {
-    slot.innerHTML = `<span class="badge-warn">Sync desactualizado &middot; ${Math.floor(daysDiff)}d</span>`;
-  } else {
-    slot.innerHTML = `<span class="badge-live"><span class="pulse"></span>Sync OK &middot; ${fmt.relTime(last)}</span>`;
-  }
-  footSlot.textContent = '\u00daltima actualizaci\u00f3n: ' + fmt.date(last) + ' \u00b7 ' + fmt.relTime(last);
-  // Period
-  if (S.accountDaily.length) {
-    const sorted = [...S.accountDaily].sort((a, b) => a.day.localeCompare(b.day));
-    const first = sorted[0].day; const lastD = sorted[sorted.length - 1].day;
-    document.getElementById('period-label').textContent = fmt.date(first) + ' \u2014 ' + fmt.date(lastD);
+function applyAllPresets(){
+  for(const k of ['A','B']){
+    const s=ST[k];
+    if(s.preset!=='custom'){const [f,t]=presetRange(s.preset);s.from=f;s.to=t;
+      document.getElementById('from'+k).value=f;document.getElementById('to'+k).value=t}
   }
 }
 
-/* ========================= WEB / PIXEL VIEW ========================= */
-function getWebRange() {
-  let from, to;
-  const fromInput = document.getElementById('web-from').value;
-  const toInput = document.getElementById('web-to').value;
-  if (fromInput && toInput) { from = fromInput; to = toInput; }
-  else if (S.web.range === 'all') {
-    const days = S.pixelDaily.map(p => p.day).filter(Boolean).sort();
-    from = days[0] || daysAgo(365); to = days[days.length - 1] || today();
-  } else {
-    const n = parseInt(S.web.range, 10) || 90;
-    to = today(); from = daysAgo(n);
-  }
-  return { from, to };
-}
-
-function sumPixel(rows, name) {
-  return rows.filter(r => (r.event_name || '').toLowerCase() === name.toLowerCase()).reduce((a, x) => a + (Number(x.count) || 0), 0);
-}
-
-function renderWeb() {
-  const { from, to } = getWebRange();
-  const rows = S.pixelDaily.filter(p => inRange(p.day, from, to));
-  const events = [
-    { key: 'pageview', label: 'Visitaron p\u00e1gina', color: '#8A2BE2', tech: 'PageView' },
-    { key: 'viewcontent', label: 'Vieron contenido', color: '#9984EE', tech: 'ViewContent' },
-    { key: 'lead', label: 'Dejaron datos (Lead)', color: '#CCFF00', tech: 'Lead' },
-    { key: 'schedule', label: 'Agendaron cita', color: '#00D4FF', tech: 'Schedule' },
-    { key: 'purchase', label: 'Compra', color: '#f0615e', tech: 'Purchase', placeholder: true },
-  ];
-  // Known event names variants
-  const byName = {};
-  rows.forEach(r => { const k = (r.event_name || '').toLowerCase(); byName[k] = (byName[k] || 0) + (Number(r.count) || 0); });
-  const total = events.map(e => e.placeholder ? 0 : (byName[e.key] || byName[e.tech.toLowerCase()] || 0));
-  const maxV = Math.max(1, ...total);
-  // Compare
-  let comp = null;
-  if (S.web.compare) {
-    const fromD = new Date(from); const toD = new Date(to);
-    const spanDays = Math.max(1, Math.round((toD - fromD) / 86400000));
-    const prevTo = new Date(fromD); prevTo.setDate(prevTo.getDate() - 1);
-    const prevFrom = new Date(prevTo); prevFrom.setDate(prevFrom.getDate() - spanDays);
-    const prevRows = S.pixelDaily.filter(p => p.day >= prevFrom.toISOString().slice(0, 10) && p.day <= prevTo.toISOString().slice(0, 10));
-    const prevByName = {};
-    prevRows.forEach(r => { const k = (r.event_name || '').toLowerCase(); prevByName[k] = (prevByName[k] || 0) + (Number(r.count) || 0); });
-    comp = events.map(e => e.placeholder ? null : (prevByName[e.key] || prevByName[e.tech.toLowerCase()] || 0));
-  }
-
-  const host = document.getElementById('pixel-events');
-  if (!rows.length) { host.innerHTML = '<div class="empty">Esperando primer sync de eventos pixel.</div>'; }
-  else {
-    host.innerHTML = events.map((e, i) => {
-      if (e.placeholder) {
-        return `<div class="event-row"><div class="event-label">${e.label}</div><div class="event-bar-wrap"><div class="purchase-placeholder">No configurado en landing</div></div><div class="event-pct">&mdash;</div></div>`;
-      }
-      const v = total[i];
-      const pctWidth = Math.max(2, (v / maxV) * 100);
-      const prev = comp ? comp[i] : null;
-      const dp = prev != null ? deltaPct(v, prev) : null;
-      const dHtml = dp != null ? `<span class="delta ${dp > 1 ? 'up' : dp < -1 ? 'down' : 'flat'}">${dp > 0 ? '+' : ''}${dp.toFixed(1)}%</span>` : '';
-      return `<div class="event-row">
-        <div class="event-label">${e.label}</div>
-        <div class="event-bar-wrap"><div class="event-bar" style="width:${pctWidth}%;background:linear-gradient(90deg,${e.color},${e.color}66)"><span>${fmt.int(v)}</span></div></div>
-        <div class="event-pct">${fmt.big(v)} ${dHtml}</div>
-      </div>`;
-    }).join('');
-  }
-
-  // Trend chart
-  renderPixelTrend(rows, events, from, to);
-  // Breakdowns
-  renderPixelBreakdowns();
-}
-
-function renderPixelTrend(rows, events, from, to) {
-  const ctx = document.getElementById('pixel-trend').getContext('2d');
-  if (S.charts.pixelTrend) S.charts.pixelTrend.destroy();
-  const days = [];
-  const d1 = new Date(from); const d2 = new Date(to);
-  for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) days.push(d.toISOString().slice(0, 10));
-  const byDayEvent = {};
-  rows.forEach(r => {
-    const k = (r.event_name || '').toLowerCase();
-    byDayEvent[r.day] = byDayEvent[r.day] || {};
-    byDayEvent[r.day][k] = (byDayEvent[r.day][k] || 0) + (Number(r.count) || 0);
-  });
-  const datasets = events.filter(e => !e.placeholder).map(e => ({
-    label: e.label,
-    data: days.map(d => (byDayEvent[d] && (byDayEvent[d][e.key] || byDayEvent[d][e.tech.toLowerCase()])) || 0),
-    borderColor: e.color, backgroundColor: e.color + '22',
-    tension: .35, pointRadius: 0, borderWidth: 2, fill: false
-  }));
-  S.charts.pixelTrend = new Chart(ctx, {
-    type: 'line', data: { labels: days.map(d => fmt.dateShort(d)), datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { position: 'top', labels: { color: '#9088a6', font: { size: 10, family: 'Manrope' } } }, tooltip: { backgroundColor: '#1a1428', borderColor: '#2a2040', borderWidth: 1, titleColor: '#fff', bodyColor: '#e8e4f0' } },
-      scales: {
-        x: { ticks: { color: '#5d5573', font: { size: 9 }, maxTicksLimit: 12 }, grid: { color: 'rgba(42,32,64,.3)' } },
-        y: { ticks: { color: '#5d5573', font: { size: 9 } }, grid: { color: 'rgba(42,32,64,.3)' }, beginAtZero: true }
-      }
-    }
-  });
-}
-
-function renderPixelBreakdowns() {
-  const dims = { browser: 'bd-browser', os: 'bd-os', host: 'bd-host', url: 'bd-url' };
-  Object.keys(dims).forEach(dim => {
-    const rows = S.pixelBreakdowns.filter(r => (r.dimension || '').toLowerCase() === dim).sort((a, b) => (Number(b.count) || 0) - (Number(a.count) || 0)).slice(0, 10);
-    const host = document.getElementById(dims[dim]);
-    if (!rows.length) { host.innerHTML = '<div class="empty">Esperando datos</div>'; return; }
-    const max = Math.max(...rows.map(r => Number(r.count) || 0));
-    host.innerHTML = rows.map(r => {
-      const pct = ((Number(r.count) || 0) / max) * 100;
-      return `<div class="breakdown-row"><div class="bl" title="${escapeAttr(r.key || '')}">${escapeHtml(r.key || '—')}</div><div class="bbar"><div class="bbar-fill" style="width:${pct}%"></div></div><div class="bv">${fmt.big(r.count)}</div></div>`;
-    }).join('');
-  });
-}
-
-/* ========================= ADS VIEW ========================= */
-function getAdsRange() {
-  let from, to;
-  const fromInput = document.getElementById('ads-from').value;
-  const toInput = document.getElementById('ads-to').value;
-  if (fromInput && toInput) { from = fromInput; to = toInput; }
-  else if (S.ads.range === 'all') { from = null; to = null; }
-  else {
-    const n = parseInt(S.ads.range, 10) || 90;
-    to = today(); from = daysAgo(n);
-  }
-  return { from, to };
-}
-
-function computeAdMetrics(ad, from, to) {
-  if (from && to) {
-    // Recalc from daily
-    const daily = S.adDaily.filter(d => d.ad_id === ad.ad_id && inRange(d.day, from, to));
-    return {
-      spend: sum(daily, 'spend'),
-      impressions: sum(daily, 'impressions'),
-      clicks: sum(daily, 'clicks'),
-      lpv: sum(daily, 'lpv'),
-      lead_pixel: sum(daily, 'lead_pixel'),
-      wa_conv: sum(daily, 'wa_conv'),
-      ctr: (() => { const i = sum(daily, 'impressions'); return i ? (sum(daily, 'clicks') / i) * 100 : 0; })(),
-      cpc: (() => { const c = sum(daily, 'clicks'); return c ? sum(daily, 'spend') / c : 0; })(),
-      recalc: true
-    };
-  }
-  // Lifetime
-  return {
-    spend: Number(ad.spend) || 0,
-    impressions: Number(ad.impressions) || 0,
-    clicks: Number(ad.clicks) || 0,
-    lpv: Number(ad.lpv) || 0,
-    lead_pixel: Number(ad.lead_pixel) || 0,
-    wa_conv: Number(ad.wa_conv) || 0,
-    ctr: Number(ad.ctr) || 0,
-    cpc: Number(ad.cpc) || 0,
-    recalc: false
+function aggregate(col){
+  const s=ST[col],from=s.from,to=s.to;
+  const platFilter=(ad)=>{
+    if(ST.plat==='all')return true;
+    const fs=Number(ad.fb_spend||0),is=Number(ad.ig_spend||0);
+    if(ST.plat==='facebook')return fs>=is;
+    if(ST.plat==='instagram')return is>fs;
+    return true;
   };
-}
-
-function filterByPlatform(ad, plat) {
-  if (plat === 'all') return true;
-  if (plat === 'fb') return (Number(ad.fb_impressions) || 0) > 0;
-  if (plat === 'ig') return (Number(ad.ig_impressions) || 0) > 0;
-  return true;
-}
-
-function renderAds() {
-  const { from, to } = getAdsRange();
-  let rows = S.ads.filter(a => filterByPlatform(a, S.ads.platform));
-  const enriched = rows.map(a => {
-    const m = computeAdMetrics(a, from, to);
-    return { ...a, _m: m, leads_utm: Number(a.leads_utm) || 0 };
+  const platShare={};
+  RAW.ads.forEach(a=>{const fs=Number(a.fb_spend||0),is=Number(a.ig_spend||0),tot=fs+is||1;platShare[a.ad_id]={fb:fs/tot,ig:is/tot,majority:is>fs?'ig':'fb'}});
+  const adAgg={};
+  RAW.adDaily.forEach(r=>{
+    if(r.day<from||r.day>to)return;
+    if(!adAgg[r.ad_id])adAgg[r.ad_id]={ad_id:r.ad_id,spend:0,impressions:0,clicks:0,lpv:0,lead_pixel:0,wa_conv:0,fb_spend:0,ig_spend:0,fb_impressions:0,ig_impressions:0,fb_clicks:0,ig_clicks:0,days:0};
+    const x=adAgg[r.ad_id],sh=platShare[r.ad_id]||{fb:.5,ig:.5};
+    x.spend+=Number(r.spend||0);x.impressions+=Number(r.impressions||0);x.clicks+=Number(r.clicks||0);
+    x.lpv+=Number(r.lpv||0);x.lead_pixel+=Number(r.lead_pixel||0);x.wa_conv+=Number(r.wa_conv||0);x.days++;
+    x.fb_spend+=Number(r.spend||0)*sh.fb;x.ig_spend+=Number(r.spend||0)*sh.ig;
+    x.fb_impressions+=Number(r.impressions||0)*sh.fb;x.ig_impressions+=Number(r.impressions||0)*sh.ig;
+    x.fb_clicks+=Number(r.clicks||0)*sh.fb;x.ig_clicks+=Number(r.clicks||0)*sh.ig;
   });
-  // If range filter applied, exclude zero-spend ads
-  const filtered = (from && to) ? enriched.filter(a => a._m.spend > 0 || a._m.impressions > 0) : enriched;
-  // Sort
-  const sortKey = S.ads.sort;
-  filtered.sort((a, b) => {
-    const av = sortKey === 'leads_utm' ? (a.leads_utm || 0) : (a._m[sortKey] != null ? a._m[sortKey] : (Number(a[sortKey]) || 0));
-    const bv = sortKey === 'leads_utm' ? (b.leads_utm || 0) : (b._m[sortKey] != null ? b._m[sortKey] : (Number(b[sortKey]) || 0));
-    return S.ads.dir === 'asc' ? av - bv : bv - av;
+  const ads=[];
+  Object.values(adAgg).forEach(x=>{
+    const meta=RAW.ads.find(a=>a.ad_id===x.ad_id);if(!meta)return;if(!platFilter(meta))return;
+    const sh=platShare[x.ad_id]||{majority:'fb'};
+    ads.push({...meta,...x,platform:sh.majority,ctr:x.impressions>0?(x.clicks/x.impressions*100):0,cpc:x.clicks>0?(x.spend/x.clicks):0});
   });
-  const topN = S.ads.top === 'all' ? filtered.length : parseInt(S.ads.top, 10);
-  const show = filtered.slice(0, topN);
+  // Filtrar placeholders sin renderizar ({{ad.name}}, {{campaign.name}}) y IDs crudos numéricos (>10 dígitos seguidos)
+  const isPlaceholder=v=>!v||/\{\{.*\}\}/.test(v)||/^\d{10,}$/.test(v.trim());
+  const utmsInRange=RAW.utm.filter(u=>{const d=(u.fecha||'').slice(0,10);return d>=from&&d<=to});
+  const leadsByContent={};
+  utmsInRange.forEach(u=>{if(u.utm_content&&!isPlaceholder(u.utm_content)){leadsByContent[u.utm_content]=(leadsByContent[u.utm_content]||0)+1}});
+  const norm=s=>(s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
 
-  // Compare (previous equal period)
-  let prevMap = null;
-  if (S.ads.compare && from && to) {
-    const fromD = new Date(from); const toD = new Date(to);
-    const spanDays = Math.max(1, Math.round((toD - fromD) / 86400000));
-    const prevTo = new Date(fromD); prevTo.setDate(prevTo.getDate() - 1);
-    const prevFrom = new Date(prevTo); prevFrom.setDate(prevFrom.getDate() - spanDays);
-    const pf = prevFrom.toISOString().slice(0, 10); const pt = prevTo.toISOString().slice(0, 10);
-    prevMap = {};
-    show.forEach(ad => { prevMap[ad.ad_id] = computeAdMetrics(ad, pf, pt); });
+  // Build groups: normalized_name → [ads]  and  ad_id → ad
+  const adsByNormName={},adsById={};
+  ads.forEach(a=>{a.leads_attr=0;a.agendaron_attr=0;a.compraron_attr=0;a.video_visto_attr=0;
+    const n=norm(a.name);if(n)(adsByNormName[n]=adsByNormName[n]||[]).push(a);
+    adsById[a.ad_id]=a;
+  });
+  // Pick winner ad (highest spend in period) for a given utm_content key
+  function winnerAd(utmKey){
+    if(!utmKey)return null;
+    if(adsById[utmKey])return adsById[utmKey];
+    const list=adsByNormName[norm(utmKey)];
+    if(!list||!list.length)return null;
+    return list.reduce((best,a)=>Number(a.spend||0)>Number(best.spend||0)?a:best,list[0]);
   }
 
-  const tbody = document.getElementById('ads-tbody');
-  if (!show.length) { tbody.innerHTML = '<tr><td colspan="10" class="empty">Sin anuncios que coincidan con el filtro.</td></tr>'; return; }
-  tbody.innerHTML = show.map(ad => {
-    const m = ad._m;
-    const p = prevMap ? prevMap[ad.ad_id] : null;
-    const mkDelta = (v, pv) => { if (!p || pv == null) return ''; const d = deltaPct(v, pv); if (d == null || !isFinite(d)) return ''; return `<span class="delta ${d > 1 ? 'up' : d < -1 ? 'down' : 'flat'}">${d > 0 ? '+' : ''}${d.toFixed(0)}%</span>`; };
-    const status = (ad.effective_status || ad.status || '').toLowerCase();
-    const badge = status.includes('active') ? 'active' : (status.includes('pause') ? 'paused' : 'deleted');
-    return `
-      <tr class="ad-row" data-ad="${ad.ad_id}">
-        <td class="name-cell" title="${escapeAttr(ad.name || '')}">${escapeHtml(ad.name || '(sin nombre)')}</td>
-        <td><span class="status-badge ${badge}">${escapeHtml(ad.effective_status || ad.status || '—')}</span></td>
-        <td class="num">${fmt.moneyShort(m.spend)}${mkDelta(m.spend, p ? p.spend : null)}</td>
-        <td class="num">${fmt.big(m.impressions)}${mkDelta(m.impressions, p ? p.impressions : null)}</td>
-        <td class="num">${fmt.int(m.clicks)}${mkDelta(m.clicks, p ? p.clicks : null)}</td>
-        <td class="num">${fmt.pct(m.ctr)}</td>
-        <td class="num">${fmt.moneyShort(m.cpc)}</td>
-        <td class="num">${fmt.int(m.lpv)}${mkDelta(m.lpv, p ? p.lpv : null)}</td>
-        <td class="num">${fmt.int(m.lead_pixel)}${mkDelta(m.lead_pixel, p ? p.lead_pixel : null)}</td>
-        <td class="num">${fmt.int(m.wa_conv)}${mkDelta(m.wa_conv, p ? p.wa_conv : null)}</td>
-      </tr>
-      <tr class="ad-detail" data-detail="${ad.ad_id}"><td colspan="10">${renderAdDetail(ad, m)}</td></tr>`;
-  }).join('');
-  // Bind click handlers
-  tbody.querySelectorAll('.ad-row').forEach(row => {
-    row.addEventListener('click', () => {
-      const id = row.getAttribute('data-ad');
-      const detail = tbody.querySelector(`.ad-detail[data-detail="${id}"]`);
-      row.classList.toggle('open');
-      detail.classList.toggle('open');
-    });
+  // 1. Leads UTM per ad (winner-take-all to highest spend)
+  Object.entries(leadsByContent).forEach(([k,v])=>{const w=winnerAd(k);if(w)w.leads_attr+=v});
+
+  // 2. Contact-level attribution for tags (agendó / compró / video visto)
+  const contactUtm={};
+  (RAW.customFields||[]).forEach(r=>{
+    if(!r.value)return;
+    if(r.field_name==='Utm_content_first_click')contactUtm[r.contact_id]=r.value;
+    else if(r.field_name==='Utm_content'&&!contactUtm[r.contact_id])contactUtm[r.contact_id]=r.value;
+  });
+  const emailUtm={};
+  RAW.utm.forEach(u=>{const em=(u.correo||'').toLowerCase().trim();if(em&&u.utm_content&&!emailUtm[em])emailUtm[em]=u.utm_content});
+  // Group unique emails per tag per utm_content, then attribute winner
+  const tagsByUtm={agendo:{},compro:{},lt:{},videoVisto:{}};
+  RAW.tags.forEach(t=>{
+    if(!t.date_added||t.date_added.slice(0,10)<from||t.date_added.slice(0,10)>to)return;
+    const em=(t.email||'').toLowerCase().trim();if(!em||em.includes('test'))return;
+    // También excluir test accounts por nombre (ej: "Sarahi test" con email no-test)
+    const nm=((t.first_name||'')+' '+(t.last_name||'')).toLowerCase();
+    if(nm.includes('test')||nm.includes('prueba'))return;
+    const utm=contactUtm[t.contact_id]||emailUtm[em];if(!utm)return;
+    const bucket=t.tag_name==='agendo-cita'?tagsByUtm.agendo
+                :t.tag_name==='compro'?tagsByUtm.compro
+                :t.tag_name==='curso - reestructura y factura'?tagsByUtm.lt
+                :t.tag_name==='video-visto'?tagsByUtm.videoVisto:null;
+    if(!bucket)return;
+    (bucket[utm]=bucket[utm]||new Set()).add(em);
+  });
+  Object.entries(tagsByUtm.agendo).forEach(([utm,set])=>{const w=winnerAd(utm);if(w)w.agendaron_attr+=set.size});
+  Object.entries(tagsByUtm.compro).forEach(([utm,set])=>{const w=winnerAd(utm);if(w)w.compraron_attr+=set.size});
+  Object.entries(tagsByUtm.lt).forEach(([utm,set])=>{const w=winnerAd(utm);if(w)w.compraron_attr+=set.size});
+  Object.entries(tagsByUtm.videoVisto).forEach(([utm,set])=>{const w=winnerAd(utm);if(w)w.video_visto_attr+=set.size});
+  const sumF=f=>ads.reduce((s,a)=>s+Number(a[f]||0),0);
+  const T={
+    spend:sumF('spend'),impressions:sumF('impressions'),clicks:sumF('clicks'),lpv:sumF('lpv'),
+    fb_spend:sumF('fb_spend'),ig_spend:sumF('ig_spend'),
+    fb_impressions:sumF('fb_impressions'),ig_impressions:sumF('ig_impressions'),
+    fb_clicks:sumF('fb_clicks'),ig_clicks:sumF('ig_clicks'),
+    ads_count:ads.length
+  };
+  T.ctr=T.impressions>0?(T.clicks/T.impressions*100):0;
+  T.cpc=T.clicks>0?(T.spend/T.clicks):0;
+  T.fb_ctr=T.fb_impressions>0?(T.fb_clicks/T.fb_impressions*100):0;
+  T.ig_ctr=T.ig_impressions>0?(T.ig_clicks/T.ig_impressions*100):0;
+  const px={};
+  RAW.pixelDaily.filter(r=>r.day>=from&&r.day<=to).forEach(r=>{px[r.event_name]=(px[r.event_name]||0)+Number(r.count||0)});
+  const fbLeads=utmsInRange.filter(u=>u.utm_source_normalized==='facebook').length;
+  const igLeads=utmsInRange.filter(u=>u.utm_source_normalized==='instagram').length;
+  const orgLeads=utmsInRange.filter(u=>!['facebook','instagram'].includes(u.utm_source_normalized)).length;
+  T.leads_fb=fbLeads;T.leads_ig=igLeads;T.leads_org=orgLeads;T.leads_all=utmsInRange.length;
+  T.cpl=(fbLeads+igLeads)>0?T.spend/(fbLeads+igLeads):0;
+  const byTag={};
+  RAW.tags.filter(t=>t.date_added&&t.date_added.slice(0,10)>=from&&t.date_added.slice(0,10)<=to).forEach(t=>{
+    const em=(t.email||'').toLowerCase().trim();if(!em||em.includes('test'))return;
+    // También excluir test accounts por nombre (ej: "Sarahi test" con email no-test)
+    const nm=((t.first_name||'')+' '+(t.last_name||'')).toLowerCase();
+    if(nm.includes('test')||nm.includes('prueba'))return;
+    (byTag[t.tag_name]=byTag[t.tag_name]||new Set()).add(em);
+  });
+  const tagU=n=>(byTag[n]||new Set()).size;
+  const formFillsUnique=new Set(utmsInRange.map(u=>(u.correo||'').toLowerCase().trim()).filter(e=>e&&!e.includes('test'))).size;
+  const F={
+    form_fills:formFillsUnique,
+    comprometido:tagU('comprometido'),
+    video_visto:tagU('video-visto'),
+    calificacion:tagU('calificacion-enviada'),
+    high_ticket:tagU('high-ticket'),
+    agendaron:tagU('agendo-cita'),
+    no_show:tagU('no show llamada'),
+    mentalidad_free:tagU('curso - mentalidad beauty boss'),
+    compraron_ht:tagU('compro'),
+    compraron_lt:tagU('curso - reestructura y factura')
+  };
+  F.asistieron=Math.max(0,F.agendaron-F.no_show);
+  // breakdowns filtered by matching period (period_start/period_end match user range, or period CONTAINS user range)
+  const bdInPeriod=RAW.breakdowns.filter(b=>{
+    if(!b.period_start||!b.period_end)return false;
+    return b.period_start<=from&&b.period_end>=to;
+  });
+  const demo=bdInPeriod.filter(b=>b.dimension==='age_gender').sort((a,b)=>Number(b.spend||0)-Number(a.spend||0)).slice(0,8);
+  const geo=bdInPeriod.filter(b=>b.dimension==='country').sort((a,b)=>Number(b.spend||0)-Number(a.spend||0)).slice(0,8);
+  const plc=bdInPeriod.filter(b=>b.dimension==='placement').sort((a,b)=>Number(b.spend||0)-Number(a.spend||0)).slice(0,8);
+  // detect which period matched (for UI label)
+  const bdMatchPeriod=bdInPeriod[0]?(bdInPeriod[0].period_start+' → '+bdInPeriod[0].period_end):null;
+  return {T,ads,px,F,demo,geo,plc,utmsInRange,from,to,bdMatchPeriod};
+}
+
+function sortedAds(col,ads){
+  const s=ST[col],k=s.sort,d=s.dir;
+  return [...ads].sort((a,b)=>{
+    let va=a[k],vb=b[k];
+    if(['name','effective_status','platform'].includes(k)){va=(va||'').toString();vb=(vb||'').toString();return va.localeCompare(vb)*(d===-1?1:-1)}
+    return (Number(vb||0)-Number(va||0))*(d===-1?1:-1);
   });
 }
 
-function renderAdDetail(ad, m) {
-  const thumb = ad.thumbnail_url ? `<img class="ad-thumb" src="${escapeAttr(ad.thumbnail_url)}" alt="" onerror="this.outerHTML='<div class=ad-thumb-ph>&#128444;</div>'">` : `<div class="ad-thumb-ph">&#128444;</div>`;
-  const body = ad.body ? `<div class="ad-body-text">${escapeHtml(ad.body).replace(/\n/g, '<br>')}</div>` : '';
-  const title = ad.title ? `<div style="font-family:var(--font-display);font-size:14px;font-weight:700;color:#fff">${escapeHtml(ad.title)}</div>` : '';
-  const cta = ad.cta_type ? `<div style="font-size:10px;color:var(--primary);font-family:var(--font-mono);margin-top:4px">CTA: ${escapeHtml(ad.cta_type)}</div>` : '';
-  const camp = ad.campaign_name ? `<div style="font-size:10px;color:var(--text3);margin-top:6px">Campa&ntilde;a: ${escapeHtml(ad.campaign_name)}</div>` : '';
-  const fbS = Number(ad.fb_spend) || 0, igS = Number(ad.ig_spend) || 0;
-  const fbC = Number(ad.fb_clicks) || 0, igC = Number(ad.ig_clicks) || 0;
-  const fbI = Number(ad.fb_impressions) || 0, igI = Number(ad.ig_impressions) || 0;
-  const rec = m.recalc ? '<div style="font-size:9px;color:var(--amber);margin-top:8px;font-family:var(--font-mono)">\u26a0 M\u00e9tricas recalculadas para el rango seleccionado</div>' : '';
-  return `<div class="ad-detail-wrap">
-    ${thumb}
-    <div>
-      ${title}
-      ${body}
-      ${cta}
-      ${camp}
-      <div class="ad-meta-grid">
-        <div class="mi"><div class="n">${fmt.moneyShort(m.spend)}</div><div class="l">Inversi&oacute;n</div></div>
-        <div class="mi"><div class="n">${fmt.big(m.impressions)}</div><div class="l">Impresiones</div></div>
-        <div class="mi"><div class="n">${fmt.int(m.clicks)}</div><div class="l">Clicks</div></div>
-        <div class="mi"><div class="n">${fmt.pct(m.ctr)}</div><div class="l">CTR</div></div>
-        <div class="mi"><div class="n">${fmt.moneyShort(m.cpc)}</div><div class="l">CPC</div></div>
-        <div class="mi"><div class="n">${fmt.int(m.lpv)}</div><div class="l">LPV</div></div>
-        <div class="mi"><div class="n">${fmt.int(m.lead_pixel)}</div><div class="l">Leads Pixel</div></div>
-        <div class="mi"><div class="n">${fmt.int(m.wa_conv)}</div><div class="l">WA Conv</div></div>
-        <div class="mi"><div class="n">${fmt.int(ad.leads_utm)}</div><div class="l">Leads UTM</div></div>
-        <div class="mi"><div class="n">${fmt.int(ad.post_engagement)}</div><div class="l">Engagement</div></div>
-        <div class="mi"><div class="n">${fmt.int(ad.video_views_3s)}</div><div class="l">Video 3s</div></div>
-        <div class="mi"><div class="n">${fmt.int(ad.post_reactions)}</div><div class="l">Reacciones</div></div>
-      </div>
-      <div class="ad-platforms">
-        <div class="ad-plat fb">
-          <div class="h">Facebook</div>
-          <div class="r"><span class="k">Inversi&oacute;n</span><span class="v">${fmt.moneyShort(fbS)}</span></div>
-          <div class="r"><span class="k">Impresiones</span><span class="v">${fmt.big(fbI)}</span></div>
-          <div class="r"><span class="k">Clicks</span><span class="v">${fmt.int(fbC)}</span></div>
-        </div>
-        <div class="ad-plat ig">
-          <div class="h">Instagram</div>
-          <div class="r"><span class="k">Inversi&oacute;n</span><span class="v">${fmt.moneyShort(igS)}</span></div>
-          <div class="r"><span class="k">Impresiones</span><span class="v">${fmt.big(igI)}</span></div>
-          <div class="r"><span class="k">Clicks</span><span class="v">${fmt.int(igC)}</span></div>
-        </div>
-      </div>
-      ${rec}
+function delta(a,b,inv){
+  if(b==null||b===0)return a>0?'<span class="trend-up">nuevo</span>':'<span class="trend-flat">—</span>';
+  const p=((a-b)/Math.abs(b))*100;
+  if(Math.abs(p)<1)return '<span class="trend-flat">±0%</span>';
+  const up=p>0,good=inv?!up:up;
+  return `<span class="${good?'trend-up':'trend-dn'}">${up?'+':''}${p.toFixed(0)}%</span>`;
+}
+
+function renderColumn(col,data,other){
+  const {T,ads,px,F,demo,geo,plc,bdMatchPeriod}=data;
+  const sortedAdList=sortedAds(col,ads);
+  const shown=sortedAdList.slice(0,ST[col].limit);
+  const cmp=ST.compare&&other?other.T:null;
+  const cmpF=ST.compare&&other?other.F:null;
+  const s=ST[col],sk=s.sort,sd=s.dir;
+
+  let h=`<div class="col ${col}">`;
+  h+=`<div class="col-head"><span>${col==='A'?'Periodo A':'Periodo B'}</span><span class="rng">${data.from} → ${data.to}</span></div>`;
+
+  // KPIs
+  h+=`<section class="sec"><div class="kpi-row">
+    <div class="kpi primary">
+      <div class="kpi-label" data-tip="Gasto publicitario total en Meta Ads (Facebook + Instagram) en el periodo seleccionado. Moneda: MXN. Suma de spend diario por ad."><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v2m0 8v2"/></svg></span>Inversión</div>
+      <div class="kpi-value">${money(T.spend)}</div>
+      <div class="kpi-sub" data-tip="CPM = Costo Por Mil impresiones. Benchmark MX/LATAM: $50-$150 es normal, >$300 empieza a ser caro">CPM $${T.impressions>0?(T.spend/T.impressions*1000).toFixed(2):'0.00'} · ${cmp?delta(T.spend,cmp.spend):T.ads_count+' ads'}</div>
     </div>
-  </div>`;
-}
+    <div class="kpi">
+      <div class="kpi-label" data-tip="Número total de veces que tus anuncios se mostraron en pantalla. Incluye apariciones repetidas a la misma persona (una persona puede ver el ad 10 veces)."><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>Impresiones</div>
+      <div class="kpi-value">${fmt(T.impressions)}</div>
+      <div class="kpi-sub" data-tip="Total de clicks en cualquier parte del anuncio: link, imagen, perfil, like, etc. No todos terminan en landing page.">${fmt(T.clicks)} clicks · ${cmp?delta(T.impressions,cmp.impressions):'—'}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label" data-tip="Click-Through Rate = clicks ÷ impresiones. Mide qué tan atractivo es el creative. Benchmark saludable: >1%. Si es <0.5%, el creative necesita revisión."><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>CTR</div>
+      <div class="kpi-value">${T.ctr.toFixed(2)}%</div>
+      <div class="kpi-sub" data-tip="CPC = Cost Per Click. Cuánto cuesta cada click individual. Más bajo = más eficiente en captar atención.">CPC $${T.cpc.toFixed(2)} · ${cmp?delta(T.ctr,cmp.ctr):'—'}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label" data-tip="Leads que llenaron el formulario viniendo de Facebook o Instagram ads (vía UTM). Deduplicados por email. Excluye cuentas de prueba."><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Leads pagados</div>
+      <div class="kpi-value">${T.leads_fb+T.leads_ig}</div>
+      <div class="kpi-sub" data-tip="Leads que llegaron sin UTM de ads pagados: stories de IG, link en bio, tráfico directo, referencias, búsquedas de marca.">${T.leads_org} orgánicos · ${cmp?delta(T.leads_fb+T.leads_ig,cmp.leads_fb+cmp.leads_ig):'—'}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label" data-tip="Costo Por Lead = spend total ÷ leads pagados. Cuánto cuestas por cada formulario completado. Objetivo típico en coaching HT: $100-$300 MXN."><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>Costo / lead</div>
+      <div class="kpi-value">${T.cpl>0?money(T.cpl):'—'}</div>
+      <div class="kpi-sub">spend ÷ leads · ${cmp&&cmp.cpl>0?delta(T.cpl,cmp.cpl,true):'—'}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label" data-tip="Personas únicas que agendaron cita en el calendar (tag 'agendo-cita' en GHL). Dedup por email, excluyendo cuentas test."><span class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>Agendaron</div>
+      <div class="kpi-value">${F.agendaron}</div>
+      <div class="kpi-sub" data-tip="No show = agendaron pero no se presentaron. Compras = tags 'compro' (HT $2,500) + 'reestructura' (LT $497).">${F.no_show} no show · ${F.compraron_ht+F.compraron_lt} compras</div>
+    </div>
+  </div></section>`;
 
-/* ========================= AUDIENCE VIEW ========================= */
-function renderAudience() {
-  const rows = S.breakdowns || [];
-  if (!rows.length) {
-    document.getElementById('audience-period').textContent = 'sin datos';
-    ['demo-rows', 'geo-rows', 'plac-rows'].forEach(id => document.getElementById(id).innerHTML = '<div class="empty">Esperando primer sync de breakdowns.</div>');
-    return;
-  }
-  // Period
-  const starts = rows.map(r => r.period_start).filter(Boolean).sort();
-  const ends = rows.map(r => r.period_end).filter(Boolean).sort();
-  const period = starts.length && ends.length ? `${fmt.date(starts[0])} \u2014 ${fmt.date(ends[ends.length - 1])}` : 'rolling';
-  document.getElementById('audience-period').textContent = period;
+  // PLATFORMS
+  const totS=T.fb_spend+T.ig_spend||1;
+  h+=`<section class="sec"><div class="grid-2">
+    <div class="panel plat-card fb"><div class="panel-head"><div style="display:flex;gap:12px;align-items:center"><span class="plat-icon">${FB_ICO}</span><div><div class="panel-title" data-tip="Métricas de Facebook. Split FB/IG se aproxima con el ratio lifetime de cada ad (Meta no expone breakdown diario per-platform).">Facebook</div><div class="panel-sub">${pct(T.fb_spend,totS)} del gasto</div></div></div></div>
+      <div class="plat-mg">
+        <div class="plat-mi"><div class="n">${money(T.fb_spend)}</div><div class="l" data-tip="Gasto estimado en Facebook (ratio × spend diario)">Spend</div></div>
+        <div class="plat-mi"><div class="n">${fmt(T.fb_impressions)}</div><div class="l" data-tip="Impresiones estimadas en Facebook">Impr</div></div>
+        <div class="plat-mi"><div class="n">${fmt(T.fb_clicks)}</div><div class="l" data-tip="Clicks estimados en Facebook">Clicks</div></div>
+        <div class="plat-mi"><div class="n">${T.fb_ctr.toFixed(2)}%</div><div class="l" data-tip="Click-Through Rate de Facebook. Benchmark saludable: >1%">CTR</div></div>
+        <div class="plat-mi"><div class="n">$${(T.fb_spend/Math.max(T.fb_clicks,1)).toFixed(2)}</div><div class="l" data-tip="Costo por click en Facebook">CPC</div></div>
+        <div class="plat-mi"><div class="n" style="color:var(--success-600)">${T.leads_fb}</div><div class="l" data-tip="Leads con utm_source=facebook en el form. Dato real, no estimado.">Leads</div></div>
+      </div>
+    </div>
+    <div class="panel plat-card ig"><div class="panel-head"><div style="display:flex;gap:12px;align-items:center"><span class="plat-icon">${IG_ICO}</span><div><div class="panel-title" data-tip="Métricas de Instagram. Split FB/IG se aproxima con el ratio lifetime de cada ad.">Instagram</div><div class="panel-sub">${pct(T.ig_spend,totS)} del gasto</div></div></div></div>
+      <div class="plat-mg">
+        <div class="plat-mi"><div class="n">${money(T.ig_spend)}</div><div class="l" data-tip="Gasto estimado en Instagram (ratio × spend diario)">Spend</div></div>
+        <div class="plat-mi"><div class="n">${fmt(T.ig_impressions)}</div><div class="l" data-tip="Impresiones estimadas en Instagram">Impr</div></div>
+        <div class="plat-mi"><div class="n">${fmt(T.ig_clicks)}</div><div class="l" data-tip="Clicks estimados en Instagram">Clicks</div></div>
+        <div class="plat-mi"><div class="n">${T.ig_ctr.toFixed(2)}%</div><div class="l" data-tip="Click-Through Rate de Instagram">CTR</div></div>
+        <div class="plat-mi"><div class="n">$${(T.ig_spend/Math.max(T.ig_clicks,1)).toFixed(2)}</div><div class="l" data-tip="Costo por click en Instagram">CPC</div></div>
+        <div class="plat-mi"><div class="n" style="color:var(--success-600)">${T.leads_ig}</div><div class="l" data-tip="Leads con utm_source=instagram en el form. Dato real.">Leads</div></div>
+      </div>
+    </div>
+  </div></section>`;
 
-  const demo = rows.filter(r => (r.dimension || '').toLowerCase() === 'age_gender').sort((a, b) => (Number(b.spend) || 0) - (Number(a.spend) || 0));
-  const geo = rows.filter(r => (r.dimension || '').toLowerCase() === 'country').sort((a, b) => (Number(b.spend) || 0) - (Number(a.spend) || 0));
-  const plac = rows.filter(r => (r.dimension || '').toLowerCase() === 'placement').sort((a, b) => (Number(b.spend) || 0) - (Number(a.spend) || 0));
-
-  renderDemoChart(demo);
-  document.getElementById('demo-rows').innerHTML = renderBreakdownRows(demo, 'spend', fmt.moneyShort);
-  document.getElementById('geo-rows').innerHTML = geo.length ? renderBreakdownRows(geo, 'spend', fmt.moneyShort) : '<div class="empty">Sin datos</div>';
-  document.getElementById('plac-rows').innerHTML = plac.length ? renderBreakdownRows(plac, 'spend', fmt.moneyShort) : '<div class="empty">Sin datos</div>';
-}
-
-function renderBreakdownRows(rows, metricKey, fmter) {
-  if (!rows.length) return '<div class="empty">Sin datos</div>';
-  const max = Math.max(...rows.map(r => Number(r[metricKey]) || 0));
-  return rows.map(r => {
-    const v = Number(r[metricKey]) || 0;
-    const pct = max ? (v / max) * 100 : 0;
-    const leads = Number(r.leads) || 0; const clicks = Number(r.clicks) || 0;
-    return `<div class="breakdown-row">
-      <div class="bl" title="${escapeAttr(r.key || '')}">${escapeHtml(r.key || '—')} <span style="color:var(--text3);font-size:10px">&middot; ${fmt.int(clicks)} clicks &middot; ${fmt.int(leads)} leads</span></div>
-      <div class="bbar"><div class="bbar-fill" style="width:${pct}%"></div></div>
-      <div class="bv">${fmter(v)}</div>
-    </div>`;
-  }).join('');
-}
-
-function renderDemoChart(rows) {
-  const ctx = document.getElementById('demo-chart').getContext('2d');
-  if (S.charts.demo) S.charts.demo.destroy();
-  if (!rows.length) return;
-  const top = rows.slice(0, 12);
-  S.charts.demo = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: top.map(r => r.key || '—'),
-      datasets: [{
-        label: 'Inversi\u00f3n', data: top.map(r => Number(r.spend) || 0),
-        backgroundColor: top.map((_, i) => `rgba(153,132,238,${0.9 - i * 0.05})`),
-        borderRadius: 6, borderSkipped: false
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1428', borderColor: '#2a2040', borderWidth: 1, callbacks: { label: (c) => fmt.money(c.parsed.y) } } },
-      scales: {
-        x: { ticks: { color: '#5d5573', font: { size: 9 } }, grid: { display: false } },
-        y: { ticks: { color: '#5d5573', font: { size: 9 }, callback: v => fmt.moneyShort(v) }, grid: { color: 'rgba(42,32,64,.3)' }, beginAtZero: true }
-      }
+  // ADS TABLE
+  const cols=[
+    {k:'name',l:'Anuncio',align:'left',tip:'Nombre del anuncio tal como está configurado en Meta Ads Manager'},
+    {k:'platform',l:'Plat',align:'left',tip:'Plataforma donde el anuncio consumió la mayoría del presupuesto: FB = Facebook · IG = Instagram'},
+    {k:'effective_status',l:'Estado',align:'left',tip:'Estado actual del anuncio en Meta: Activo (corriendo), Pausado (detenido manualmente), u otro'},
+    {k:'spend',l:'Spend',align:'num',tip:'Gasto publicitario total del anuncio en el periodo seleccionado (MXN)'},
+    {k:'impressions',l:'Impr',align:'num',tip:'Impresiones: número total de veces que el anuncio se mostró en pantalla. Incluye repetidas a la misma persona'},
+    {k:'clicks',l:'Clicks',align:'num',tip:'Clicks totales en cualquier parte del anuncio (incluye likes, perfil, etc). No todos llegan a la landing'},
+    {k:'ctr',l:'CTR',align:'num',tip:'Click-Through Rate = clicks ÷ impresiones. Mide qué tan enganchado está el creative. Benchmark saludable: >1%'},
+    {k:'cpc',l:'CPC',align:'num',tip:'Cost Per Click = spend ÷ clicks. Cuánto cuesta cada click. Más bajo = anuncio más eficiente en captar atención'},
+    {k:'lpv',l:'LPV',align:'num',tip:'Landing Page Views: personas que efectivamente cargaron tu landing (más exacto que clicks, que incluye taps accidentales)'},
+    {k:'leads_attr',l:'Leads',align:'num',tip:'Leads atribuidos a este anuncio vía UTM en el form. Personas únicas que llenaron el formulario viniendo de este ad'},
+    {k:'agendaron_attr',l:'Agendó',align:'num',tip:'Personas únicas (por email) que agendaron cita tras venir de este anuncio. Attribution vía Utm_content guardado en GHL'},
+    {k:'compraron_attr',l:'Compró',align:'num',tip:'Personas únicas que compraron (HT $2,500 o LT $497) tras venir de este anuncio. Attribution vía Utm_content. Coverage: ~58% — el 42% de buyers no tienen UTM en GHL (tracking gap)'},
+  ];
+  h+=`<section class="sec"><div class="table-panel">
+    <div class="table-head">
+      <div><h2>Anuncios</h2><div class="panel-sub">Click en encabezado para ordenar · click fila para ver creative y copy</div></div>
+      <div class="actions"><span class="panel-badge">${sortedAdList.length} ads</span></div>
+    </div>
+    <div class="tblwrap"><table><thead><tr>`;
+  cols.forEach(c=>{const sr=c.k===sk;const arr=sd===-1?'▼':'▲';h+=`<th class="${c.align==='num'?'num':''} ${sr?'sorted':''}" data-arr="${sr?arr:''}" data-tip="${esc(c.tip||'')}" onclick="setSort('${col}','${c.k}')">${c.l}</th>`});
+  h+=`</tr></thead><tbody>`;
+  if(shown.length===0)h+=`<tr><td colspan="${cols.length}" style="text-align:center;padding:28px;color:var(--text-subtle)">Sin ads con gasto en este rango</td></tr>`;
+  shown.forEach(a=>{
+    const ptag=a.platform==='ig'?'<span class="badge badge-ig">IG</span>':'<span class="badge badge-fb">FB</span>';
+    const st_=(a.effective_status||'').toUpperCase();
+    const stBadge=st_==='ACTIVE'?'badge-success':st_.includes('PAUSED')?'badge-warn':'badge-neutral';
+    const stLabel=st_==='ACTIVE'?'Activo':st_.includes('PAUSED')?'Pausado':st_||'—';
+    const isOpen=ST[col].openAds.has(a.ad_id);
+    h+=`<tr class="ad-row ${isOpen?'open':''}" onclick="toggleAd('${col}','${a.ad_id}')">
+      <td class="name" style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.name||'')}</td>
+      <td>${ptag}</td>
+      <td><span class="badge ${stBadge}">${stLabel}</span></td>
+      <td class="num">${money(a.spend)}</td>
+      <td class="num">${fmt(a.impressions)}</td>
+      <td class="num">${fmt(a.clicks)}</td>
+      <td class="num">${a.ctr.toFixed(2)}%</td>
+      <td class="num">$${a.cpc.toFixed(2)}</td>
+      <td class="num">${fmt(a.lpv)}</td>
+      <td class="num" style="color:var(--success-600);font-weight:600">${a.leads_attr||0}</td>
+      <td class="num" style="color:var(--warn-700);font-weight:600">${a.agendaron_attr||0}</td>
+      <td class="num" style="color:var(--success-700);font-weight:700">${a.compraron_attr||0}</td>
+    </tr>`;
+    if(isOpen){
+      h+=`<tr class="ad-detail-row open"><td colspan="${cols.length}" style="padding:0"><div class="ad-detail-wrap">
+        <div class="ad-detail-head">
+          ${a.thumbnail_url?`<img src="${esc(a.thumbnail_url)}" class="ad-thumb" onerror="this.outerHTML='<div class=&quot;ad-thumb&quot;>—</div>'">`:'<div class="ad-thumb">—</div>'}
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">${esc(a.title||a.name||'')}</div>
+            <div class="ad-body">${esc(a.body||'').replace(/\n/g,'<br>')}</div>
+            <div class="ad-meta">Campaña: ${esc(a.campaign_name||'—')} · Adset: ${esc(a.adset_name||'—')} · CTA: ${a.cta_type||'—'} · ${a.days} días activo</div>
+          </div>
+        </div>
+        <div class="mgrid">
+          <div class="mi"><div class="n">${fmt(a.impressions)}</div><div class="l" data-tip="Impresiones: veces que el ad se mostró en pantalla (incluye repetidas)">Impr</div></div>
+          <div class="mi"><div class="n">${fmt(a.clicks)}</div><div class="l" data-tip="Clicks totales: cualquier interacción con el ad (link, imagen, perfil, like)">Clicks</div></div>
+          <div class="mi"><div class="n">${fmt(a.lpv)}</div><div class="l" data-tip="Landing Page Views: cargaron la landing tras click (más preciso que clicks)">LPV</div></div>
+          <div class="mi"><div class="n">${fmt(a.view_content)}</div><div class="l" data-tip="Pixel ViewContent disparó — vieron /clase/ (página con video)">ViewContent</div></div>
+          <div class="mi"><div class="n" style="color:var(--success-600)">${a.leads_attr||0}</div><div class="l" data-tip="Leads únicos atribuidos a este ad vía utm_content (winner-take-all si hay nombres duplicados)">Leads</div></div>
+          <div class="mi"><div class="n" style="color:var(--warn-700)">${a.agendaron_attr||0}</div><div class="l" data-tip="Únicos que agendaron cita tras venir de este ad. Attribution vía Utm_content en GHL (~58% coverage)">Agendó</div></div>
+          <div class="mi"><div class="n" style="color:var(--success-700)">${a.compraron_attr||0}</div><div class="l" data-tip="Únicos que compraron (HT $2,500 o LT $497) tras venir de este ad. Gap de ~42% sin UTM en GHL">Compró</div></div>
+          <div class="mi"><div class="n">${fmt(a.wa_conv)}</div><div class="l" data-tip="Conversaciones iniciadas en WhatsApp desde este ad (Click-to-WhatsApp)">WhatsApp</div></div>
+          <div class="mi"><div class="n">${fmt(a.post_engagement)}</div><div class="l" data-tip="Engagement total: likes + comments + shares + saves + clicks al post">Engagement</div></div>
+          <div class="mi"><div class="n">${fmt(a.post_reactions)}</div><div class="l" data-tip="Reacciones al post: like, love, wow, etc.">Reacciones</div></div>
+          <div class="mi"><div class="n">${fmt(a.post_comments)}</div><div class="l" data-tip="Comentarios dejados en el post del ad">Comments</div></div>
+          <div class="mi"><div class="n">${fmt(a.post_saves)}</div><div class="l" data-tip="Veces que guardaron el post. Señal fuerte de valor percibido.">Saves</div></div>
+          <div class="mi"><div class="n">${fmt(a.video_views_3s)}</div><div class="l" data-tip="Vistas de video de al menos 3 segundos (umbral Meta de 'vio el video')">Video 3s</div></div>
+        </div>
+        <div class="plat-split-line">
+          <span><strong style="color:var(--fb-500)">FB</strong> ${money(a.fb_spend)} · ${fmt(a.fb_impressions)} impr · ${fmt(a.fb_clicks)} clicks</span>
+          <span><strong style="color:var(--ig-500)">IG</strong> ${money(a.ig_spend)} · ${fmt(a.ig_impressions)} impr · ${fmt(a.ig_clicks)} clicks</span>
+        </div>
+      </div></td></tr>`;
     }
   });
-}
+  h+=`</tbody></table></div>
+    <div class="paginate">
+      <button class="chip ${s.limit===10?'active':''}" onclick="setLimit('${col}',10)">Top 10</button>
+      <button class="chip ${s.limit===25?'active':''}" onclick="setLimit('${col}',25)">Top 25</button>
+      <button class="chip ${s.limit===50?'active':''}" onclick="setLimit('${col}',50)">Top 50</button>
+      <button class="chip ${s.limit===9999?'active':''}" onclick="setLimit('${col}',9999)">Todos (${sortedAdList.length})</button>
+    </div>
+  </div></section>`;
 
-/* ========================= PLAN VIEW ========================= */
-function renderPlan() {
-  const host = document.getElementById('plan-list');
-  if (!S.actionItems.length) { host.innerHTML = '<div class="empty">Sin acciones configuradas.</div>'; return; }
-  host.innerHTML = S.actionItems.map(a => {
-    const status = (a.status || 'pending').toLowerCase().replace(/\s/g, '_');
-    return `<div class="action-card">
-      <div class="action-num">${String(a.order_num || 0).padStart(2, '0')}</div>
-      <div>
-        <div class="action-title">${escapeHtml(a.title || '')}</div>
-        <div class="action-desc">${escapeHtml(a.description || '').replace(/\n/g, '<br>')}</div>
-        <div class="action-meta">
-          ${a.owner ? `<span class="am owner">&#128100; ${escapeHtml(a.owner)}</span>` : ''}
-          ${a.deadline ? `<span class="am deadline">&#128197; ${fmt.date(a.deadline)}</span>` : ''}
-          ${a.impact ? `<span class="am impact">&#128293; ${escapeHtml(a.impact)}</span>` : ''}
-        </div>
-      </div>
-      <div class="action-status ${status}">${escapeHtml(a.status || 'pending')}</div>
+  // TRAFFIC
+  h+=`<section class="sec"><div class="panel"><div class="panel-head"><div><div class="panel-title">Origen del tráfico</div><div class="panel-sub">De dónde vienen los leads en el rango</div></div><span class="panel-badge">${T.leads_all} leads</span></div>
+    <div class="traffic-grid">
+      <div class="tcard"><div class="tc-label" data-tip="Total de formularios completados en el periodo, deduplicados por email. Incluye todas las fuentes (ads pagados + orgánico + directo)."><span class="g-dot" style="background:var(--gray-900)"></span>Leads totales</div><div class="tc-value">${T.leads_all}</div><div class="tc-sub">emails únicos en el sheet</div></div>
+      <div class="tcard"><div class="tc-label" data-tip="Leads trazables a publicidad: tienen utm_source=facebook o instagram en el form. Son los que puedes costear (CPL = spend ÷ estos)."><span class="g-dot" style="background:var(--brand-500)"></span>De publicidad</div><div class="tc-value">${T.leads_fb+T.leads_ig}</div><div class="tc-sub">FB ${T.leads_fb} · IG ${T.leads_ig}</div></div>
+      <div class="tcard"><div class="tc-label" data-tip="Leads sin UTM de ads: stories de IG, link en bio, referidos, tráfico directo, búsquedas de marca. Si este % sube sin subir inversión, tu marca está creciendo orgánicamente."><span class="g-dot" style="background:var(--success-500)"></span>Orgánicos / directo</div><div class="tc-value">${T.leads_org}</div><div class="tc-sub">${pct(T.leads_org,T.leads_all)} del total</div></div>
+    </div>
+  </div></section>`;
+
+  // FUNNEL
+  const steps=[
+    {l:'Landing views',src:'Meta LPV',n:T.lpv,c:'var(--brand-500)',tip:'Landing Page Views: personas que efectivamente cargaron la página de aterrizaje tras click en ad. Más preciso que clicks (excluye taps accidentales).'},
+    {l:'Pixel ViewContent',src:'Pixel disparó en /clase/',n:px['ViewContent']||0,c:'var(--violet-500)',tip:'Pixel fbq ViewContent disparó al cargar /clase/. Diff vs LPV = pérdida por adblockers + iOS privacy + conexión lenta (normal 40-70% gap).'},
+    {l:'Form fills únicos',src:'UTM sheet · email único',n:F.form_fills,c:'var(--violet-700)',tip:'Personas únicas (por email normalizado) que llenaron el form. Excluye duplicados y cuentas test. Fuente: Google Sheet de UTM leads.'},
+    {l:'Comprometidos',src:'Tag comprometido · vieron video',n:F.comprometido,c:'#7C3AED',tip:'Tag GHL "comprometido": vieron el video completo del lead magnet. Fuerte señal de intención.'},
+    {l:'Click CTA aplicar',src:'Tag video-visto · aplicaron',n:F.video_visto,c:'#6D28D9',tip:'CUÁNDO: hacen click en el botón "APLICAR AHORA" que aparece en la página /clase/ (página del video del lead magnet). GHL pone el tag "video-visto" a ese contacto. NOTA: el nombre del tag es engañoso — no mide que hayan visto el video, solo que clickearon el CTA. Alguien puede skipear el video y clickear directo.'},
+    {l:'Calificación enviada',src:'Tag calificacion-enviada',n:F.calificacion,c:'#5B21B6',tip:'Completaron el cuestionario de calificación post-aplicación. Filtro que separa curiosos de prospectos serios.'},
+    {l:'Prospect high-ticket',src:'Tag high-ticket · calificados',n:F.high_ticket,c:'#4C1D95',tip:'Califican para el producto HT ($2,500). Cumplen criterios económicos y de perfil según la calificación.'},
+    {l:'Agendaron cita',src:'Tag agendo-cita',n:F.agendaron,c:'var(--warn-500)',tip:'Agendaron llamada 1-a-1 con Sarahi en su calendar. Paso crítico antes de ofrecer mentoría.'},
+    {l:'No show',src:'Tag no show llamada',n:F.no_show,c:'var(--danger-500)',tip:'Agendaron pero no se presentaron a la llamada. Típico 20-40% en ventas HT remotas.'},
+    {l:'Asistieron',src:'agendaron − no show (aprox)',n:F.asistieron,c:'var(--warn-700)',tip:'Aproximación: agendaron menos no-shows. No tag directo de "asistieron" en GHL actualmente.'},
+    {l:'Curso FREE (Mentalidad)',src:'Tag mentalidad beauty boss · gratis',n:F.mentalidad_free,c:'#059669',tip:'Tomaron el curso gratuito "Mentalidad Beauty Boss". Es un freebie, no ingreso — puede ser buen predictor de conversión HT.'},
+    {l:'Compra LT ($497)',src:'Tag reestructura',n:F.compraron_lt,c:'var(--success-500)',tip:'Compraron el curso "Reestructura y Factura" a $497 USD. Low ticket — tickets pequeños para calentar audiencia.'},
+    {l:'Compra HT ($2,500)',src:'Tag compro',n:F.compraron_ht,c:'var(--success-700)',tip:'Compraron la mentoría high-ticket ($2,500 USD). El objetivo principal del funnel.'}
+  ];
+  const mx=Math.max(...steps.map(s=>s.n||0),1);
+  h+=`<section class="sec"><div class="panel"><div class="panel-head"><div><div class="panel-title">Funnel de conversión</div><div class="panel-sub">Personas únicas por email en el periodo</div></div><span class="panel-badge">${steps.length} pasos</span></div>
+    <div class="funnel-list">`;
+  steps.forEach((st,i)=>{
+    const w=st.n>0?Math.max(st.n/mx*100,2):0;
+    const conv=i>0?pct(st.n,steps[0].n):'100%';
+    h+=`<div class="funnel-row">
+      <div class="g-head"><div class="g-name" data-tip="${esc(st.tip||'')}"><span class="g-dot" style="background:${st.c}"></span>${st.l}</div><div class="g-nums">${st.n}<span class="total">/ ${steps[0].n||0}</span></div></div>
+      <div class="g-track"><div class="g-fill" style="width:${w}%;background:${st.c}"></div></div>
+      <div class="g-meta"><span class="src">${st.src}</span><span class="conv" data-tip="Conversión relativa al primer paso del funnel (Landing views). Muestra qué % de la audiencia inicial llega hasta este punto.">${conv}</span></div>
     </div>`;
-  }).join('');
+  });
+  h+=`</div></div></section>`;
+
+  // PIXEL EVENTS
+  const evOrd=['PageView','ViewContent','Lead','SubmitApplication','Schedule','Purchase'];
+  const evC={PageView:'var(--brand-500)',ViewContent:'var(--violet-500)',Lead:'var(--warn-500)',SubmitApplication:'var(--warn-700)',Schedule:'#6D28D9',Purchase:'var(--success-500)'};
+  const evDesc={PageView:'Carga de cualquier página del sitio',ViewContent:'Vista de la página de clase gratis (/clase/)',Lead:'Formulario detectado por Event Setup Tool',SubmitApplication:'Aplicación al programa enviada',Schedule:'Cita agendada en calendar',Purchase:'Compra confirmada (pixel + CAPI)'};
+  const evTip={
+    PageView:'CUÁNDO SE DISPARA: cada vez que alguien carga CUALQUIER página del sitio (landing, /clase/, /gracias/, home, blog). Es automático — el pixel lo manda solo, sin configuración extra. Es la base sobre la que Meta construye audiencias custom y retargeting.',
+    ViewContent:'CUÁNDO SE DISPARA: cuando alguien carga específicamente /clase/ (la página del video). Ocurre justo después de llenar el formulario — el form hace redirect a esa URL. Si el pixel no carga (adblocker, iOS privacy, conexión lenta), este evento no se registra aunque la persona sí llegue al video.',
+    Lead:'CUÁNDO SE DISPARA: cuando Event Setup Tool detecta un click en el botón de envío del formulario. Es configuración manual en Meta Events Manager — si ves 0 aquí pero sí hay form fills en funnel, el Event Setup Tool no está bien configurado. Revisar en business.facebook.com/events_manager.',
+    SubmitApplication:'CUÁNDO SE DISPARA: cuando se envía el cuestionario de aplicación post-video (el formulario largo de calificación). Señal fuerte: ya vio el video y se tomó el tiempo de llenar la aplicación completa. Si este evento no está configurado, no hay forma de optimizar ads hacia aplicaciones.',
+    Schedule:'CUÁNDO SE DISPARA: cuando se crea una cita en el calendar de GHL. Requiere webhook GHL → CAPI Meta funcionando (n8n workflow). En esta cuenta el webhook NO está automatizado — los eventos que ves aquí son pixel directo o backfill manual del 22-abr.',
+    Purchase:'CUÁNDO SE DISPARA: cuando se confirma una compra en checkout. Incluye value + currency (dedup por event_id). Se manda por Pixel (frontend) + CAPI (backend) con hashes SHA-256 de email/phone. El 22-abr se enviaron 159 eventos retroactivos via CAPI para poblar el histórico en Meta.'
+  };
+  const pxTot=Object.values(px).reduce((a,b)=>a+b,0);
+  const pxMx=Math.max(...Object.values(px),1);
+  h+=`<section class="sec"><div class="panel"><div class="panel-head"><div><div class="panel-title">Eventos pixel</div><div class="panel-sub">Señales que Meta recibe de la web</div></div><span class="panel-badge">${fmt(pxTot)} eventos</span></div>
+    <div class="ev-list">`;
+  evOrd.forEach(e=>{
+    const v=px[e]||0;const w=v>0?(v/pxMx*100):0;
+    h+=`<div class="ev-row">
+      <div class="ev-head"><div class="ev-label" data-tip="${esc(evTip[e]||'')}"><span class="g-dot" style="background:${evC[e]}"></span>${e}</div><div class="ev-nums">${fmt(v)}<span class="pct">${v>0?pct(v,pxTot):'0%'}</span></div></div>
+      <div class="ev-track">${v>0?`<div class="ev-fill" style="width:${Math.max(w,2)}%;background:${evC[e]}"></div>`:''}</div>
+      <div class="ev-desc">${evDesc[e]}</div>
+    </div>`;
+  });
+  h+=`</div></div></section>`;
+
+  // BREAKDOWNS (filtered by period)
+  const bdSub=bdMatchPeriod?`Periodo ${bdMatchPeriod}`:'Sin breakdowns para este rango — usa MTD, mes pasado o 7d';
+  const emptyBd='<div class="empty">sin breakdowns para este rango · disponible solo en MTD, mes pasado, 7d</div>';
+  h+=`<section class="sec"><div class="grid-3">
+    <div class="panel"><div class="panel-head"><div><div class="panel-title" data-tip="Gasto por grupo de edad × género según Meta. Útil para ver si tu audiencia pagada coincide con tu ICP. Ordenado por spend desc.">Edad × Género</div><div class="panel-sub">${bdSub}</div></div></div>
+      <div class="br-list">${demo.length?demo.map(d=>`<div class="br-row"><span class="l">${esc(d.key)}</span><span class="v">${money(d.spend)}${d.leads?`<span class="leads" data-tip="Leads generados por este segmento según Meta (no es lo mismo que UTM del form — Meta cuenta su propia atribución)">${d.leads}L</span>`:''}</span></div>`).join(''):emptyBd}</div>
+    </div>
+    <div class="panel"><div class="panel-head"><div><div class="panel-title" data-tip="Gasto por país donde se mostró el ad. Detecta si estás gastando en países fuera de tu mercado objetivo (desperdicio).">País</div><div class="panel-sub">${bdSub}</div></div></div>
+      <div class="br-list">${geo.length?geo.map(g=>`<div class="br-row"><span class="l">${esc(g.key)}</span><span class="v">${money(g.spend)}${g.leads?`<span class="leads">${g.leads}L</span>`:''}</span></div>`).join(''):emptyBd}</div>
+    </div>
+    <div class="panel"><div class="panel-head"><div><div class="panel-title" data-tip="Dónde (placement) se muestran tus ads: IG Feed, IG Stories, FB Feed, Reels, Marketplace, Audience Network, etc. Útil para excluir placements de baja calidad.">Placements</div><div class="panel-sub">${bdSub}</div></div></div>
+      <div class="br-list">${plc.length?plc.map(p=>`<div class="br-row"><span class="l">${esc(p.key)}</span><span class="v">${money(p.spend)}${p.leads?`<span class="leads">${p.leads}L</span>`:''}</span></div>`).join(''):emptyBd}</div>
+    </div>
+  </div></section>`;
+
+  // ORGANIC (filtered by created_time in period, sortable)
+  const orgCols=[
+    {k:'message',l:'Post',align:'left',tip:'Caption del post. Hover sobre la fila para ver el texto completo si está cortado.'},
+    {k:'platform',l:'Plat',align:'left',tip:'FB = publicado en Facebook Page · IG = publicado en Instagram'},
+    {k:'created_time',l:'Publicado',align:'left',tip:'Fecha de publicación del post en la plataforma'},
+    {k:'reach',l:'Reach',align:'num',tip:'Personas únicas que vieron el post. No cuenta repeticiones — métrica de alcance real.'},
+    {k:'impressions',l:'Impr',align:'num',tip:'Impresiones: veces que el post se mostró en pantalla (incluye a la misma persona múltiples veces)'},
+    {k:'likes',l:'Likes',align:'num',tip:'Reacciones positivas: like + heart + wow + etc. Señal básica de aprobación.'},
+    {k:'comments',l:'Comments',align:'num',tip:'Comentarios dejados. Más valioso que likes — implica engagement activo.'},
+    {k:'shares',l:'Shares',align:'num',tip:'Veces que alguien compartió el post. La señal más fuerte de resonancia — la persona quiso que otros lo vean.'},
+    {k:'saves',l:'Saves',align:'num',tip:'Guardados (solo Instagram). Señal fuerte: la persona quiere volver a verlo. Excelente predictor de valor percibido.'},
+    {k:'engagement',l:'Eng.',align:'num',tip:'Engagement total = likes + comments + shares + saves + clicks. Métrica agregada.'},
+  ];
+  const orgSort=ST[col].orgSort,orgDir=ST[col].orgDir;
+  const organicInPeriod=RAW.organic.filter(p=>{
+    if(!p.created_time)return false;
+    const d=p.created_time.slice(0,10);
+    return d>=data.from&&d<=data.to;
+  }).sort((a,b)=>{
+    let va=a[orgSort],vb=b[orgSort];
+    if(['message','platform','created_time'].includes(orgSort)){va=(va||'').toString();vb=(vb||'').toString();return va.localeCompare(vb)*(orgDir===-1?1:-1)}
+    return (Number(vb||0)-Number(va||0))*(orgDir===-1?1:-1);
+  });
+  h+=`<section class="sec"><div class="table-panel"><div class="table-head"><div><h2>Publicaciones orgánicas</h2><div class="panel-sub">Posts publicados en el periodo · click en encabezado para ordenar</div></div><span class="panel-badge">${organicInPeriod.length} posts</span></div>`;
+  if(organicInPeriod.length>0){
+    h+=`<div class="tblwrap"><table><thead><tr>`;
+    orgCols.forEach(c=>{const sr=c.k===orgSort;const arr=orgDir===-1?'▼':'▲';h+=`<th class="${c.align==='num'?'num':''} ${sr?'sorted':''}" data-arr="${sr?arr:''}" data-tip="${esc(c.tip||'')}" onclick="setOrgSort('${col}','${c.k}')">${c.l}</th>`});
+    h+=`</tr></thead><tbody>`;
+    organicInPeriod.slice(0,20).forEach(p=>{
+      const tag=p.platform==='instagram'?'<span class="badge badge-ig">IG</span>':'<span class="badge badge-fb">FB</span>';
+      const dt=p.created_time?new Date(p.created_time).toLocaleDateString('es-MX',{day:'2-digit',month:'short'}):'—';
+      h+=`<tr><td class="name" style="max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(p.message||'')}">${esc((p.message||'(sin caption)').slice(0,100))}</td><td>${tag}</td><td class="muted">${dt}</td><td class="num">${fmt(p.reach)}</td><td class="num">${fmt(p.impressions)}</td><td class="num">${fmt(p.likes)}</td><td class="num">${fmt(p.comments)}</td><td class="num">${fmt(p.shares)}</td><td class="num">${fmt(p.saves)}</td><td class="num">${fmt(p.engagement)}</td></tr>`;
+    });
+    h+=`</tbody></table></div>`;
+  } else h+=`<div style="padding:18px"><div class="empty">Sin posts orgánicos en este periodo</div></div>`;
+  h+=`</div></section>`;
+
+  h+=`</div>`;
+  return h;
 }
 
-/* ========================= UTILS: escape ========================= */
-function escapeHtml(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-function escapeAttr(s) { return escapeHtml(s); }
-
-/* ========================= NAV ========================= */
-function initNav() {
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const view = btn.getAttribute('data-view');
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b === btn));
-      document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + view));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  });
+function render(){
+  const dA=aggregate('A');
+  const dB=ST.compare?aggregate('B'):null;
+  const c=document.getElementById('content');
+  c.className='content'+(ST.compare?' compare':'');
+  c.innerHTML=renderColumn('A',dA,dB)+(dB?renderColumn('B',dB,dA):'');
 }
 
-/* ========================= FILTER BINDINGS ========================= */
-function initFilters() {
-  // Web range
-  document.querySelectorAll('#web-range-btns .btn').forEach(b => {
-    b.addEventListener('click', () => {
-      document.querySelectorAll('#web-range-btns .btn').forEach(x => x.classList.toggle('active', x === b));
-      S.web.range = b.getAttribute('data-range');
-      document.getElementById('web-from').value = ''; document.getElementById('web-to').value = '';
-      renderWeb();
-    });
-  });
-  document.getElementById('web-from').addEventListener('change', renderWeb);
-  document.getElementById('web-to').addEventListener('change', renderWeb);
-  document.getElementById('web-compare').addEventListener('change', (e) => { S.web.compare = e.target.checked; renderWeb(); });
+function setSort(col,k){const s=ST[col];if(s.sort===k)s.dir=-s.dir;else{s.sort=k;s.dir=-1}render()}
+function setOrgSort(col,k){const s=ST[col];if(s.orgSort===k)s.orgDir=-s.orgDir;else{s.orgSort=k;s.orgDir=-1}render()}
+function toggleAd(col,id){const s=ST[col].openAds;if(s.has(id))s.delete(id);else s.add(id);render()}
+function setLimit(col,n){ST[col].limit=n;render()}
 
-  // Ads filters
-  document.querySelectorAll('#ads-platform-btns .btn').forEach(b => {
-    b.addEventListener('click', () => {
-      document.querySelectorAll('#ads-platform-btns .btn').forEach(x => x.classList.toggle('active', x === b));
-      S.ads.platform = b.getAttribute('data-plat'); renderAds();
-    });
+document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>{
+  const col=b.dataset.col,p=b.dataset.preset;
+  document.querySelectorAll(`.preset[data-col="${col}"]`).forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  ST[col].preset=p;
+  document.getElementById('range'+col).classList.toggle('on',p==='custom');
+  if(p!=='custom'){const [f,t]=presetRange(p);ST[col].from=f;ST[col].to=t;
+    document.getElementById('from'+col).value=f;document.getElementById('to'+col).value=t}
+  render();
+}));
+['A','B'].forEach(col=>{['from','to'].forEach(k=>{
+  document.getElementById(k+col).addEventListener('change',e=>{
+    ST[col][k]=e.target.value;
+    if(ST[col].preset!=='custom'){ST[col].preset='custom';
+      document.querySelectorAll(`.preset[data-col="${col}"]`).forEach(x=>x.classList.toggle('active',x.dataset.preset==='custom'));
+      document.getElementById('range'+col).classList.add('on')}
+    render();
   });
-  document.querySelectorAll('#ads-range-btns .btn').forEach(b => {
-    b.addEventListener('click', () => {
-      document.querySelectorAll('#ads-range-btns .btn').forEach(x => x.classList.toggle('active', x === b));
-      S.ads.range = b.getAttribute('data-range');
-      document.getElementById('ads-from').value = ''; document.getElementById('ads-to').value = '';
-      renderAds();
-    });
+})});
+// Month picker: set from/to to full calendar month
+document.querySelectorAll('.month-pick').forEach(inp=>{
+  inp.addEventListener('change',e=>{
+    const v=e.target.value;if(!v)return;
+    const col=e.target.dataset.col;
+    const [y,m]=v.split('-').map(Number);
+    const start=new Date(y,m-1,1),end=new Date(y,m,0);
+    ST[col].from=iso(start);ST[col].to=iso(end);ST[col].preset='custom';
+    document.querySelectorAll(`.preset[data-col="${col}"]`).forEach(x=>x.classList.remove('active'));
+    document.getElementById('from'+col).value=ST[col].from;
+    document.getElementById('to'+col).value=ST[col].to;
+    document.getElementById('range'+col).classList.add('on');
+    render();
   });
-  document.getElementById('ads-from').addEventListener('change', renderAds);
-  document.getElementById('ads-to').addEventListener('change', renderAds);
-  document.getElementById('ads-compare').addEventListener('change', (e) => { S.ads.compare = e.target.checked; renderAds(); });
-  document.querySelectorAll('#ads-top-btns .btn').forEach(b => {
-    b.addEventListener('click', () => {
-      document.querySelectorAll('#ads-top-btns .btn').forEach(x => x.classList.toggle('active', x === b));
-      S.ads.top = b.getAttribute('data-top'); renderAds();
-    });
-  });
-  document.getElementById('ads-sort').addEventListener('change', (e) => { S.ads.sort = e.target.value; renderAds(); });
-  // Table header sort
-  document.querySelectorAll('#ads-table th[data-sort]').forEach(th => {
-    th.addEventListener('click', () => {
-      const key = th.getAttribute('data-sort');
-      if (S.ads.sort === key) S.ads.dir = S.ads.dir === 'asc' ? 'desc' : 'asc';
-      else { S.ads.sort = key; S.ads.dir = 'desc'; }
-      document.querySelectorAll('#ads-table th').forEach(x => { x.classList.remove('sort-desc', 'sort-asc'); });
-      th.classList.add(S.ads.dir === 'asc' ? 'sort-asc' : 'sort-desc');
-      const sortSel = document.getElementById('ads-sort');
-      if ([...sortSel.options].some(o => o.value === key)) sortSel.value = key;
-      renderAds();
-    });
-  });
-}
+});
+document.querySelectorAll('.plat').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.plat').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');ST.plat=b.dataset.plat;render();
+}));
+document.getElementById('toggleCompare').addEventListener('click',()=>{
+  ST.compare=!ST.compare;
+  document.getElementById('compareCtl').classList.toggle('on',ST.compare);
+  document.getElementById('toggleCompare').classList.toggle('active',ST.compare);
+  render();
+});
+document.getElementById('closeCompare').addEventListener('click',()=>{
+  ST.compare=false;
+  document.getElementById('compareCtl').classList.remove('on');
+  document.getElementById('toggleCompare').classList.remove('active');
+  render();
+});
 
-/* ========================= MAIN ========================= */
-async function main() {
-  try {
-    await fetchAll();
-  } catch (e) {
-    console.error(e);
-    document.getElementById('loader').innerHTML = '<div style="color:var(--red);font-size:13px;text-align:center;padding:20px">Error cargando Supabase.<br><span style="font-size:10px;color:var(--text3);font-family:var(--font-mono)">' + escapeHtml(e.message || String(e)) + '</span></div>';
-    return;
-  }
-  renderSync();
-  renderExecSummary();
-  renderReco();
-  renderWeb();
-  renderAds();
-  renderAudience();
-  renderPlan();
-  initNav();
-  initFilters();
-  setTimeout(() => document.getElementById('loader').classList.add('hide'), 250);
-}
+// tooltip
+const TT=document.createElement('div');TT.id='tt';document.body.appendChild(TT);
+document.addEventListener('mouseover',e=>{const el=e.target.closest('[data-tip]');if(!el)return;const tip=el.getAttribute('data-tip');if(!tip)return;TT.textContent=tip;const r=el.getBoundingClientRect();let left=r.left,top=r.bottom+8;TT.style.left=left+'px';TT.style.top=top+'px';TT.classList.add('on');requestAnimationFrame(()=>{const tr=TT.getBoundingClientRect();if(tr.right>window.innerWidth-8){TT.style.left=(window.innerWidth-tr.width-8)+'px'}if(tr.bottom>window.innerHeight-8){TT.style.top=(r.top-tr.height-8)+'px'}})});
+document.addEventListener('mouseout',e=>{if(!e.target.closest||!e.target.closest('[data-tip]'))return;TT.classList.remove('on')});
 
-document.addEventListener('DOMContentLoaded', main);
+loadAll().catch(e=>{document.getElementById('content').innerHTML='<div class="loader">Error: '+(e.message||e)+'</div>';console.error(e)});
 </script>
 </body>
 </html>
