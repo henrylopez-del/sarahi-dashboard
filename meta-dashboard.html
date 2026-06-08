@@ -318,7 +318,7 @@ const ST={
   B:{preset:'lm',from:null,to:null,sort:'spend',dir:-1,limit:15,openAds:new Set(),orgSort:'engagement',orgDir:-1}
 };
 
-async function sb(t,p=''){const u=`${SB_URL}/rest/v1/${t}?${p}`;const r=await fetch(u,{headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY}});return r.json()}
+async function sb(t,p=''){p=String(p).replace(/&?(limit|offset)=\d+/g,'').replace(/^&/,'');const all=[];const PAGE=1000;let off=0;while(true){const sep=p?'&':'';const u=`${SB_URL}/rest/v1/${t}?${p}${sep}limit=${PAGE}&offset=${off}`;const r=await fetch(u,{headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY}});const chunk=await r.json();if(!Array.isArray(chunk))return chunk;all.push(...chunk);if(chunk.length<PAGE)break;off+=PAGE;}return all;}
 const fmt=n=>{if(n==null||isNaN(n))return '0';n=Number(n);if(Math.abs(n)>=1e6)return (n/1e6).toFixed(1)+'M';if(Math.abs(n)>=1e3)return (n/1e3).toFixed(1)+'k';return Math.round(n).toLocaleString('es-MX')};
 const money=n=>'$'+Number(n||0).toLocaleString('es-MX',{minimumFractionDigits:0,maximumFractionDigits:0});
 const pct=(a,b)=>b>0?((a/b)*100).toFixed(1)+'%':'—';
