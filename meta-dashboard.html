@@ -341,7 +341,7 @@ async function loadAll(){
     sb('sarahi_meta_ads','select=*'),
     sb('sarahi_meta_ad_daily','select=*&limit=5000'),
     sb('sarahi_meta_account_daily','select=*&limit=500'),
-    sb('sarahi_meta_pixel_daily','select=*&limit=500'),
+    sb('sarahi_meta_pixel_daily','select=*&order=day.desc&limit=10000'),
     sb('sarahi_meta_utm_leads','select=id,fecha,correo,utm_source_normalized,utm_content,utm_campaign&limit=5000'),
     sb('sarahi_ghl_contact_tags','select=*&limit=2000'),
     sb('sarahi_ghl_opportunities','select=contact_id,stage_name,status,monetary_value,created_at&limit=500'),
