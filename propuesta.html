@@ -208,14 +208,15 @@ function render(){
      `<div style="width:${igp}%;background:#E1306C;display:grid;place-items:center;min-width:0">${igp>=14?'IG '+igp+'%':''}</div></div>`;
    h+=card(4,'¿De dónde vienen los leads?',bar,g('n','FB '+fmt(C.fbL)+' · IG '+fmt(C.igL)+' leads'),{sm:true}); }
  h+=card(5,'¿Qué % de leads agenda, por plataforma?','FB '+(cvFB.pct_agenda||0)+'% · IG '+(cvIG.pct_agenda||0)+'%',g('n','% de leads que agendan cita'),{drill:'plat'});
- h+=card(6,'¿Cuánto cuesta cada <abbr title="Persona que llenó el formulario de la clase">registro</abbr> (formulario lleno)?',C.leads?money2(costoReg):'—',g('n','gasto ÷ registros'+(C.lpvT?' · '+money2(costoLPV)+' por llegar a la página':'')));
+ h+=card(6,'¿Cuánto cuesta cada lead que llega al CRM?',C.leads?money2(costoReg):'—',g('n','gasto ÷ leads en CRM'+(C.lpvT?' · '+money2(costoLPV)+' por llegar a la página':'')));
  h+=card(19,'¿El pixel manda señales?',fmt(C.px['PageView']||0),g((C.px['PageView']||0)>0?'g':'r','PageView')+fmt(C.px['Lead']||0)+' Lead',{drill:'pixel'});
  h+='</div>';
  h+='<div class="sech">Funnel real del CRM · ¿Avanzan a la venta?</div><div class="grid">';
  h+=card(10,'¿Cómo se ve el funnel real?',fmt(C.leads)+' → '+fmt(citas)+' → '+(compHT+compLT),'lead → cita → compra',{sm:true,drill:'funnel'});
  h+=card(11,'¿Cuántas citas, no-show y asistencias?',fmt(citas)+' citas',g('a',fmt(noshow)+' no-show')+g('g',fmt(asist)+' asistió')+'calendario real');
  h+=card(7,'¿Costo por cita agendada?',citas?money2(costoLlam):'—',g('n','gasto ÷ citas reales del periodo'));
- h+=card(8,'¿Costo por compra (HT/LT)?',compHT?money(C.spend/compHT):(compLT?'LT '+money(C.spend/compLT):'Sin compras'),g(compHT+compLT>0?'n':'a',compHT+' HT · '+compLT+' LT'+(compHT+compLT===0?' en el periodo':'')),{sm:true});
+ const clientes=compLT; // clientes que pagan (curso facturación) en el periodo
+ h+=card(8,'¿Cuánto cuesta cada cliente (que paga)?',clientes?money(C.spend/clientes):'—',g(clientes?'n':'a',clientes?clientes+' clientes facturación en el periodo':'sin clientes en el periodo'),{sm:true});
  h+='</div>';
  h+='<div class="sech">Dinero · ¿Estoy ganando?</div><div class="grid">';
  h+=card(9,'¿Cuál es mi <abbr title="Return On Ad Spend: ingreso ÷ gasto en ads">ROAS</abbr>? (provisional)',roasProv?roasProv.toFixed(2)+'x':'—',g('a','solo curso facturación · validar con Sarahí'));
