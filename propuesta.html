@@ -191,8 +191,12 @@ function render(){
  h+='<div class="sech">Adquisición · ¿Qué entra y a qué costo?</div><div class="grid">';
  h+=card(1,'¿Cuánto invertí en ads?',money(C.spend),g('n',ST.plat==='all'?'Meta total':ST.plat),{drill:'spend'});
  h+=card(2,'¿Cuánta gente vio y dio clic?',fmt(C.impr)+' <span style="font-size:13px;color:var(--muted)">vistas</span>',fmt(C.clicks)+' clics · '+ab('CTR')+' '+C.ctr.toFixed(2)+'%',{drill:'ads'});
- h+=card(3,'¿Cuántos leads entraron al CRM?',fmt(C.leads),g('n','FB '+fmt(C.fbL)+' · IG '+fmt(C.igL)));
- h+=card(4,'¿De dónde vienen los leads?','FB '+fmt(C.fbL)+' / IG '+fmt(C.igL),g('n','por UTM en el form'),{sm:true});
+ h+=card(3,'¿Cuántos leads entraron al CRM?',fmt(C.leads)+' <span style="font-size:13px;color:var(--muted)">personas</span>',g('g',fmt(C.fbL+C.igL)+' de ads')+'únicos, sin duplicar');
+ { const tot=(C.fbL+C.igL)||1, fbp=Math.round(C.fbL/tot*100), igp=100-fbp;
+   const bar=`<div style="display:flex;height:26px;border-radius:7px;overflow:hidden;font-size:11.5px;font-weight:700;color:#fff;margin-top:2px">`+
+     `<div style="width:${fbp}%;background:#1877F2;display:grid;place-items:center;min-width:0">${fbp>=14?'FB '+fbp+'%':''}</div>`+
+     `<div style="width:${igp}%;background:#E1306C;display:grid;place-items:center;min-width:0">${igp>=14?'IG '+igp+'%':''}</div></div>`;
+   h+=card(4,'¿De dónde vienen los leads?',bar,g('n','FB '+fmt(C.fbL)+' · IG '+fmt(C.igL)+' leads'),{sm:true}); }
  h+=card(5,'¿Qué plataforma trae leads más baratos?',mejorPlat==='—'?'—':'Gana '+mejorPlat,g('g','FB '+(cplFB?money2(cplFB):'—')+' · IG '+(cplIG?money2(cplIG):'—')+' por lead'),{drill:'plat'});
  h+=card(6,'¿Cuánto cuesta un <abbr title="Persona que llenó el formulario de la clase = un lead">registro</abbr>?',C.leads?money2(costoReg):'—',(C.leads?g(costoReg<=BENCH.cpl?'g':'r',(costoReg<=BENCH.cpl?'mejor':'peor')+' que $'+BENCH.cpl+' industria'):g('n','sin leads'))+(C.lpvT?'<span style="color:var(--muted)">'+money2(costoLPV)+' por llegar a la página ('+ab('LPV')+')</span>':''));
  h+=card(19,'¿El pixel manda señales?',fmt(C.px['PageView']||0),g((C.px['PageView']||0)>0?'g':'r','PageView')+fmt(C.px['Lead']||0)+' Lead',{drill:'pixel'});
