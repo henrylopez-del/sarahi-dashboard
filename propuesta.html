@@ -207,8 +207,8 @@ function render(){
      `<div style="width:${fbp}%;background:#1877F2;display:grid;place-items:center;min-width:0">${fbp>=14?'FB '+fbp+'%':''}</div>`+
      `<div style="width:${igp}%;background:#E1306C;display:grid;place-items:center;min-width:0">${igp>=14?'IG '+igp+'%':''}</div></div>`;
    h+=card(4,'¿De dónde vienen los leads?',bar,g('n','FB '+fmt(C.fbL)+' · IG '+fmt(C.igL)+' leads'),{sm:true}); }
- h+=card(5,'¿Qué plataforma convierte mejor a cita?','Gana '+mejorConv,g('g','FB '+(cvFB.pct_agenda||0)+'% · IG '+(cvIG.pct_agenda||0)+'% agendan'),{drill:'plat'});
- h+=card(6,'¿Cuánto cuesta un <abbr title="Persona que llenó el formulario de la clase = un lead">registro</abbr>?',C.leads?money2(costoReg):'—',(C.leads?g(costoReg<=BENCH.cpl?'g':'r',(costoReg<=BENCH.cpl?'mejor':'peor')+' que $'+BENCH.cpl+' industria'):g('n','sin leads'))+(C.lpvT?'<span style="color:var(--muted)">'+money2(costoLPV)+' por llegar a la página ('+ab('LPV')+')</span>':''));
+ h+=card(5,'¿Qué % de leads agenda, por plataforma?','FB '+(cvFB.pct_agenda||0)+'% · IG '+(cvIG.pct_agenda||0)+'%',g('n','% de leads que agendan cita'),{drill:'plat'});
+ h+=card(6,'¿Cuánto cuesta cada <abbr title="Persona que llenó el formulario de la clase">registro</abbr> (formulario lleno)?',C.leads?money2(costoReg):'—',g('n','gasto ÷ registros'+(C.lpvT?' · '+money2(costoLPV)+' por llegar a la página':'')));
  h+=card(19,'¿El pixel manda señales?',fmt(C.px['PageView']||0),g((C.px['PageView']||0)>0?'g':'r','PageView')+fmt(C.px['Lead']||0)+' Lead',{drill:'pixel'});
  h+='</div>';
  h+='<div class="sech">Funnel real del CRM · ¿Avanzan a la venta?</div><div class="grid">';
