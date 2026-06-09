@@ -98,18 +98,24 @@ async function load(){
  document.getElementById('rangelbl').textContent=from+'  →  '+to;
  document.getElementById('fwd').disabled=ST.offset===0;
  document.getElementById('body').innerHTML='<div class="loader">Cargando…</div>';
- const f=`day=gte.${from}&day=lte.${to}`;
- const [acct,addaily,ads,pixel,utm,tags,vid,scroll]=await Promise.all([
-  sb('sarahi_meta_account_daily',`select=spend,impressions,clicks&${f}`),
-  sb('sarahi_meta_ad_daily',`select=ad_id,spend,impressions,clicks,lpv&${f}&limit=20000`),
+ // Meta cierra cifras con 1-2 días de lag: el gasto/ads no cuenta el día de hoy
+ const yest=new Date();yest.setHours(0,0,0,0);yest.setDate(yest.getDate()-1);
+ const adTo=(to>iso(yest))?iso(yest):to;
+ const fa=`day=gte.${from}&day=lte.${adTo}`;
+ const SCROLL_OK=from>='2026-06-09'; // tracker viejo medía scroll en ráfaga
+ const [acct,addaily,ads,split,pixel,utm,tags,appts,vid,scroll]=await Promise.all([
+  sb('sarahi_meta_account_daily',`select=spend,impressions,clicks&${fa}`),
+  sb('sarahi_meta_ad_daily',`select=ad_id,spend,impressions,clicks,lpv&${fa}&limit=20000`),
   sb('sarahi_meta_ads','select=ad_id,name,effective_status,fb_spend,ig_spend'),
-  sb('sarahi_meta_pixel_daily',`select=event_name,count&${f}`),
+  sb('sarahi_meta_ad_platform_split',`select=ad_id,publisher_platform,spend,impressions,clicks,leads,period_start,period_end`),
+  sb('sarahi_meta_pixel_daily',`select=event_name,count&${fa}`),
   sb('sarahi_meta_utm_leads',`select=utm_source_normalized,correo&fecha=gte.${from}&fecha=lte.${to}&limit=20000`),
   sb('sarahi_ghl_contact_tags',`select=tag_name,contact_id&date_added=gte.${from}T00:00:00&date_added=lte.${to}T23:59:59&limit=20000`),
-  sb('sarahi_cl_video_watch',`select=session_id,total_seconds_watched,max_position_seconds,completed,last_heartbeat_at&last_heartbeat_at=gte.${from}T00:00:00&last_heartbeat_at=lte.${to}T23:59:59&limit=20000`),
-  sb('sarahi_cl_events',`select=session_id,event_name&event_name=in.(page_view,scroll_25,scroll_50,scroll_75,scroll_100)&ts=gte.${from}T00:00:00&ts=lte.${to}T23:59:59&limit=50000`)
+  sb('sarahi_ghl_appointments',`select=status,start_time,contact_id&start_time=gte.${from}T00:00:00&start_time=lte.${to}T23:59:59&limit=5000`),
+  sb('sarahi_cl_video_watch',`select=session_id,total_seconds_watched,max_position_seconds,completed&last_heartbeat_at=gte.${from}T00:00:00&last_heartbeat_at=lte.${to}T23:59:59&limit=20000`),
+  SCROLL_OK?sb('sarahi_cl_events',`select=session_id,event_name&event_name=in.(page_view,scroll_25,scroll_50,scroll_75,scroll_100)&ts=gte.${from}T00:00:00&ts=lte.${to}T23:59:59&limit=50000`):[]
  ]);
- RAW={from,to,acct,addaily,ads,pixel,utm,tags,vid,scroll};
+ RAW={from,to,adTo,acct,addaily,ads,split,pixel,utm,tags,appts,vid,scroll,SCROLL_OK};
  render();
  document.getElementById('stamp').textContent='Actualizado '+new Date().toLocaleString('es-MX');
 }
@@ -125,17 +131,24 @@ function compute(){
  const adList=Object.values(adAgg).sort((a,b)=>b.spend-a.spend);
  const spend=adList.reduce((s,a)=>s+a.spend,0), impr=adList.reduce((s,a)=>s+a.impr,0), clicks=adList.reduce((s,a)=>s+a.clicks,0);
  // leads by source (CRM form fills)
- const fbL=RAW.utm.filter(u=>u.utm_source_normalized==='facebook').length;
- const igL=RAW.utm.filter(u=>u.utm_source_normalized==='instagram').length;
- const leadsAll=RAW.utm.length;
+ // leads = personas únicas en CRM (dedup por correo)
+ const eFB=new Set(),eIG=new Set();
+ RAW.utm.forEach(u=>{const e=(u.correo||'').toLowerCase().trim();if(!e)return;if(u.utm_source_normalized==='facebook')eFB.add(e);else if(u.utm_source_normalized==='instagram')eIG.add(e);});
+ const fbL=eFB.size,igL=eIG.size;
+ const leadsAll=new Set(RAW.utm.map(u=>(u.correo||'').toLowerCase().trim()).filter(Boolean)).size;
  let leads=ST.plat==='facebook'?fbL:ST.plat==='instagram'?igL:(fbL+igL);
+ // citas REALES del calendario GHL (por start_time del periodo)
+ const ap=RAW.appts||[];
+ const citas=ap.filter(a=>a.status!=='cancelled').length;
+ const asist=ap.filter(a=>a.status==='showed').length;
+ const noshow=ap.filter(a=>a.status==='noshow').length;
  // tags (real funnel)
  const tg={};RAW.tags.forEach(t=>{(tg[t.tag_name]=tg[t.tag_name]||new Set()).add(t.contact_id)});
  const T=n=>(tg[n]||new Set()).size;
  // pixel
  const px={};RAW.pixel.forEach(p=>{px[p.event_name]=(px[p.event_name]||0)+(+p.count||0)});
  // video
- const vids=RAW.vid;const vSess=new Set(vids.map(v=>v.session_id)).size;
+ const vids=RAW.vid.filter(v=>(+v.total_seconds_watched||0)>=10);const vSess=new Set(vids.map(v=>v.session_id)).size;
  const vComp=vids.filter(v=>v.completed).length;
  const vAvgPos=vids.length?Math.round(vids.reduce((s,v)=>s+(+v.max_position_seconds||0),0)/vids.length):0;
  const vAvgW=vids.length?Math.round(vids.reduce((s,v)=>s+(+v.total_seconds_watched||0),0)/vids.length):0;
@@ -143,7 +156,7 @@ function compute(){
  const sc={};RAW.scroll.forEach(e=>{(sc[e.event_name]=sc[e.event_name]||new Set()).add(e.session_id)});
  const SC=n=>(sc[n]||new Set()).size;
  const ctr=impr?clicks/impr*100:0,cpc=clicks?spend/clicks:0;
- return {adList,spend,impr,clicks,fbL,igL,leadsAll,leads,T,px,vSess,vComp,vAvgPos,vAvgW,SC,ctr,cpc};
+ return {adList,spend,impr,clicks,fbL,igL,leadsAll,leads,T,px,vSess,vComp,vAvgPos,vAvgW,SC,ctr,cpc,citas,asist,noshow,scrollOK:RAW.SCROLL_OK};
 }
 
 function card(num,ask,ans,sub,o={}){const cls='q'+(o.pending?' pending':'')+(o.drill?' click':'');const sm=o.sm?' sm':'';
@@ -155,7 +168,7 @@ let C={};
 function render(){
  C=compute();const dur=708;
  const costoReg=C.leads?C.spend/C.leads:0;
- const citas=C.T('agendo-cita'),noshow=C.T('no show llamada'),asist=Math.max(0,citas-noshow);
+ const citas=C.citas,noshow=C.noshow,asist=C.asist;
  const costoLlam=citas?C.spend/citas:0;
  const compHT=C.T('compro'),compLT=C.T('curso - reestructura y factura');
  const pctVid=C.vAvgPos?Math.round(C.vAvgPos/dur*100):0;
@@ -171,8 +184,8 @@ function render(){
  h+='</div>';
  h+='<div class="sech">Funnel real del CRM · ¿Avanzan a la venta?</div><div class="grid">';
  h+=card(10,'¿Cómo se ve el funnel real?',fmt(C.leads)+' → '+fmt(citas)+' → '+(compHT+compLT),'lead → cita → compra',{sm:true,drill:'funnel'});
- h+=card(11,'¿Cuántas citas y no-show?',fmt(citas)+' citas',g('a',fmt(noshow)+' no-show')+fmt(asist)+' asist. (aprox)');
- h+=card(7,'¿Costo por cita agendada?',citas?money2(costoLlam):'—',g('n','gasto ÷ citas del periodo'));
+ h+=card(11,'¿Cuántas citas, no-show y asistencias?',fmt(citas)+' citas',g('a',fmt(noshow)+' no-show')+g('g',fmt(asist)+' asistió')+'calendario real');
+ h+=card(7,'¿Costo por cita agendada?',citas?money2(costoLlam):'—',g('n','gasto ÷ citas reales del periodo'));
  h+=card(8,'¿Costo por compra (HT/LT)?',compHT?money(C.spend/compHT):(compLT?'LT '+money(C.spend/compLT):'Sin compras'),g(compHT+compLT>0?'n':'a',compHT+' HT · '+compLT+' LT'+(compHT+compLT===0?' en el periodo':'')),{sm:true});
  h+='</div>';
  h+='<div class="sech">Dinero · ¿Estoy ganando?</div><div class="grid">';
@@ -185,7 +198,7 @@ function render(){
  h+=card(15,'¿Cuántos vieron y NO agendaron?',fmt(Math.max(0,C.vSess-citas)),g('a',C.vSess+' vieron · '+citas+' citas'));
  h+=card(16,'¿Cuántos completaron el video?',fmt(C.vComp),g('n','de '+C.vSess+' sesiones'));
  h+=card(17,'¿Cuántos con tag video-visto?',fmt(C.T('video-visto')),g('n','etiqueta CRM'));
- h+=card(18,'¿Dónde se caen en scroll?',C.SC('page_view')?Math.round(C.SC('scroll_100')/C.SC('page_view')*100)+'%':'—',g('n','llegan al final',''),{drill:'scroll'});
+ h+=card(18,'¿Dónde se caen en scroll?',(C.scrollOK&&C.SC('page_view'))?Math.round(C.SC('scroll_100')/C.SC('page_view')*100)+'%':'—',C.scrollOK?g('n','llegan al final'):g('a','válido solo desde 9-jun'),{drill:'scroll'});
  h+='</div>';
  document.getElementById('body').innerHTML=h;
 }
@@ -204,7 +217,7 @@ function drill(k){
   const ord=['PageView','ViewContent','Lead','SubmitApplication','Schedule','Purchase'];
   html='<table><thead><tr><th>Señal</th><th class="num">Eventos</th><th>Qué es</th></tr></thead><tbody>'+ord.map(e=>`<tr><td>${e}</td><td class="num">${fmt(C.px[e]||0)}</td><td style="color:var(--muted)">${({PageView:'carga de página',ViewContent:'vio /clase/',Lead:'form detectado',SubmitApplication:'aplicación',Schedule:'cita',Purchase:'compra'})[e]}</td></tr>`).join('')+'</tbody></table><p class="note" style="margin-top:12px">Leads contables = los que quedan en el CRM (no todo evento de pixel es un lead reclamable).</p>';}
  else if(k==='funnel'){tt.textContent='Funnel real del CRM · '+RAW.from+' → '+RAW.to;
-  const steps=[['Leads (form fills)',C.leads],['Comprometido',C.T('comprometido')],['Video-visto',C.T('video-visto')],['Calificación enviada',C.T('calificacion-enviada')],['Prospect high-ticket',C.T('high-ticket')],['Agendó cita',C.T('agendo-cita')],['No show',C.T('no show llamada')],['Compró HT',C.T('compro')],['Compró LT (reestructura)',C.T('curso - reestructura y factura')]];
+  const steps=[['Leads (form fills, únicos)',C.leads],['Comprometido (tag)',C.T('comprometido')],['Video-visto (tag)',C.T('video-visto')],['Calificación enviada (tag)',C.T('calificacion-enviada')],['Prospect high-ticket (tag)',C.T('high-ticket')],['Agendó cita (calendario)',C.citas],['Asistió (calendario)',C.asist],['No show (calendario)',C.noshow],['Compró HT (tag)',C.T('compro')],['Compró LT (tag)',C.T('curso - reestructura y factura')]];
   const mx=Math.max(...steps.map(s=>s[1]),1);
   html='<div class="bars">'+steps.map(s=>`<div class="brow ${s[1]===0?'muted-step':''}"><div class="bl"><span>${s[0]}</span><span class="v">${fmt(s[1])}</span></div><div class="track"><div class="fill" style="width:${Math.max(s[1]/mx*100,1)}%;background:${s[1]===0?'#E4E4E7':'#7C3AED'}"></div></div></div>`).join('')+'</div><p class="note" style="margin-top:12px">Pasos en gris = vacíos en este periodo (Sarahí no los usa o no hubo). Conteo por fecha de etiqueta en el CRM.</p>';}
  else if(k==='scroll'){tt.textContent='Scroll en /clase/ · '+RAW.from+' → '+RAW.to;
