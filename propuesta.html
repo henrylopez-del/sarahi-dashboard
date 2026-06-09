@@ -30,7 +30,9 @@ header{display:flex;align-items:center;justify-content:space-between;margin-bott
 .q .ask{font-size:12.5px;color:var(--muted);font-weight:500;margin-bottom:11px;padding-right:22px;min-height:34px}
 .q .ans{font-size:29px;font-weight:700;letter-spacing:-.03em;line-height:1}.q .ans.sm{font-size:19px;line-height:1.22}
 .q .sub{margin-top:8px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.dot{font-weight:600;font-size:11.5px;padding:2px 9px;border-radius:999px}.dot.g{background:var(--gbg);color:var(--green);border:1px solid var(--gbd)}.dot.r{background:var(--rbg);color:var(--red);border:1px solid var(--rbd)}.dot.a{background:var(--abg);color:var(--amber);border:1px solid var(--abd)}.dot.n{background:#F4F4F5;color:var(--muted);border:1px solid var(--border)}
+.dot{font-weight:600;font-size:11.5px;padding:3px 10px;border-radius:999px}
+.dot.g{background:var(--green);color:#fff}.dot.r{background:var(--red);color:#fff}.dot.a{background:#F59E0B;color:#fff}
+.dot.n{background:transparent;color:var(--muted);padding:3px 0;font-weight:500}
 .q.pending{background:repeating-linear-gradient(45deg,#fff,#fff 10px,#FCFCFD 10px,#FCFCFD 20px);border-style:dashed}.q.pending .ans{color:var(--subtle)}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-top:12px}
 .panel h3{font-size:13.5px;font-weight:600;margin-bottom:14px}
@@ -45,6 +47,18 @@ table{width:100%;border-collapse:collapse;font-size:12.5px}thead th{text-align:l
 footer{margin-top:26px;font-size:12px;color:var(--subtle);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .note{font-size:12px;color:var(--muted);margin:-6px 0 14px}
 abbr{text-decoration:underline dotted var(--subtle);cursor:help;text-underline-offset:2px}
+/* ===== upgrade visual ===== */
+.q{border-left:4px solid var(--border)}
+.q .ask{font-weight:600;color:var(--text)}
+.q .ans{font-size:33px}
+.q:hover{transform:translateY(-2px)}
+.qico{font-size:16px;margin-right:6px;filter:saturate(1.1)}
+.s-adq .q{border-left-color:var(--blue)}.s-fun .q{border-left-color:var(--violet)}.s-din .q{border-left-color:var(--green)}.s-com .q{border-left-color:#EA580C}
+.s-adq .num{color:var(--blue)}.s-fun .num{color:var(--violet)}.s-din .num{color:var(--green)}.s-com .num{color:#EA580C}
+.sech{color:var(--text);font-size:13px;display:flex;align-items:center;gap:9px}
+.sech::before{content:'';width:10px;height:10px;border-radius:3px;background:var(--subtle)}
+.sech.h-adq::before{background:var(--blue)}.sech.h-fun::before{background:var(--violet)}.sech.h-din::before{background:var(--green)}.sech.h-com::before{background:#EA580C}
+.s-din .q .ans{color:var(--green)}
 </style>
 </head>
 <body>
@@ -175,9 +189,10 @@ function compute(){
  return {adList,spend,impr,clicks,lpvT,fbSpend,igSpend,fbClicks,igClicks,fbL,igL,leadsAll,leads,T,px,vSess,vComp,vAvgPos,vAvgW,SC,ctr,cpc,citas,asist,noshow,scrollOK:RAW.SCROLL_OK};
 }
 
+const ICON={1:'💸',2:'👁️',3:'🧲',4:'📲',5:'⚖️',6:'🎯',7:'📅',8:'🤝',9:'📈',10:'🔻',11:'🗓️',12:'💵',13:'⏱️',14:'🎬',15:'🚪',16:'✅',17:'🔁',18:'📜',19:'📡','+':'🔑'};
 function card(num,ask,ans,sub,o={}){const cls='q'+(o.pending?' pending':'')+(o.drill?' click':'');const sm=o.sm?' sm':'';
  const exp=o.drill?'<span class="exp">clic ⤢</span>':'';const oc=o.drill?`onclick="drill('${o.drill}')"`:'';
- return `<div class="${cls}" ${oc}><span class="num">${num}</span>${exp}<div class="ask">${ask}</div><div class="ans${sm}">${ans}</div><div class="sub">${sub||''}</div></div>`;}
+ return `<div class="${cls}" ${oc}><span class="num">${num}</span>${exp}<div class="ask"><span class="qico">${ICON[num]||''}</span>${ask}</div><div class="ans${sm}">${ans}</div><div class="sub">${sub||''}</div></div>`;}
 const g=(d,p)=>`<span class="dot ${d}">${p}</span>`;
 const GLOSS={CTR:'Click-Through Rate — % de gente que dio clic al ver el anuncio',CPC:'Costo Por Clic — cuánto cuesta cada clic',CPL:'Costo Por Lead — cuánto cuesta cada registro (formulario lleno)',LPV:'Landing Page Views — personas que llegaron a la página de la clase',CPM:'Costo Por Mil impresiones'};
 const ab=t=>`<abbr title="${GLOSS[t]||t}">${t}</abbr>`;
@@ -198,7 +213,7 @@ function render(){
  const compHT=C.T('compro'),compLT=C.T('curso - reestructura y factura');
  const pctVid=C.vAvgPos?Math.round(C.vAvgPos/dur*100):0;
  let h='';
- h+='<div class="sech">Adquisición · ¿Qué entra y a qué costo?</div><div class="grid">';
+ h+='<div class="sech h-adq">Adquisición · ¿Qué entra y a qué costo?</div><div class="grid s-adq">';
  h+=card(1,'¿Cuánto invertí en ads?',money(C.spend),g('n',ST.plat==='all'?'Meta total':ST.plat),{drill:'spend'});
  h+=card(2,'¿Cuánta gente vio y dio clic?',fmt(C.impr)+' <span style="font-size:13px;color:var(--muted)">vistas</span>',fmt(C.clicks)+' clics · '+ab('CTR')+' '+C.ctr.toFixed(2)+'%',{drill:'ads'});
  h+=card(3,'¿Cuántos leads entraron al CRM?',fmt(C.leads)+' <span style="font-size:13px;color:var(--muted)">personas</span>',g('g',fmt(C.fbL+C.igL)+' de ads')+'únicos, sin duplicar');
@@ -211,18 +226,18 @@ function render(){
  h+=card(6,'¿Cuánto cuesta cada lead que llega al CRM?',C.leads?money2(costoReg):'—',g('n','gasto ÷ leads en CRM'+(C.lpvT?' · '+money2(costoLPV)+' por llegar a la página':'')));
  h+=card(19,'¿El pixel manda señales?',fmt(C.px['PageView']||0),g((C.px['PageView']||0)>0?'g':'r','PageView')+fmt(C.px['Lead']||0)+' Lead',{drill:'pixel'});
  h+='</div>';
- h+='<div class="sech">Funnel real del CRM · ¿Avanzan a la venta?</div><div class="grid">';
+ h+='<div class="sech h-fun">Funnel real del CRM · ¿Avanzan a la venta?</div><div class="grid s-fun">';
  h+=card(10,'¿Cómo se ve el funnel real?',fmt(C.leads)+' → '+fmt(citas)+' → '+(compHT+compLT),'lead → cita → compra',{sm:true,drill:'funnel'});
  h+=card(11,'¿Cuántas citas, no-show y asistencias?',fmt(citas)+' citas',g('a',fmt(noshow)+' no-show')+g('g',fmt(asist)+' asistió')+'calendario real');
  h+=card(7,'¿Costo por cita agendada?',citas?money2(costoLlam):'—',g('n','gasto ÷ citas reales del periodo'));
  const clientes=compLT; // clientes que pagan (curso facturación) en el periodo
  h+=card(8,'¿Cuánto cuesta cada cliente (que paga)?',clientes?money(C.spend/clientes):'—',g(clientes?'n':'a',clientes?clientes+' clientes facturación en el periodo':'sin clientes en el periodo'),{sm:true});
  h+='</div>';
- h+='<div class="sech">Dinero · ¿Estoy ganando?</div><div class="grid">';
+ h+='<div class="sech h-din">Dinero · ¿Estoy ganando?</div><div class="grid s-din">';
  h+=card(9,'¿Cuál es mi <abbr title="Return On Ad Spend: ingreso ÷ gasto en ads">ROAS</abbr>? (provisional)',roasProv?roasProv.toFixed(2)+'x':'—',g('a','solo curso facturación · validar con Sarahí'));
  h+=card(12,'¿Cuánto vendí? (LT provisional)',money(ingresoLT),g('a',(RAW.ltBuyers||0)+' ventas × $'+fmt(PRICE_LT)+' MXN · validar'));
  h+='</div>';
- h+='<div class="sech">Comportamiento en la clase · ¿Ven el video y dónde se caen?</div><div class="grid">';
+ h+='<div class="sech h-com">Comportamiento en la clase · ¿Ven el video y dónde se caen?</div><div class="grid s-com">';
  h+=card(13,'¿En qué minuto se cae el video?',C.vSess?Math.floor(C.vAvgPos/60)+':'+String(C.vAvgPos%60).padStart(2,'0'):'—',g('a','posición máx prom · video 11:48'));
  h+=card(14,'¿Qué % del video ven?',C.vSess?pctVid+'%':'—',C.vSess?g(pctVid>=50?'g':'r',C.vAvgW+'s de '+dur+'s'):g('n','sin sesiones'));
  h+=card(15,'¿Cuántos vieron y NO agendaron?',fmt(Math.max(0,C.vSess-citas)),g('a',C.vSess+' vieron · '+citas+' citas'));
