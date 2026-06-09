@@ -194,6 +194,9 @@ function card(num,ask,ans,sub,o={}){const cls='q'+(o.pending?' pending':'')+(o.d
  const exp=o.drill?'<span class="exp">clic ⤢</span>':'';const oc=o.drill?`onclick="drill('${o.drill}')"`:'';
  return `<div class="${cls}" ${oc}><span class="num">${num}</span>${exp}<div class="ask"><span class="qico">${ICON[num]||''}</span>${ask}</div><div class="ans${sm}">${ans}</div><div class="sub">${sub||''}</div></div>`;}
 const g=(d,p)=>`<span class="dot ${d}">${p}</span>`;
+function donut(segs){const C=100;let off=25;const cs=segs.filter(s=>s.v>0).map(s=>{const tot=segs.reduce((a,x)=>a+x.v,0)||1,len=s.v/tot*C,el=`<circle r="15.9155" cx="18" cy="18" fill="transparent" stroke="${s.color}" stroke-width="6" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${off}"/>`;off-=len;return el;}).join('');return `<svg viewBox="0 0 36 36" width="62" height="62" style="flex-shrink:0">${cs}</svg>`;}
+function ring(pct,color){const C=100,len=pct/100*C;return `<svg viewBox="0 0 36 36" width="66" height="66" style="flex-shrink:0"><circle r="15.9155" cx="18" cy="18" fill="none" stroke="#EDEDED" stroke-width="4"/><circle r="15.9155" cx="18" cy="18" fill="none" stroke="${color}" stroke-width="4" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="25" stroke-linecap="round"/><text x="18" y="21" text-anchor="middle" font-size="9.5" font-weight="800" fill="#18181B" font-family="Inter Tight">${pct}%</text></svg>`;}
+const leg=(c,t)=>`<div style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:2px;background:${c};display:inline-block"></span>${t}</div>`;
 const GLOSS={CTR:'Click-Through Rate — % de gente que dio clic al ver el anuncio',CPC:'Costo Por Clic — cuánto cuesta cada clic',CPL:'Costo Por Lead — cuánto cuesta cada registro (formulario lleno)',LPV:'Landing Page Views — personas que llegaron a la página de la clase',CPM:'Costo Por Mil impresiones'};
 const ab=t=>`<abbr title="${GLOSS[t]||t}">${t}</abbr>`;
 let C={};
@@ -217,18 +220,19 @@ function render(){
  h+=card(1,'¿Cuánto invertí en ads?',money(C.spend),g('n',ST.plat==='all'?'Meta total':ST.plat),{drill:'spend'});
  h+=card(2,'¿Cuánta gente vio y dio clic?',fmt(C.impr)+' <span style="font-size:13px;color:var(--muted)">vistas</span>',fmt(C.clicks)+' clics · '+ab('CTR')+' '+C.ctr.toFixed(2)+'%',{drill:'ads'});
  h+=card(3,'¿Cuántos leads entraron al CRM?',fmt(C.leads)+' <span style="font-size:13px;color:var(--muted)">personas</span>',g('g',fmt(C.fbL+C.igL)+' de ads')+'únicos, sin duplicar');
- { const tot=(C.fbL+C.igL)||1, fbp=Math.round(C.fbL/tot*100), igp=100-fbp;
-   const bar=`<div style="display:flex;height:26px;border-radius:7px;overflow:hidden;font-size:11.5px;font-weight:700;color:#fff;margin-top:2px">`+
-     `<div style="width:${fbp}%;background:#1877F2;display:grid;place-items:center;min-width:0">${fbp>=14?'FB '+fbp+'%':''}</div>`+
-     `<div style="width:${igp}%;background:#E1306C;display:grid;place-items:center;min-width:0">${igp>=14?'IG '+igp+'%':''}</div></div>`;
-   h+=card(4,'¿De dónde vienen los leads?',bar,g('n','FB '+fmt(C.fbL)+' · IG '+fmt(C.igL)+' leads'),{sm:true}); }
+ { const d=donut([{v:C.fbL,color:'#1877F2'},{v:C.igL,color:'#E1306C'}]);
+   const ansd=`<div style="display:flex;align-items:center;gap:13px">${d}<div style="font-size:12.5px;line-height:1.7;font-weight:600">${leg('#1877F2','FB '+fmt(C.fbL))}${leg('#E1306C','IG '+fmt(C.igL))}</div></div>`;
+   h+=card(4,'¿De dónde vienen los leads?',ansd,'',{sm:true}); }
  h+=card(5,'¿Qué % de leads agenda, por plataforma?','FB '+(cvFB.pct_agenda||0)+'% · IG '+(cvIG.pct_agenda||0)+'%',g('n','% de leads que agendan cita'),{drill:'plat'});
  h+=card(6,'¿Cuánto cuesta cada lead que llega al CRM?',C.leads?money2(costoReg):'—',g('n','gasto ÷ leads en CRM'+(C.lpvT?' · '+money2(costoLPV)+' por llegar a la página':'')));
  h+=card(19,'¿El pixel manda señales?',fmt(C.px['PageView']||0),g((C.px['PageView']||0)>0?'g':'r','PageView')+fmt(C.px['Lead']||0)+' Lead',{drill:'pixel'});
  h+='</div>';
  h+='<div class="sech h-fun">Funnel real del CRM · ¿Avanzan a la venta?</div><div class="grid s-fun">';
  h+=card(10,'¿Cómo se ve el funnel real?',fmt(C.leads)+' → '+fmt(citas)+' → '+(compHT+compLT),'lead → cita → compra',{sm:true,drill:'funnel'});
- h+=card(11,'¿Cuántas citas, no-show y asistencias?',fmt(citas)+' citas',g('a',fmt(noshow)+' no-show')+g('g',fmt(asist)+' asistió')+'calendario real');
+ { const pend=Math.max(0,citas-asist-noshow);
+   const d11=donut([{v:asist,color:'#16A34A'},{v:noshow,color:'#DC2626'},{v:pend,color:'#94A3B8'}]);
+   const a11=`<div style="display:flex;align-items:center;gap:13px">${d11}<div style="font-size:12px;line-height:1.65;font-weight:600">${leg('#16A34A',asist+' asistió')}${leg('#DC2626',noshow+' no-show')}${leg('#94A3B8',pend+' pendiente')}</div></div>`;
+   h+=card(11,'Citas: '+fmt(citas)+' total (calendario)',a11,'',{sm:true}); }
  h+=card(7,'¿Costo por cita agendada?',citas?money2(costoLlam):'—',g('n','gasto ÷ citas reales del periodo'));
  const clientes=compLT; // clientes que pagan (curso facturación) en el periodo
  h+=card(8,'¿Cuánto cuesta cada cliente (que paga)?',clientes?money(C.spend/clientes):'—',g(clientes?'n':'a',clientes?clientes+' clientes facturación en el periodo':'sin clientes en el periodo'),{sm:true});
@@ -239,7 +243,7 @@ function render(){
  h+='</div>';
  h+='<div class="sech h-com">Comportamiento en la clase · ¿Ven el video y dónde se caen?</div><div class="grid s-com">';
  h+=card(13,'¿En qué minuto se cae el video?',C.vSess?Math.floor(C.vAvgPos/60)+':'+String(C.vAvgPos%60).padStart(2,'0'):'—',g('a','posición máx prom · video 11:48'));
- h+=card(14,'¿Qué % del video ven?',C.vSess?pctVid+'%':'—',C.vSess?g(pctVid>=50?'g':'r',C.vAvgW+'s de '+dur+'s'):g('n','sin sesiones'));
+ h+=card(14,'¿Qué % del video ven?',C.vSess?`<div style="display:flex;align-items:center;gap:13px">${ring(pctVid,'#0D9488')}<div style="font-size:12px;color:var(--muted);font-weight:500">${C.vAvgW}s vistos<br>de ${dur}s</div></div>`:'—',C.vSess?'':g('n','sin sesiones'),{sm:true});
  h+=card(15,'¿Cuántos vieron y NO agendaron?',fmt(Math.max(0,C.vSess-citas)),g('a',C.vSess+' vieron · '+citas+' citas'));
  h+=card(16,'¿Cuántos completaron el video?',fmt(C.vComp),g('n','de '+C.vSess+' sesiones'));
  h+=card(17,'¿Cuántos con tag video-visto?',fmt(C.T('video-visto')),g('n','etiqueta CRM'));
