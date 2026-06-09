@@ -234,8 +234,8 @@ function render(){
    const a11=`<div style="display:flex;align-items:center;gap:13px">${d11}<div style="font-size:12px;line-height:1.65;font-weight:600">${leg('#16A34A',asist+' asistió')}${leg('#DC2626',noshow+' no-show')}${leg('#94A3B8',pend+' pendiente')}</div></div>`;
    h+=card(11,'Citas: '+fmt(citas)+' total (calendario)',a11,'',{sm:true}); }
  h+=card(7,'¿Costo por cita agendada?',citas?money2(costoLlam):'—',g('n','gasto ÷ citas reales del periodo'));
- const clientes=compLT; // clientes que pagan (curso facturación) en el periodo
- h+=card(8,'¿Cuánto cuesta cada cliente (que paga)?',clientes?money(C.spend/clientes):'—',g(clientes?'n':'a',clientes?clientes+' clientes facturación en el periodo':'sin clientes en el periodo'),{sm:true});
+ const cacHist=(RAW.ltBuyers&&RAW.spendAll)?RAW.spendAll/RAW.ltBuyers:0;
+ h+=card(8,'¿Cuánto cuesta cada cliente que paga?',cacHist?money(cacHist):'—',g('n',(RAW.ltBuyers||0)+' clientes facturación · gasto total ÷ clientes (histórico)'),{sm:true});
  h+='</div>';
  h+='<div class="sech h-din">Dinero · ¿Estoy ganando?</div><div class="grid s-din">';
  h+=card(9,'¿Cuál es mi <abbr title="Return On Ad Spend: ingreso ÷ gasto en ads">ROAS</abbr>? (provisional)',roasProv?roasProv.toFixed(2)+'x':'—',g('a','solo curso facturación · validar con Sarahí'));
