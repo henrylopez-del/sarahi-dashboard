@@ -31,7 +31,7 @@ header{display:flex;align-items:center;justify-content:space-between;margin-bott
 .q .ans{font-size:29px;font-weight:700;letter-spacing:-.03em;line-height:1}.q .ans.sm{font-size:19px;line-height:1.22}
 .q .sub{margin-top:8px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .dot{font-weight:600;font-size:11.5px;padding:3px 10px;border-radius:999px}
-.dot.g{background:var(--green);color:#fff}.dot.r{background:var(--red);color:#fff}.dot.a{background:#F59E0B;color:#fff}
+.dot.g{background:var(--green);color:#fff}.dot.r{background:var(--red);color:#fff}.dot.a{background:#64748B;color:#fff}
 .dot.n{background:transparent;color:var(--muted);padding:3px 0;font-weight:500}
 .q.pending{background:repeating-linear-gradient(45deg,#fff,#fff 10px,#FCFCFD 10px,#FCFCFD 20px);border-style:dashed}.q.pending .ans{color:var(--subtle)}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-top:12px}
@@ -53,11 +53,11 @@ abbr{text-decoration:underline dotted var(--subtle);cursor:help;text-underline-o
 .q .ans{font-size:33px}
 .q:hover{transform:translateY(-2px)}
 .qico{font-size:16px;margin-right:6px;filter:saturate(1.1)}
-.s-adq .q{border-left-color:var(--blue)}.s-fun .q{border-left-color:var(--violet)}.s-din .q{border-left-color:var(--green)}.s-com .q{border-left-color:#EA580C}
-.s-adq .num{color:var(--blue)}.s-fun .num{color:var(--violet)}.s-din .num{color:var(--green)}.s-com .num{color:#EA580C}
+.s-adq .q{border-left-color:var(--blue)}.s-fun .q{border-left-color:var(--violet)}.s-din .q{border-left-color:var(--green)}.s-com .q{border-left-color:#0D9488}
+.s-adq .num{color:var(--blue)}.s-fun .num{color:var(--violet)}.s-din .num{color:var(--green)}.s-com .num{color:#0D9488}
 .sech{color:var(--text);font-size:13px;display:flex;align-items:center;gap:9px}
 .sech::before{content:'';width:10px;height:10px;border-radius:3px;background:var(--subtle)}
-.sech.h-adq::before{background:var(--blue)}.sech.h-fun::before{background:var(--violet)}.sech.h-din::before{background:var(--green)}.sech.h-com::before{background:#EA580C}
+.sech.h-adq::before{background:var(--blue)}.sech.h-fun::before{background:var(--violet)}.sech.h-din::before{background:var(--green)}.sech.h-com::before{background:#0D9488}
 .s-din .q .ans{color:var(--green)}
 </style>
 </head>
@@ -189,7 +189,7 @@ function compute(){
  return {adList,spend,impr,clicks,lpvT,fbSpend,igSpend,fbClicks,igClicks,fbL,igL,leadsAll,leads,T,px,vSess,vComp,vAvgPos,vAvgW,SC,ctr,cpc,citas,asist,noshow,scrollOK:RAW.SCROLL_OK};
 }
 
-const ICON={1:'💸',2:'👁️',3:'🧲',4:'📲',5:'⚖️',6:'🎯',7:'📅',8:'🤝',9:'📈',10:'🔻',11:'🗓️',12:'💵',13:'⏱️',14:'🎬',15:'🚪',16:'✅',17:'🔁',18:'📜',19:'📡','+':'🔑'};
+const ICON={};
 function card(num,ask,ans,sub,o={}){const cls='q'+(o.pending?' pending':'')+(o.drill?' click':'');const sm=o.sm?' sm':'';
  const exp=o.drill?'<span class="exp">clic ⤢</span>':'';const oc=o.drill?`onclick="drill('${o.drill}')"`:'';
  return `<div class="${cls}" ${oc}><span class="num">${num}</span>${exp}<div class="ask"><span class="qico">${ICON[num]||''}</span>${ask}</div><div class="ans${sm}">${ans}</div><div class="sub">${sub||''}</div></div>`;}
