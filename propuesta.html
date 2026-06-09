@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sarahí Jaramillo · Dashboard · Ainnovation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAFAFA;--surface:#fff;--border:#E4E4E7;--bstrong:#D4D4D8;--text:#18181B;--muted:#71717A;--subtle:#A1A1AA;
+--green:#16A34A;--gbg:#F0FDF4;--gbd:#DCFCE7;--red:#DC2626;--rbg:#FEF2F2;--rbd:#FEE2E2;--amber:#B45309;--abg:#FFFBEB;--abd:#FEF3C7;--blue:#2563EB;--violet:#7C3AED;--r:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter Tight',-apple-system,sans-serif;background:var(--bg);color:var(--text);font-feature-settings:"tnum";-webkit-font-smoothing:antialiased;padding:22px;line-height:1.45}
+.wrap{max-width:1340px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.brand{display:flex;align-items:center;gap:13px}.logo{width:42px;height:42px;border-radius:10px;background:#18181B;color:#fff;display:grid;place-items:center;font-weight:800;font-size:19px}
+.eyebrow{font-size:12px;color:var(--muted);font-weight:500}h1{font-size:21px;font-weight:700;letter-spacing:-.02em}
+.live{font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--gbg);color:var(--green);border:1px solid var(--gbd)}
+.bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:11px 15px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.grp{display:flex;align-items:center;gap:6px}.grp label{font-size:11px;color:var(--muted);font-weight:500;margin-right:3px}
+.btn{padding:6px 12px;border:1px solid var(--border);background:#fff;border-radius:8px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit}
+.btn:hover{border-color:var(--bstrong);color:var(--text)}.btn.on{background:#18181B;color:#fff;border-color:#18181B}
+.rangelbl{font-size:13px;font-weight:600;color:var(--text);min-width:172px;text-align:center;font-variant-numeric:tabular-nums}
+.sep{width:1px;height:24px;background:var(--border)}
+.sech{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--subtle);margin:24px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.q{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 17px;position:relative;transition:.15s}
+.q.click{cursor:pointer}.q.click:hover{border-color:var(--blue);box-shadow:0 4px 14px -4px rgba(37,99,235,.18)}
+.q .num{position:absolute;top:13px;right:14px;font-size:11px;font-weight:700;color:var(--subtle)}
+.q .exp{position:absolute;bottom:11px;right:13px;font-size:10.5px;font-weight:600;color:var(--blue)}
+.q .ask{font-size:12.5px;color:var(--muted);font-weight:500;margin-bottom:11px;padding-right:22px;min-height:34px}
+.q .ans{font-size:29px;font-weight:700;letter-spacing:-.03em;line-height:1}.q .ans.sm{font-size:19px;line-height:1.22}
+.q .sub{margin-top:8px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.dot{font-weight:600;font-size:11.5px;padding:2px 9px;border-radius:999px}.dot.g{background:var(--gbg);color:var(--green);border:1px solid var(--gbd)}.dot.r{background:var(--rbg);color:var(--red);border:1px solid var(--rbd)}.dot.a{background:var(--abg);color:var(--amber);border:1px solid var(--abd)}.dot.n{background:#F4F4F5;color:var(--muted);border:1px solid var(--border)}
+.q.pending{background:repeating-linear-gradient(45deg,#fff,#fff 10px,#FCFCFD 10px,#FCFCFD 20px);border-style:dashed}.q.pending .ans{color:var(--subtle)}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-top:12px}
+.panel h3{font-size:13.5px;font-weight:600;margin-bottom:14px}
+.bars{display:flex;flex-direction:column;gap:9px}.brow .bl{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px}.brow .bl .v{font-weight:600}
+.track{height:8px;background:#F4F4F5;border-radius:999px;overflow:hidden}.fill{height:100%;border-radius:999px;transition:width .5s}
+.muted-step{opacity:.45}
+table{width:100%;border-collapse:collapse;font-size:12.5px}thead th{text-align:left;padding:8px 10px;background:#FAFAFA;color:var(--muted);font-size:11px;font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap}thead th.num,td.num{text-align:right}tbody td{padding:8px 10px;border-bottom:1px solid #F4F4F5;font-variant-numeric:tabular-nums}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:50;overflow:auto}
+.modal.on{display:flex}.modal .box{background:#fff;border-radius:16px;max-width:880px;width:100%;padding:22px 24px;box-shadow:0 20px 60px -10px rgba(0,0,0,.4)}
+.modal .mh{display:flex;justify-content:space-between;align-items:start;margin-bottom:14px}.modal .mh h2{font-size:16px;font-weight:700}.modal .mh .x{cursor:pointer;font-size:22px;color:var(--muted);line-height:1}
+.loader{padding:60px;text-align:center;color:var(--muted)}
+footer{margin-top:26px;font-size:12px;color:var(--subtle);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.note{font-size:12px;color:var(--muted);margin:-6px 0 14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header>
+  <div class="brand"><div class="logo">A.</div><div><div class="eyebrow">Ainnovation · Dashboard</div><h1>Sarahí Jaramillo — Las 19 preguntas</h1></div></div>
+  <span class="live" id="live">● En vivo</span>
+ </header>
+ <div class="bar">
+  <div class="grp"><label>Periodo</label>
+   <button class="btn" id="b7" onclick="setDays(7)">7 días</button>
+   <button class="btn on" id="b30" onclick="setDays(30)">30 días</button>
+  </div>
+  <div class="grp">
+   <button class="btn" onclick="step(1)" title="Periodo anterior">◀</button>
+   <span class="rangelbl" id="rangelbl">—</span>
+   <button class="btn" id="fwd" onclick="step(-1)" title="Periodo siguiente">▶</button>
+  </div>
+  <div class="sep"></div>
+  <div class="grp"><label>Plataforma</label>
+   <button class="btn on" id="pall" onclick="setPlat('all')">Global</button>
+   <button class="btn" id="pfb" onclick="setPlat('facebook')">Facebook</button>
+   <button class="btn" id="pig" onclick="setPlat('instagram')">Instagram</button>
+  </div>
+ </div>
+ <p class="note">Cada tarjeta = una pregunta. Las que dicen <b>"clic ⤢"</b> se abren con el desglose. Todo se recalcula al periodo y plataforma elegidos. Verde/rojo = vs benchmark de industria.</p>
+ <div id="body"><div class="loader">Cargando datos en vivo…</div></div>
+ <footer><span>Ainnovation · Supabase en vivo · funnel = etiquetas reales del CRM</span><span id="stamp"></span></footer>
+</div>
+<div class="modal" id="modal" onclick="if(event.target.id==='modal')closeM()"><div class="box"><div class="mh"><h2 id="mtitle"></h2><span class="x" onclick="closeM()">×</span></div><div id="mbody"></div></div></div>
+
+<script>
+const SB='https://fneppfjeywhayknrgahe.supabase.co/rest/v1';
+const KEY='sb_publishable_zLroeuC3ZrE-K_zVGFwi3Q_UyYG6ZYB';
+const H={apikey:KEY,Authorization:'Bearer '+KEY};
+const BENCH={cpl:27.66,ctr:2,convLanding:12};
+const ST={days:30,offset:0,plat:'all'};
+let RAW={};
+const money=n=>'$'+Math.round(n||0).toLocaleString('es-MX');
+const money2=n=>'$'+Number(n||0).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt=n=>Math.round(n||0).toLocaleString('es-MX');
+const iso=d=>d.toISOString().slice(0,10);
+function range(){const t=new Date();t.setHours(0,0,0,0);const to=new Date(t);to.setDate(t.getDate()-ST.offset*ST.days);const from=new Date(to);from.setDate(to.getDate()-(ST.days-1));return{from:iso(from),to:iso(to)};}
+async function sb(t,q){const r=await fetch(`${SB}/${t}?${q}`,{headers:H});return r.ok?r.json():[];}
+function setDays(d){ST.days=d;ST.offset=0;document.getElementById('b7').classList.toggle('on',d===7);document.getElementById('b30').classList.toggle('on',d===30);load();}
+function step(dir){ST.offset=Math.max(0,ST.offset+dir);load();}
+function setPlat(p){ST.plat=p;['all','facebook','instagram'].forEach(x=>document.getElementById('p'+(x==='all'?'all':x.slice(0,2))).classList.toggle('on',x===p));render();}
+function platMajority(ad){const fs=+ad.fb_spend||0,is=+ad.ig_spend||0;return is>fs?'instagram':'facebook';}
+
+async function load(){
+ const {from,to}=range();
+ document.getElementById('rangelbl').textContent=from+'  →  '+to;
+ document.getElementById('fwd').disabled=ST.offset===0;
+ document.getElementById('body').innerHTML='<div class="loader">Cargando…</div>';
+ const f=`day=gte.${from}&day=lte.${to}`;
+ const [acct,addaily,ads,pixel,utm,tags,vid,scroll]=await Promise.all([
+  sb('sarahi_meta_account_daily',`select=spend,impressions,clicks&${f}`),
+  sb('sarahi_meta_ad_daily',`select=ad_id,spend,impressions,clicks,lpv&${f}&limit=20000`),
+  sb('sarahi_meta_ads','select=ad_id,name,effective_status,fb_spend,ig_spend'),
+  sb('sarahi_meta_pixel_daily',`select=event_name,count&${f}`),
+  sb('sarahi_meta_utm_leads',`select=utm_source_normalized,correo&fecha=gte.${from}&fecha=lte.${to}&limit=20000`),
+  sb('sarahi_ghl_contact_tags',`select=tag_name,contact_id&date_added=gte.${from}T00:00:00&date_added=lte.${to}T23:59:59&limit=20000`),
+  sb('sarahi_cl_video_watch',`select=session_id,total_seconds_watched,max_position_seconds,completed,last_heartbeat_at&last_heartbeat_at=gte.${from}T00:00:00&last_heartbeat_at=lte.${to}T23:59:59&limit=20000`),
+  sb('sarahi_cl_events',`select=session_id,event_name&event_name=in.(page_view,scroll_25,scroll_50,scroll_75,scroll_100)&ts=gte.${from}T00:00:00&ts=lte.${to}T23:59:59&limit=50000`)
+ ]);
+ RAW={from,to,acct,addaily,ads,pixel,utm,tags,vid,scroll};
+ render();
+ document.getElementById('stamp').textContent='Actualizado '+new Date().toLocaleString('es-MX');
+}
+
+function compute(){
+ const adsMeta={};RAW.ads.forEach(a=>adsMeta[a.ad_id]=a);
+ // per-ad agg + platform filter
+ const adAgg={};
+ RAW.addaily.forEach(r=>{const m=adsMeta[r.ad_id];if(!m)return;const plat=platMajority(m);
+  if(ST.plat!=='all'&&plat!==ST.plat)return;
+  const x=adAgg[r.ad_id]||(adAgg[r.ad_id]={name:m.name,plat,status:m.effective_status,spend:0,impr:0,clicks:0,lpv:0});
+  x.spend+=+r.spend||0;x.impr+=+r.impressions||0;x.clicks+=+r.clicks||0;x.lpv+=+r.lpv||0;});
+ const adList=Object.values(adAgg).sort((a,b)=>b.spend-a.spend);
+ const spend=adList.reduce((s,a)=>s+a.spend,0), impr=adList.reduce((s,a)=>s+a.impr,0), clicks=adList.reduce((s,a)=>s+a.clicks,0);
+ // leads by source (CRM form fills)
+ const fbL=RAW.utm.filter(u=>u.utm_source_normalized==='facebook').length;
+ const igL=RAW.utm.filter(u=>u.utm_source_normalized==='instagram').length;
+ const leadsAll=RAW.utm.length;
+ let leads=ST.plat==='facebook'?fbL:ST.plat==='instagram'?igL:(fbL+igL);
+ // tags (real funnel)
+ const tg={};RAW.tags.forEach(t=>{(tg[t.tag_name]=tg[t.tag_name]||new Set()).add(t.contact_id)});
+ const T=n=>(tg[n]||new Set()).size;
+ // pixel
+ const px={};RAW.pixel.forEach(p=>{px[p.event_name]=(px[p.event_name]||0)+(+p.count||0)});
+ // video
+ const vids=RAW.vid;const vSess=new Set(vids.map(v=>v.session_id)).size;
+ const vComp=vids.filter(v=>v.completed).length;
+ const vAvgPos=vids.length?Math.round(vids.reduce((s,v)=>s+(+v.max_position_seconds||0),0)/vids.length):0;
+ const vAvgW=vids.length?Math.round(vids.reduce((s,v)=>s+(+v.total_seconds_watched||0),0)/vids.length):0;
+ // scroll
+ const sc={};RAW.scroll.forEach(e=>{(sc[e.event_name]=sc[e.event_name]||new Set()).add(e.session_id)});
+ const SC=n=>(sc[n]||new Set()).size;
+ const ctr=impr?clicks/impr*100:0,cpc=clicks?spend/clicks:0;
+ return {adList,spend,impr,clicks,fbL,igL,leadsAll,leads,T,px,vSess,vComp,vAvgPos,vAvgW,SC,ctr,cpc};
+}
+
+function card(num,ask,ans,sub,o={}){const cls='q'+(o.pending?' pending':'')+(o.drill?' click':'');const sm=o.sm?' sm':'';
+ const exp=o.drill?'<span class="exp">clic ⤢</span>':'';const oc=o.drill?`onclick="drill('${o.drill}')"`:'';
+ return `<div class="${cls}" ${oc}><span class="num">${num}</span>${exp}<div class="ask">${ask}</div><div class="ans${sm}">${ans}</div><div class="sub">${sub||''}</div></div>`;}
+const g=(d,p)=>`<span class="dot ${d}">${p}</span>`;
+let C={};
+
+function render(){
+ C=compute();const dur=708;
+ const costoReg=C.leads?C.spend/C.leads:0;
+ const citas=C.T('agendo-cita'),noshow=C.T('no show llamada'),asist=Math.max(0,citas-noshow);
+ const costoLlam=citas?C.spend/citas:0;
+ const compHT=C.T('compro'),compLT=C.T('curso - reestructura y factura');
+ const pctVid=C.vAvgPos?Math.round(C.vAvgPos/dur*100):0;
+ let h='';
+ h+='<div class="sech">Adquisición · ¿Qué entra y a qué costo?</div><div class="grid">';
+ h+=card(1,'¿Cuánto invertí en ads?',money(C.spend),g('n',ST.plat==='all'?'Meta total':ST.plat),{drill:'spend'});
+ h+=card(2,'¿Cuánta gente vio y dio clic?',fmt(C.impr)+' <span style="font-size:13px;color:var(--muted)">impr</span>',fmt(C.clicks)+' clics · CTR '+C.ctr.toFixed(2)+'%',{drill:'ads'});
+ h+=card(3,'¿Cuántos leads entraron al CRM?',fmt(C.leads),g('n','FB '+fmt(C.fbL)+' · IG '+fmt(C.igL)));
+ h+=card(4,'¿De dónde vienen los leads?','FB '+fmt(C.fbL)+' / IG '+fmt(C.igL),g('n','por UTM en el form'),{sm:true});
+ h+=card(5,'¿Qué plataforma rinde mejor?',C.ctr.toFixed(2)+'% CTR',g(C.ctr>=BENCH.ctr?'g':'r',(C.ctr>=BENCH.ctr?'arriba':'abajo')+' del 2%')+' CPC '+money2(C.cpc),{drill:'plat'});
+ h+=card(6,'¿Cuánto cuesta un registro?',C.leads?money2(costoReg):'—',C.leads?g(costoReg<=BENCH.cpl?'g':'r',(costoReg<=BENCH.cpl?'mejor':'peor')+' que $'+BENCH.cpl):g('n','sin leads en rango'));
+ h+=card(19,'¿El pixel manda señales?',fmt(C.px['PageView']||0),g((C.px['PageView']||0)>0?'g':'r','PageView')+fmt(C.px['Lead']||0)+' Lead',{drill:'pixel'});
+ h+='</div>';
+ h+='<div class="sech">Funnel real del CRM · ¿Avanzan a la venta?</div><div class="grid">';
+ h+=card(10,'¿Cómo se ve el funnel real?',fmt(C.leads)+' → '+fmt(citas)+' → '+(compHT+compLT),'lead → cita → compra',{sm:true,drill:'funnel'});
+ h+=card(11,'¿Cuántas citas y no-show?',fmt(citas)+' citas',g('a',fmt(noshow)+' no-show')+fmt(asist)+' asist. (aprox)');
+ h+=card(7,'¿Costo por cita agendada?',citas?money2(costoLlam):'—',g('n','gasto ÷ citas del periodo'));
+ h+=card(8,'¿Costo por compra (HT/LT)?',compHT?money(C.spend/compHT):(compLT?'LT '+money(C.spend/compLT):'Sin compras'),g(compHT+compLT>0?'n':'a',compHT+' HT · '+compLT+' LT'+(compHT+compLT===0?' en el periodo':'')),{sm:true});
+ h+='</div>';
+ h+='<div class="sech">Dinero · ¿Estoy ganando?</div><div class="grid">';
+ h+=card(9,'¿Cuál es mi ROAS?','Pendiente',g('r','faltan ventas de Sarahí'),{pending:true});
+ h+=card(12,'¿Cuánto vendí (HT/LT en $)?','Pendiente',g('r','requiere hoja de ventas'),{pending:true});
+ h+='</div>';
+ h+='<div class="sech">Comportamiento en la clase · ¿Ven el video y dónde se caen?</div><div class="grid">';
+ h+=card(13,'¿En qué minuto se cae el video?',C.vSess?Math.floor(C.vAvgPos/60)+':'+String(C.vAvgPos%60).padStart(2,'0'):'—',g('a','posición máx prom · video 11:48'));
+ h+=card(14,'¿Qué % del video ven?',C.vSess?pctVid+'%':'—',C.vSess?g(pctVid>=50?'g':'r',C.vAvgW+'s de '+dur+'s'):g('n','sin sesiones'));
+ h+=card(15,'¿Cuántos vieron y NO agendaron?',fmt(Math.max(0,C.vSess-citas)),g('a',C.vSess+' vieron · '+citas+' citas'));
+ h+=card(16,'¿Cuántos completaron el video?',fmt(C.vComp),g('n','de '+C.vSess+' sesiones'));
+ h+=card(17,'¿Cuántos con tag video-visto?',fmt(C.T('video-visto')),g('n','etiqueta CRM'));
+ h+=card(18,'¿Dónde se caen en scroll?',C.SC('page_view')?Math.round(C.SC('scroll_100')/C.SC('page_view')*100)+'%':'—',g('n','llegan al final',''),{drill:'scroll'});
+ h+='</div>';
+ document.getElementById('body').innerHTML=h;
+}
+
+function drill(k){
+ const m=document.getElementById('modal'),tt=document.getElementById('mtitle'),mb=document.getElementById('mbody');
+ let html='';
+ if(k==='spend'||k==='ads'){tt.textContent='Desglose por anuncio · '+RAW.from+' → '+RAW.to;
+  html='<table><thead><tr><th>Anuncio</th><th>Plat</th><th>Estado</th><th class="num">Gasto</th><th class="num">Impr</th><th class="num">Clics</th><th class="num">CTR</th><th class="num">CPC</th></tr></thead><tbody>'+
+   C.adList.map(a=>`<tr><td>${a.name||''}</td><td>${a.plat==='instagram'?'IG':'FB'}</td><td>${(a.status||'').toUpperCase()==='ACTIVE'?'Activo':'Pausado'}</td><td class="num">${money(a.spend)}</td><td class="num">${fmt(a.impr)}</td><td class="num">${fmt(a.clicks)}</td><td class="num">${a.impr?(a.clicks/a.impr*100).toFixed(2):'0'}%</td><td class="num">${a.clicks?money2(a.spend/a.clicks):'—'}</td></tr>`).join('')+'</tbody></table>';
+  if(!C.adList.length)html='<div class="loader">Sin anuncios con gasto en este periodo/plataforma.</div>';}
+ else if(k==='plat'){tt.textContent='Facebook vs Instagram';
+  const rows=[['Leads',C.fbL,C.igL]];
+  html='<table><thead><tr><th>Métrica</th><th class="num">Facebook</th><th class="num">Instagram</th></tr></thead><tbody>'+rows.map(r=>`<tr><td>${r[0]}</td><td class="num">${fmt(r[1])}</td><td class="num">${fmt(r[2])}</td></tr>`).join('')+'</tbody></table><p class="note" style="margin-top:12px">Para CPC/CPL por plataforma usa el toggle FB/IG de arriba; recalcula todas las tarjetas a esa plataforma.</p>';}
+ else if(k==='pixel'){tt.textContent='Señales del pixel · '+RAW.from+' → '+RAW.to;
+  const ord=['PageView','ViewContent','Lead','SubmitApplication','Schedule','Purchase'];
+  html='<table><thead><tr><th>Señal</th><th class="num">Eventos</th><th>Qué es</th></tr></thead><tbody>'+ord.map(e=>`<tr><td>${e}</td><td class="num">${fmt(C.px[e]||0)}</td><td style="color:var(--muted)">${({PageView:'carga de página',ViewContent:'vio /clase/',Lead:'form detectado',SubmitApplication:'aplicación',Schedule:'cita',Purchase:'compra'})[e]}</td></tr>`).join('')+'</tbody></table><p class="note" style="margin-top:12px">Leads contables = los que quedan en el CRM (no todo evento de pixel es un lead reclamable).</p>';}
+ else if(k==='funnel'){tt.textContent='Funnel real del CRM · '+RAW.from+' → '+RAW.to;
+  const steps=[['Leads (form fills)',C.leads],['Comprometido',C.T('comprometido')],['Video-visto',C.T('video-visto')],['Calificación enviada',C.T('calificacion-enviada')],['Prospect high-ticket',C.T('high-ticket')],['Agendó cita',C.T('agendo-cita')],['No show',C.T('no show llamada')],['Compró HT',C.T('compro')],['Compró LT (reestructura)',C.T('curso - reestructura y factura')]];
+  const mx=Math.max(...steps.map(s=>s[1]),1);
+  html='<div class="bars">'+steps.map(s=>`<div class="brow ${s[1]===0?'muted-step':''}"><div class="bl"><span>${s[0]}</span><span class="v">${fmt(s[1])}</span></div><div class="track"><div class="fill" style="width:${Math.max(s[1]/mx*100,1)}%;background:${s[1]===0?'#E4E4E7':'#7C3AED'}"></div></div></div>`).join('')+'</div><p class="note" style="margin-top:12px">Pasos en gris = vacíos en este periodo (Sarahí no los usa o no hubo). Conteo por fecha de etiqueta en el CRM.</p>';}
+ else if(k==='scroll'){tt.textContent='Scroll en /clase/ · '+RAW.from+' → '+RAW.to;
+  const steps=[['Cargaron la página',C.SC('page_view')],['Scroll 25%',C.SC('scroll_25')],['Scroll 50%',C.SC('scroll_50')],['Scroll 75%',C.SC('scroll_75')],['Scroll 100%',C.SC('scroll_100')]];
+  const mx=steps[0][1]||1;
+  html='<div class="bars">'+steps.map(s=>`<div class="brow"><div class="bl"><span>${s[0]}</span><span class="v">${fmt(s[1])}</span></div><div class="track"><div class="fill" style="width:${Math.max(s[1]/mx*100,1)}%;background:#2563EB"></div></div></div>`).join('')+'</div><p class="note" style="margin-top:12px">Solo data del tracker nuevo es granular; antes del 9-jun el scroll se medía en ráfaga (no confiable).</p>';}
+ tt.textContent=tt.textContent;mb.innerHTML=html;m.classList.add('on');
+}
+function closeM(){document.getElementById('modal').classList.remove('on');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+load();
+</script>
+</body>
+</html>
