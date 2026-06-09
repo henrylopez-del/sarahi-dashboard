@@ -81,6 +81,7 @@ const SB='https://fneppfjeywhayknrgahe.supabase.co/rest/v1';
 const KEY='sb_publishable_zLroeuC3ZrE-K_zVGFwi3Q_UyYG6ZYB';
 const H={apikey:KEY,Authorization:'Bearer '+KEY};
 const BENCH={cpl:27.66,ctr:2,convLanding:12};
+const PRICE_LT=8500; // MXN — curso "reestructura y factura" (PROVISIONAL, validar con hoja de Sarahí)
 const ST={days:30,offset:0,plat:'all'};
 let RAW={};
 const money=n=>'$'+Math.round(n||0).toLocaleString('es-MX');
@@ -121,6 +122,12 @@ async function load(){
   SCROLL_OK?sb('sarahi_cl_events',`select=session_id,event_name&event_name=in.(page_view,scroll_25,scroll_50,scroll_75,scroll_100)&ts=gte.${from}T00:00:00&ts=lte.${to}T23:59:59&limit=50000`):[]
  ]);
  RAW={from,to,adTo,acct,addaily,ads,split,pixel,utm,tags,appts,vid,scroll,SCROLL_OK};
+ const [conv,ltAll,spAll]=await Promise.all([
+  sb('sarahi_cl_v_platform_conversion','select=*'),
+  sb('sarahi_ghl_contact_tags','select=contact_id&tag_name=eq.curso%20-%20reestructura%20y%20factura'),
+  sb('sarahi_meta_account_daily','select=spend')
+ ]);
+ RAW.conv=conv;RAW.ltBuyers=new Set((ltAll||[]).map(r=>r.contact_id)).size;RAW.spendAll=(spAll||[]).reduce((s,r)=>s+(+r.spend||0),0);
  render();
  document.getElementById('stamp').textContent='Actualizado '+new Date().toLocaleString('es-MX');
 }
@@ -185,6 +192,9 @@ function render(){
  const cpcFB=C.fbClicks?C.fbSpend/C.fbClicks:0, cpcIG=C.igClicks?C.igSpend/C.igClicks:0;
  const mejorPlat=(cplFB&&cplIG)?(cplFB<cplIG?'Facebook':'Instagram'):(C.fbL?'Facebook':(C.igL?'Instagram':'—'));
  const costoLPV=C.lpvT?C.spend/C.lpvT:0;
+ const cvFB=(RAW.conv||[]).find(r=>r.plataforma==='facebook')||{},cvIG=(RAW.conv||[]).find(r=>r.plataforma==='instagram')||{};
+ const mejorConv=((+cvFB.pct_agenda||0)>=(+cvIG.pct_agenda||0))?'Facebook':'Instagram';
+ const ingresoLT=(RAW.ltBuyers||0)*PRICE_LT, roasProv=RAW.spendAll>0?ingresoLT/RAW.spendAll:0;
  const compHT=C.T('compro'),compLT=C.T('curso - reestructura y factura');
  const pctVid=C.vAvgPos?Math.round(C.vAvgPos/dur*100):0;
  let h='';
@@ -197,7 +207,7 @@ function render(){
      `<div style="width:${fbp}%;background:#1877F2;display:grid;place-items:center;min-width:0">${fbp>=14?'FB '+fbp+'%':''}</div>`+
      `<div style="width:${igp}%;background:#E1306C;display:grid;place-items:center;min-width:0">${igp>=14?'IG '+igp+'%':''}</div></div>`;
    h+=card(4,'¿De dónde vienen los leads?',bar,g('n','FB '+fmt(C.fbL)+' · IG '+fmt(C.igL)+' leads'),{sm:true}); }
- h+=card(5,'¿Qué plataforma trae leads más baratos?',mejorPlat==='—'?'—':'Gana '+mejorPlat,g('g','FB '+(cplFB?money2(cplFB):'—')+' · IG '+(cplIG?money2(cplIG):'—')+' por lead'),{drill:'plat'});
+ h+=card(5,'¿Qué plataforma convierte mejor a cita?','Gana '+mejorConv,g('g','FB '+(cvFB.pct_agenda||0)+'% · IG '+(cvIG.pct_agenda||0)+'% agendan'),{drill:'plat'});
  h+=card(6,'¿Cuánto cuesta un <abbr title="Persona que llenó el formulario de la clase = un lead">registro</abbr>?',C.leads?money2(costoReg):'—',(C.leads?g(costoReg<=BENCH.cpl?'g':'r',(costoReg<=BENCH.cpl?'mejor':'peor')+' que $'+BENCH.cpl+' industria'):g('n','sin leads'))+(C.lpvT?'<span style="color:var(--muted)">'+money2(costoLPV)+' por llegar a la página ('+ab('LPV')+')</span>':''));
  h+=card(19,'¿El pixel manda señales?',fmt(C.px['PageView']||0),g((C.px['PageView']||0)>0?'g':'r','PageView')+fmt(C.px['Lead']||0)+' Lead',{drill:'pixel'});
  h+='</div>';
@@ -208,8 +218,8 @@ function render(){
  h+=card(8,'¿Costo por compra (HT/LT)?',compHT?money(C.spend/compHT):(compLT?'LT '+money(C.spend/compLT):'Sin compras'),g(compHT+compLT>0?'n':'a',compHT+' HT · '+compLT+' LT'+(compHT+compLT===0?' en el periodo':'')),{sm:true});
  h+='</div>';
  h+='<div class="sech">Dinero · ¿Estoy ganando?</div><div class="grid">';
- h+=card(9,'¿Cuál es mi ROAS?','Pendiente',g('r','faltan ventas de Sarahí'),{pending:true});
- h+=card(12,'¿Cuánto vendí (HT/LT en $)?','Pendiente',g('r','requiere hoja de ventas'),{pending:true});
+ h+=card(9,'¿Cuál es mi <abbr title="Return On Ad Spend: ingreso ÷ gasto en ads">ROAS</abbr>? (provisional)',roasProv?roasProv.toFixed(2)+'x':'—',g('a','solo curso facturación · validar con Sarahí'));
+ h+=card(12,'¿Cuánto vendí? (LT provisional)',money(ingresoLT),g('a',(RAW.ltBuyers||0)+' ventas × $'+fmt(PRICE_LT)+' MXN · validar'));
  h+='</div>';
  h+='<div class="sech">Comportamiento en la clase · ¿Ven el video y dónde se caen?</div><div class="grid">';
  h+=card(13,'¿En qué minuto se cae el video?',C.vSess?Math.floor(C.vAvgPos/60)+':'+String(C.vAvgPos%60).padStart(2,'0'):'—',g('a','posición máx prom · video 11:48'));
@@ -228,10 +238,18 @@ function drill(k){
  if(k==='spend'||k==='ads'){tt.textContent='Desglose por anuncio · '+RAW.from+' → '+RAW.to;
   const rows=C.adList.map(a=>`<tr><td style="min-width:170px">${a.name||''}</td><td>${a.plat==='instagram'?'IG':'FB'}</td><td>${(a.status||'').toUpperCase()==='ACTIVE'?'Activo':'Pausado'}</td><td class="num">${money(a.spend)}</td><td class="num">${fmt(a.impr)}</td><td class="num">${fmt(a.clicks)}</td><td class="num">${a.impr?(a.clicks/a.impr*100).toFixed(2):'0'}%</td><td class="num">${a.clicks?money2(a.spend/a.clicks):'—'}</td><td class="num">${fmt(a.lpv)}</td><td class="num">${fmt(a.reactions)}</td><td class="num">${fmt(a.comments)}</td><td class="num">${fmt(a.saves)}</td><td class="num">${fmt(a.eng)}</td><td class="num">${fmt(a.v3s)}</td></tr>`).join('');
   html=C.adList.length?('<div style="overflow-x:auto"><table><thead><tr><th>Anuncio</th><th>Plat</th><th>Estado</th><th class="num">Gasto</th><th class="num">Impr</th><th class="num">Clics</th><th class="num">'+ab('CTR')+'</th><th class="num">'+ab('CPC')+'</th><th class="num">'+ab('LPV')+'</th><th class="num">Reacc.</th><th class="num">Coment.</th><th class="num">Guard.</th><th class="num">Engag.</th><th class="num">Video 3s</th></tr></thead><tbody>'+rows+'</tbody></table></div><p class="note" style="margin-top:10px">Gasto/impr/clics = del periodo · Reacciones/comentarios/guardados/video = totales de vida del anuncio · ← desliza horizontal para ver todo.</p>'):'<div class="loader">Sin anuncios con gasto en este periodo/plataforma.</div>';}
- else if(k==='plat'){tt.textContent='Facebook vs Instagram · '+RAW.from+' → '+RAW.to;
+ else if(k==='plat'){tt.textContent='Facebook vs Instagram — eficiencia y conversión';
   const fb=C.fbSpend,ig=C.igSpend;
-  const rows=[['Gasto',money(fb),money(ig)],['Clics (aprox)',fmt(C.fbClicks),fmt(C.igClicks)],[ab('CPC'),C.fbClicks?money2(fb/C.fbClicks):'—',C.igClicks?money2(ig/C.igClicks):'—'],['Leads (en CRM)',fmt(C.fbL),fmt(C.igL)],[ab('CPL'),C.fbL?money2(fb/C.fbL):'—',C.igL?money2(ig/C.igL):'—']];
-  html='<table><thead><tr><th>Métrica</th><th class="num">Facebook</th><th class="num">Instagram</th></tr></thead><tbody>'+rows.map(r=>`<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td class="num">${r[2]}</td></tr>`).join('')+'</tbody></table><p class="note" style="margin-top:10px">Gasto/clics por plataforma = estimado con el ratio del anuncio · Leads = reales por UTM · El '+ab('CPL')+' es el número clave para decidir dónde invertir más.</p>';}
+  const cf=(RAW.conv||[]).find(r=>r.plataforma==='facebook')||{},ci=(RAW.conv||[]).find(r=>r.plataforma==='instagram')||{};
+  const rows=[
+   ['Gasto (periodo)',money(fb),money(ig)],
+   [ab('CPC'),C.fbClicks?money2(fb/C.fbClicks):'—',C.igClicks?money2(ig/C.igClicks):'—'],
+   [ab('CPL'),C.fbL?money2(fb/C.fbL):'—',C.igL?money2(ig/C.igL):'—'],
+   ['Leads (histórico)',fmt(cf.leads||0),fmt(ci.leads||0)],
+   ['Agendaron',fmt(cf.agendaron||0)+'  ('+(cf.pct_agenda||0)+'%)',fmt(ci.agendaron||0)+'  ('+(ci.pct_agenda||0)+'%)'],
+   ['Asistieron',fmt(cf.asistieron||0),fmt(ci.asistieron||0)],
+   ['Compraron',fmt(cf.compraron||0),fmt(ci.compraron||0)]];
+  html='<table><thead><tr><th>Métrica</th><th class="num">Facebook</th><th class="num">Instagram</th></tr></thead><tbody>'+rows.map(r=>`<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td class="num">${r[2]}</td></tr>`).join('')+'</tbody></table><p class="note" style="margin-top:10px"><b>El % que agenda es la calidad real del lead</b> (no el costo). CPC/CPL/gasto = del periodo · Conversión = histórico (un lead agenda días después).</p>';}
  else if(k==='pixel'){tt.textContent='Señales del pixel · '+RAW.from+' → '+RAW.to;
   const ord=['PageView','ViewContent','Lead','SubmitApplication','Schedule','Purchase'];
   html='<table><thead><tr><th>Señal</th><th class="num">Eventos</th><th>Qué es</th></tr></thead><tbody>'+ord.map(e=>`<tr><td>${e}</td><td class="num">${fmt(C.px[e]||0)}</td><td style="color:var(--muted)">${({PageView:'carga de página',ViewContent:'vio /clase/',Lead:'form detectado',SubmitApplication:'aplicación',Schedule:'cita',Purchase:'compra'})[e]}</td></tr>`).join('')+'</tbody></table><p class="note" style="margin-top:12px">Leads contables = los que quedan en el CRM (no todo evento de pixel es un lead reclamable).</p>';}
