@@ -453,13 +453,7 @@ tbody td:hover {
       var cells = table.rows[r].c;
       var row = [];
       for (var c = 0; c < cells.length; c++) {
-        var cell = cells[c];
-        if (!cell || cell.v == null) { row.push(''); continue; }
-        var raw = String(cell.v);
-        // Columna fecha (0): usar el .f formateado por Google Sheets si existe,
-        // así evitamos que se muestre "Date(2026,3,2,22,18,2)" en la tabla.
-        if (c === 0 && cell.f) { row.push(String(cell.f)); continue; }
-        row.push(raw);
+        row.push(cells[c] && cells[c].v != null ? String(cells[c].v) : '');
       }
       rows.push(row);
     }
