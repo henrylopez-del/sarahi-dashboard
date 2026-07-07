@@ -453,7 +453,13 @@ tbody td:hover {
       var cells = table.rows[r].c;
       var row = [];
       for (var c = 0; c < cells.length; c++) {
-        row.push(cells[c] && cells[c].v != null ? String(cells[c].v) : '');
+        var cell = cells[c];
+        if (!cell || cell.v == null) { row.push(''); continue; }
+        var raw = String(cell.v);
+        // Columna fecha (0): usar el .f formateado por Google Sheets si existe,
+        // así evitamos que se muestre "Date(2026,3,2,22,18,2)" en la tabla.
+        if (c === 0 && cell.f) { row.push(String(cell.f)); continue; }
+        row.push(raw);
       }
       rows.push(row);
     }
@@ -519,9 +525,17 @@ tbody td:hover {
     return yy + '-' + mm + '-' + dd;
   }
   function rowDateISO(row) {
-    // Column 0 = 'fecha' — puede venir como "YYYY-MM-DD..." o "DD/MM/YYYY..."
+    // Column 0 = 'fecha'. Puede llegar como:
+    //   - "Date(YYYY,M,D,...)"   (gviz, mes 0-indexado)
+    //   - "YYYY-MM-DD..."
+    //   - "DD/MM/YYYY..."
     var v = (row[0] || '').toString().trim();
     if (!v) return '';
+    var gs = v.match(/^Date\((\d{4}),(\d{1,2}),(\d{1,2})/);
+    if (gs) {
+      var mm = parseInt(gs[2], 10) + 1;
+      return gs[1] + '-' + ('0' + mm).slice(-2) + '-' + ('0' + gs[3]).slice(-2);
+    }
     if (/^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0, 10);
     var m = v.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/);
     if (m) return m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2);
