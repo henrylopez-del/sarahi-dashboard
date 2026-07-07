@@ -46,10 +46,6 @@
   .chip svg{width:12px;height:12px}
   .date-input{font-family:inherit;font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);background:var(--surface);font-variant-numeric:tabular-nums;cursor:pointer}
   .date-input:hover{border-color:var(--border-strong)}
-  .date-input.month-pick{min-width:130px;font-weight:500}
-  .date-input:focus{outline:2px solid var(--violet-100);outline-offset:-1px;border-color:var(--violet-500)}
-  .date-range-pop{display:none;gap:6px;align-items:center}
-  .date-range-pop.on{display:inline-flex}
   .search-input{font-family:inherit;font-size:12px;padding:5px 10px;border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);background:var(--surface);min-width:220px}
   .search-input:focus{outline:2px solid var(--violet-100);border-color:var(--violet-500)}
 
@@ -134,20 +130,15 @@
   <div class="fbar">
     <div class="fgroup">
       <label>Periodo</label>
-      <button class="chip preset" data-preset="today" data-tip="Solo hoy">Hoy</button>
-      <button class="chip preset" data-preset="7d" data-tip="Últimos 7 días (rolling)">7d</button>
-      <button class="chip preset" data-preset="14d" data-tip="Últimas 2 semanas (últimos 14 días)">14d</button>
-      <button class="chip preset" data-preset="30d" data-tip="Últimos 30 días (rolling)">30d</button>
-      <button class="chip preset active" data-preset="mtd" data-tip="Del día 1 del mes actual hasta hoy">MTD</button>
-      <button class="chip preset" data-preset="lm" data-tip="Mes calendario pasado completo">Mes pasado</button>
-      <input type="month" class="date-input month-pick" id="monthPick" data-tip="Elige cualquier mes calendario">
-      <button class="chip preset" data-preset="all" data-tip="Todo el histórico disponible">Histórico</button>
-      <button class="chip preset" data-preset="custom" data-tip="Elige fechas específicas de inicio y fin">Personalizado</button>
-      <span class="date-range-pop" id="rangePop">
-        <input type="date" class="date-input" id="fromD">
-        <span style="color:var(--text-subtle);font-size:11px">→</span>
-        <input type="date" class="date-input" id="toD">
-      </span>
+      <button class="chip preset" data-preset="today">Hoy</button>
+      <button class="chip preset" data-preset="7d">7d</button>
+      <button class="chip preset" data-preset="30d">30d</button>
+      <button class="chip preset active" data-preset="mtd">MTD</button>
+      <button class="chip preset" data-preset="lm">Mes pasado</button>
+      <button class="chip preset" data-preset="all">Todo</button>
+      <input type="date" class="date-input" id="fromD">
+      <span style="color:var(--text-subtle);font-size:11px">→</span>
+      <input type="date" class="date-input" id="toD">
     </div>
     <div class="sep"></div>
     <div class="fgroup">
@@ -208,7 +199,6 @@ function presetRange(p){
   const t=today();const start=new Date(t);
   if(p==='today')return [iso(t),iso(t)];
   if(p==='7d'){start.setDate(t.getDate()-6);return [iso(start),iso(t)]}
-  if(p==='14d'){start.setDate(t.getDate()-13);return [iso(start),iso(t)]}
   if(p==='30d'){start.setDate(t.getDate()-29);return [iso(start),iso(t)]}
   if(p==='mtd')return [iso(new Date(t.getFullYear(),t.getMonth(),1)),iso(t)];
   if(p==='lm'){const s=new Date(t.getFullYear(),t.getMonth()-1,1),e=new Date(t.getFullYear(),t.getMonth(),0);return [iso(s),iso(e)]}
@@ -216,20 +206,8 @@ function presetRange(p){
   return [iso(start),iso(t)];
 }
 function applyPreset(){
-  const pop=document.getElementById('rangePop');
-  if(ST.preset==='custom'){
-    if(pop)pop.classList.add('on');
-    // Si no hay from/to definidos aún, arranca con los últimos 7 días como default editable
-    if(!ST.from||!ST.to){const [f,t]=presetRange('7d');ST.from=f;ST.to=t}
-    document.getElementById('fromD').value=ST.from;
-    document.getElementById('toD').value=ST.to;
-  }else{
-    if(pop)pop.classList.remove('on');
-    const [f,t]=presetRange(ST.preset);
-    ST.from=f;ST.to=t;
-    document.getElementById('fromD').value=f;
-    document.getElementById('toD').value=t;
-  }
+  if(ST.preset!=='custom'){const [f,t]=presetRange(ST.preset);ST.from=f;ST.to=t;
+    document.getElementById('fromD').value=f;document.getElementById('toD').value=t}
 }
 function fmtFecha(v){
   if(!v)return '—';
@@ -358,25 +336,8 @@ function toggleRow(id){if(ST.openRows.has(id))ST.openRows.delete(id);else ST.ope
 
 document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('.preset').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');ST.preset=b.dataset.preset;
-  // Al elegir preset ≠ mes específico, limpiar el mes seleccionado
-  const mp=document.getElementById('monthPick');if(mp)mp.value='';
-  applyPreset();render();
+  b.classList.add('active');ST.preset=b.dataset.preset;applyPreset();render();
 }));
-
-// Month picker: selecciona un mes calendario específico
-document.getElementById('monthPick').addEventListener('change',e=>{
-  const v=e.target.value; // "YYYY-MM"
-  if(!v)return;
-  const [y,m]=v.split('-').map(Number);
-  const s=new Date(y,m-1,1),ep=new Date(y,m,0);
-  ST.preset='custom';ST.from=iso(s);ST.to=iso(ep);
-  document.querySelectorAll('.preset').forEach(x=>x.classList.remove('active'));
-  document.getElementById('fromD').value=ST.from;
-  document.getElementById('toD').value=ST.to;
-  const pop=document.getElementById('rangePop');if(pop)pop.classList.remove('on');
-  render();
-});
 document.querySelectorAll('.src').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('.src').forEach(x=>x.classList.remove('active'));
   b.classList.add('active');ST.src=b.dataset.src;render();
