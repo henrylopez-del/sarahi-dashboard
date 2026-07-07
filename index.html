@@ -126,52 +126,6 @@ body {
   margin-bottom: 16px;
   align-items: stretch;
 }
-/* DATE CHIPS ROW */
-.date-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-.date-bar .label {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-dim);
-  margin-right: 4px;
-}
-.date-chip {
-  padding: 6px 12px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  border-radius: var(--radius);
-  color: var(--text-dim);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s;
-  font-family: inherit;
-}
-.date-chip:hover { background: var(--surface2); color: var(--text); }
-.date-chip.active { background: var(--text); border-color: var(--text); color: var(--surface); }
-.date-range {
-  display: none;
-  gap: 6px;
-  align-items: center;
-  margin-left: 4px;
-}
-.date-range.on { display: inline-flex; }
-.date-range input {
-  padding: 5px 8px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--text);
-  font-size: 12px;
-  font-family: inherit;
-  cursor: pointer;
-}
-.date-range .arrow { color: var(--text-dim); font-size: 11px; }
 .search-box {
   flex: 1 1 260px;
   min-width: 200px;
@@ -364,24 +318,6 @@ tbody td:hover {
     </div>
   </div>
 
-  <!-- DATE FILTERS -->
-  <div class="date-bar">
-    <span class="label">Periodo</span>
-    <button class="date-chip" data-preset="today">Hoy</button>
-    <button class="date-chip" data-preset="7d">7d</button>
-    <button class="date-chip" data-preset="14d">14d</button>
-    <button class="date-chip" data-preset="30d">30d</button>
-    <button class="date-chip" data-preset="mtd">MTD</button>
-    <button class="date-chip" data-preset="lm">Mes pasado</button>
-    <button class="date-chip active" data-preset="all">Todo</button>
-    <button class="date-chip" data-preset="custom">Personalizado</button>
-    <span class="date-range" id="dateRange">
-      <input type="date" id="dateFrom">
-      <span class="arrow">&rarr;</span>
-      <input type="date" id="dateTo">
-    </span>
-  </div>
-
   <!-- CONTROLS -->
   <div class="controls">
     <div class="search-box">
@@ -439,9 +375,6 @@ tbody td:hover {
   var sortCol = -1;
   var sortAsc = true;
   var refreshTimer = null;
-  var datePreset = 'all';
-  var dateFrom = null;
-  var dateTo = null;
   var callbackName = '_sheetCB_' + Math.random().toString(36).substr(2, 8);
 
   /* ---- JSONP CALLBACK (bypasses CORS) ---- */
@@ -453,13 +386,7 @@ tbody td:hover {
       var cells = table.rows[r].c;
       var row = [];
       for (var c = 0; c < cells.length; c++) {
-        var cell = cells[c];
-        if (!cell || cell.v == null) { row.push(''); continue; }
-        var raw = String(cell.v);
-        // Columna fecha (0): usar el .f formateado por Google Sheets si existe,
-        // así evitamos que se muestre "Date(2026,3,2,22,18,2)" en la tabla.
-        if (c === 0 && cell.f) { row.push(String(cell.f)); continue; }
-        row.push(raw);
+        row.push(cells[c] && cells[c].v != null ? String(cells[c].v) : '');
       }
       rows.push(row);
     }
@@ -517,42 +444,6 @@ tbody td:hover {
     }
   }
 
-  /* ---- DATE HELPERS ---- */
-  function iso(d) {
-    var yy = d.getFullYear();
-    var mm = ('0' + (d.getMonth() + 1)).slice(-2);
-    var dd = ('0' + d.getDate()).slice(-2);
-    return yy + '-' + mm + '-' + dd;
-  }
-  function rowDateISO(row) {
-    // Column 0 = 'fecha'. Puede llegar como:
-    //   - "Date(YYYY,M,D,...)"   (gviz, mes 0-indexado)
-    //   - "YYYY-MM-DD..."
-    //   - "DD/MM/YYYY..."
-    var v = (row[0] || '').toString().trim();
-    if (!v) return '';
-    var gs = v.match(/^Date\((\d{4}),(\d{1,2}),(\d{1,2})/);
-    if (gs) {
-      var mm = parseInt(gs[2], 10) + 1;
-      return gs[1] + '-' + ('0' + mm).slice(-2) + '-' + ('0' + gs[3]).slice(-2);
-    }
-    if (/^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0, 10);
-    var m = v.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/);
-    if (m) return m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2);
-    return '';
-  }
-  function computePresetRange(p) {
-    var t = new Date();
-    var s = new Date(t);
-    if (p === 'today') return [iso(t), iso(t)];
-    if (p === '7d')  { s.setDate(t.getDate() - 6);  return [iso(s), iso(t)]; }
-    if (p === '14d') { s.setDate(t.getDate() - 13); return [iso(s), iso(t)]; }
-    if (p === '30d') { s.setDate(t.getDate() - 29); return [iso(s), iso(t)]; }
-    if (p === 'mtd') return [iso(new Date(t.getFullYear(), t.getMonth(), 1)), iso(t)];
-    if (p === 'lm')  { var lm1 = new Date(t.getFullYear(), t.getMonth() - 1, 1); var lm2 = new Date(t.getFullYear(), t.getMonth(), 0); return [iso(lm1), iso(lm2)]; }
-    return [null, null]; // 'all' o 'custom' sin fechas
-  }
-
   /* ---- FILTER + RENDER ---- */
   function applyFilters() {
     var search = document.getElementById('searchInput').value.toLowerCase();
@@ -566,14 +457,6 @@ tbody td:hover {
     for (var i = 0; i < allRows.length; i++) {
       var row = allRows[i];
       var pass = true;
-
-      // date filter
-      if (dateFrom || dateTo) {
-        var rd = rowDateISO(row);
-        if (!rd) { continue; }
-        if (dateFrom && rd < dateFrom) continue;
-        if (dateTo && rd > dateTo) continue;
-      }
 
       // dropdown filters
       for (var k2 = 0; k2 < keys.length; k2++) {
@@ -679,47 +562,6 @@ tbody td:hover {
     document.getElementById('lastUpdate').textContent = h + ':' + m + ':' + s;
   }
 
-  /* ---- DATE CHIPS ---- */
-  function activatePreset(p) {
-    datePreset = p;
-    var chips = document.querySelectorAll('.date-chip');
-    for (var i = 0; i < chips.length; i++) {
-      chips[i].classList.toggle('active', chips[i].getAttribute('data-preset') === p);
-    }
-    var rangeEl = document.getElementById('dateRange');
-    if (p === 'custom') {
-      rangeEl.classList.add('on');
-      // Si no hay from/to aún, arrancar con últimos 7 días como default editable
-      if (!dateFrom || !dateTo) {
-        var r = computePresetRange('7d');
-        dateFrom = r[0]; dateTo = r[1];
-      }
-      document.getElementById('dateFrom').value = dateFrom || '';
-      document.getElementById('dateTo').value = dateTo || '';
-    } else {
-      rangeEl.classList.remove('on');
-      var range = computePresetRange(p);
-      dateFrom = range[0]; dateTo = range[1];
-    }
-    applyFilters();
-  }
-  var dateChips = document.querySelectorAll('.date-chip');
-  for (var dc = 0; dc < dateChips.length; dc++) {
-    dateChips[dc].addEventListener('click', function() {
-      activatePreset(this.getAttribute('data-preset'));
-    });
-  }
-  document.getElementById('dateFrom').addEventListener('change', function(e) {
-    dateFrom = e.target.value || null;
-    if (datePreset !== 'custom') activatePreset('custom');
-    else applyFilters();
-  });
-  document.getElementById('dateTo').addEventListener('change', function(e) {
-    dateTo = e.target.value || null;
-    if (datePreset !== 'custom') activatePreset('custom');
-    else applyFilters();
-  });
-
   /* ---- RESET FILTERS ---- */
   document.getElementById('btnReset').addEventListener('click', function() {
     document.getElementById('searchInput').value = '';
@@ -729,7 +571,7 @@ tbody td:hover {
     }
     sortCol = -1;
     sortAsc = true;
-    activatePreset('all');
+    applyFilters();
   });
 
   /* ---- LIVE SEARCH ---- */
