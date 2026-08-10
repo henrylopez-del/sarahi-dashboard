@@ -64,7 +64,7 @@ abbr{text-decoration:underline dotted var(--subtle);cursor:help;text-underline-o
 <body>
 <div class="wrap">
  <header>
-  <div class="brand"><div class="logo">A.</div><div><div class="eyebrow">Ainnovation · Dashboard</div><h1>Sarahí Jaramillo — Las 19 preguntas</h1></div></div>
+  <div class="brand"><div class="logo">A.</div><div><div class="eyebrow">Ainnovation · Dashboard</div><h1>Sarahí Jaramillo — Las 21 preguntas</h1></div></div>
   <span class="live" id="live">● En vivo</span>
  </header>
  <div class="bar">
@@ -95,7 +95,7 @@ const SB='https://fneppfjeywhayknrgahe.supabase.co/rest/v1';
 const KEY='sb_publishable_zLroeuC3ZrE-K_zVGFwi3Q_UyYG6ZYB';
 const H={apikey:KEY,Authorization:'Bearer '+KEY};
 const BENCH={cpl:27.66,ctr:2,convLanding:12};
-const PRICE_LT=8500; // MXN — curso "reestructura y factura" (PROVISIONAL, validar con hoja de Sarahí)
+const VIDEO_DUR=708;
 const ST={days:30,offset:0,plat:'all'};
 let RAW={};
 const money=n=>'$'+Math.round(n||0).toLocaleString('es-MX');
@@ -136,12 +136,12 @@ async function load(){
   SCROLL_OK?sb('sarahi_cl_events',`select=session_id,event_name&event_name=in.(page_view,scroll_25,scroll_50,scroll_75,scroll_100)&ts=gte.${from}T00:00:00&ts=lte.${to}T23:59:59&limit=50000`):[]
  ]);
  RAW={from,to,adTo,acct,addaily,ads,split,pixel,utm,tags,appts,vid,scroll,SCROLL_OK};
- const [conv,ltAll,spAll]=await Promise.all([
+ const [conv,wonOpps]=await Promise.all([
   sb('sarahi_cl_v_platform_conversion','select=*'),
-  sb('sarahi_ghl_contact_tags','select=contact_id&tag_name=eq.curso%20-%20reestructura%20y%20factura'),
-  sb('sarahi_meta_account_daily','select=spend')
+  sb('sarahi_ghl_opportunities','select=monetary_value&status=eq.won')
  ]);
- RAW.conv=conv;RAW.ltBuyers=new Set((ltAll||[]).map(r=>r.contact_id)).size;RAW.spendAll=(spAll||[]).reduce((s,r)=>s+(+r.spend||0),0);
+ RAW.conv=conv;
+ RAW.wonCount=(wonOpps||[]).length;RAW.wonRevenue=(wonOpps||[]).reduce((s,r)=>s+(+r.monetary_value||0),0);
  render();
  document.getElementById('stamp').textContent='Actualizado '+new Date().toLocaleString('es-MX');
 }
@@ -182,11 +182,14 @@ function compute(){
  const vComp=vids.filter(v=>v.completed).length;
  const vAvgPos=vids.length?Math.round(vids.reduce((s,v)=>s+(+v.max_position_seconds||0),0)/vids.length):0;
  const vAvgW=vids.length?Math.round(vids.reduce((s,v)=>s+(+v.total_seconds_watched||0),0)/vids.length):0;
+ // una posición máxima por sesión (dedup) para el histograma de caída
+ const posBySession={};vids.forEach(v=>{const sid=v.session_id,p=+v.max_position_seconds||0;if(!(sid in posBySession)||p>posBySession[sid])posBySession[sid]=p;});
+ const vidPositions=Object.values(posBySession);
  // scroll
  const sc={};RAW.scroll.forEach(e=>{(sc[e.event_name]=sc[e.event_name]||new Set()).add(e.session_id)});
  const SC=n=>(sc[n]||new Set()).size;
  const ctr=impr?clicks/impr*100:0,cpc=clicks?spend/clicks:0;
- return {adList,spend,impr,clicks,lpvT,fbSpend,igSpend,fbClicks,igClicks,fbL,igL,leadsAll,leads,T,px,vSess,vComp,vAvgPos,vAvgW,SC,ctr,cpc,citas,asist,noshow,scrollOK:RAW.SCROLL_OK};
+ return {adList,spend,impr,clicks,lpvT,fbSpend,igSpend,fbClicks,igClicks,fbL,igL,leadsAll,leads,T,px,vSess,vComp,vAvgPos,vAvgW,vidPositions,SC,ctr,cpc,citas,asist,noshow,scrollOK:RAW.SCROLL_OK};
 }
 
 const ICON={};
@@ -202,7 +205,7 @@ const ab=t=>`<abbr title="${GLOSS[t]||t}">${t}</abbr>`;
 let C={};
 
 function render(){
- C=compute();const dur=708;
+ C=compute();const dur=VIDEO_DUR;
  const costoReg=C.leads?C.spend/C.leads:0;
  const citas=C.citas,noshow=C.noshow,asist=C.asist;
  const costoLlam=citas?C.spend/citas:0;
@@ -212,13 +215,13 @@ function render(){
  const costoLPV=C.lpvT?C.spend/C.lpvT:0;
  const cvFB=(RAW.conv||[]).find(r=>r.plataforma==='facebook')||{},cvIG=(RAW.conv||[]).find(r=>r.plataforma==='instagram')||{};
  const mejorConv=((+cvFB.pct_agenda||0)>=(+cvIG.pct_agenda||0))?'Facebook':'Instagram';
- const ingresoLT=(RAW.ltBuyers||0)*PRICE_LT, roasProv=RAW.spendAll>0?ingresoLT/RAW.spendAll:0;
  const compHT=C.T('compro'),compLT=C.T('curso - reestructura y factura');
  const pctVid=C.vAvgPos?Math.round(C.vAvgPos/dur*100):0;
  let h='';
  h+='<div class="sech h-adq">Adquisición · ¿Qué entra y a qué costo?</div><div class="grid s-adq">';
  h+=card(1,'¿Cuánto invertí en ads?',money(C.spend),g('n',ST.plat==='all'?'Meta total':ST.plat),{drill:'spend'});
- h+=card(2,'¿Cuánta gente vio y dio clic?',fmt(C.impr)+' <span style="font-size:13px;color:var(--muted)">vistas</span>',fmt(C.clicks)+' clics · '+ab('CTR')+' '+C.ctr.toFixed(2)+'%',{drill:'ads'});
+ { const ans2=`<div style="display:flex;gap:22px;align-items:baseline;flex-wrap:wrap"><div><div style="font-size:26px;font-weight:700">${fmt(C.impr)}</div><div style="font-size:11px;color:var(--muted);font-weight:500">vistas</div></div><div><div style="font-size:26px;font-weight:700">${fmt(C.clicks)}</div><div style="font-size:11px;color:var(--muted);font-weight:500">clics</div></div></div>`;
+   h+=card(2,'¿Cuánta gente vio y dio clic?',ans2,ab('CTR')+' '+C.ctr.toFixed(2)+'%',{sm:true,drill:'ads'}); }
  h+=card(3,'¿Cuántos leads entraron al CRM?',fmt(C.leads)+' <span style="font-size:13px;color:var(--muted)">personas</span>',g('g',fmt(C.fbL+C.igL)+' de ads')+'únicos, sin duplicar');
  { const d=donut([{v:C.fbL,color:'#1877F2'},{v:C.igL,color:'#E1306C'}]);
    const ansd=`<div style="display:flex;align-items:center;gap:13px">${d}<div style="font-size:12.5px;line-height:1.7;font-weight:600">${leg('#1877F2','FB '+fmt(C.fbL))}${leg('#E1306C','IG '+fmt(C.igL))}</div></div>`;
@@ -229,25 +232,28 @@ function render(){
  h+='</div>';
  h+='<div class="sech h-fun">Funnel real del CRM · ¿Avanzan a la venta?</div><div class="grid s-fun">';
  h+=card(10,'¿Cómo se ve el funnel real?',fmt(C.leads)+' → '+fmt(citas)+' → '+(compHT+compLT),'lead → cita → compra',{sm:true,drill:'funnel'});
+ const formEnv=C.T('calificacion-enviada'),costoForm=formEnv?C.spend/formEnv:0;
+ h+=card(20,'¿Costo por formulario enviado?',formEnv?money2(costoForm):'—',g('n','gasto ÷ '+fmt(formEnv)+' formularios del periodo (tag calificación enviada)'));
  { const pend=Math.max(0,citas-asist-noshow);
    const d11=donut([{v:asist,color:'#16A34A'},{v:noshow,color:'#DC2626'},{v:pend,color:'#94A3B8'}]);
    const a11=`<div style="display:flex;align-items:center;gap:13px">${d11}<div style="font-size:12px;line-height:1.65;font-weight:600">${leg('#16A34A',asist+' asistió')}${leg('#DC2626',noshow+' no-show')}${leg('#94A3B8',pend+' pendiente')}</div></div>`;
    h+=card(11,'Citas: '+fmt(citas)+' total (calendario)',a11,'',{sm:true}); }
  h+=card(7,'¿Costo por cita agendada?',citas?money2(costoLlam):'—',g('n','gasto ÷ citas reales del periodo'));
- const cacHist=(RAW.ltBuyers&&RAW.spendAll)?RAW.spendAll/RAW.ltBuyers:0;
- h+=card(8,'¿Cuánto cuesta cada cliente que paga?',cacHist?money(cacHist):'—',g('n',(RAW.ltBuyers||0)+' clientes facturación · gasto total ÷ clientes (histórico)'),{sm:true});
+ const costoAsist=asist?C.spend/asist:0;
+ h+=card(21,'¿Costo por llamada asistida?',asist?money2(costoAsist):'—',g('n','gasto ÷ '+fmt(asist)+' asistieron del periodo (calendario)'));
+ h+=card(8,'¿Costo por venta cerrada? (CAC)','—',g('a','pendiente · fuente única será Oportunidades→Cerrado, esperando que Sarahí registre TODAS sus ventas ahí (tags y Oportunidades hoy no cuadran entre sí)'),{sm:true,pending:true});
  h+='</div>';
  h+='<div class="sech h-din">Dinero · ¿Estoy ganando?</div><div class="grid s-din">';
- h+=card(9,'¿Cuál es mi <abbr title="Return On Ad Spend: ingreso ÷ gasto en ads">ROAS</abbr>? (provisional)',roasProv?roasProv.toFixed(2)+'x':'—',g('a','solo curso facturación · validar con Sarahí'));
- h+=card(12,'¿Cuánto vendí? (LT provisional)',money(ingresoLT),g('a',(RAW.ltBuyers||0)+' ventas × $'+fmt(PRICE_LT)+' MXN · validar'));
+ h+=card(9,'¿Cuál es mi <abbr title="Return On Ad Spend: ingreso ÷ gasto en ads">ROAS</abbr>?','—',g('a','pendiente · sin fuente única de ventas todavía, no se reporta'),{pending:true});
+ h+=card(12,'¿Cuánto vendí?','—',g('a','pendiente · fuente única será Oportunidades→Cerrado (hoy tags y Oportunidades no cuadran)'),{pending:true});
  h+='</div>';
  h+='<div class="sech h-com">Comportamiento en la clase · ¿Ven el video y dónde se caen?</div><div class="grid s-com">';
- h+=card(13,'¿En qué minuto se cae el video?',C.vSess?Math.floor(C.vAvgPos/60)+':'+String(C.vAvgPos%60).padStart(2,'0'):'—',g('a','posición máx prom · video 11:48'));
+ h+=card(13,'¿En qué minuto se cae el video, en PROMEDIO?',C.vSess?Math.floor(C.vAvgPos/60)+':'+String(C.vAvgPos%60).padStart(2,'0'):'—',C.vSess?g('n','video dura 11:48 · clic para ver moda + distribución completa por minuto'):'',{drill:'videodrop'});
  h+=card(14,'¿Qué % del video ven?',C.vSess?`<div style="display:flex;align-items:center;gap:13px">${ring(pctVid,'#0D9488')}<div style="font-size:12px;color:var(--muted);font-weight:500">${C.vAvgW}s vistos<br>de ${dur}s</div></div>`:'—',C.vSess?'':g('n','sin sesiones'),{sm:true});
  h+=card(15,'¿Cuántos vieron y NO agendaron?',fmt(Math.max(0,C.vSess-citas)),g('a',C.vSess+' vieron · '+citas+' citas'));
  h+=card(16,'¿Cuántos completaron el video?',fmt(C.vComp),g('n','de '+C.vSess+' sesiones'));
  h+=card(17,'¿Cuántos con tag video-visto?',fmt(C.T('video-visto')),g('n','etiqueta CRM'));
- h+=card(18,'¿Dónde se caen en scroll?',(C.scrollOK&&C.SC('page_view'))?Math.round(C.SC('scroll_100')/C.SC('page_view')*100)+'%':'—',C.scrollOK?g('n','llegan al final'):g('a','válido solo desde 9-jun'),{drill:'scroll'});
+ h+=card(18,'¿Qué % de los que abren /clase/ hacen scroll hasta el final?',(C.scrollOK&&C.SC('page_view'))?Math.round(C.SC('scroll_100')/C.SC('page_view')*100)+'%':'—',C.scrollOK?g('n',fmt(C.SC('scroll_100'))+' de '+fmt(C.SC('page_view'))+' cargas llegaron al 100% de scroll · clic para ver 25/50/75%'):g('a','válido solo desde 9-jun'),{drill:'scroll'});
  h+='</div>';
  document.getElementById('body').innerHTML=h;
 }
@@ -281,6 +287,19 @@ function drill(k){
   const steps=[['Cargaron la página',C.SC('page_view')],['Scroll 25%',C.SC('scroll_25')],['Scroll 50%',C.SC('scroll_50')],['Scroll 75%',C.SC('scroll_75')],['Scroll 100%',C.SC('scroll_100')]];
   const mx=steps[0][1]||1;
   html='<div class="bars">'+steps.map(s=>`<div class="brow"><div class="bl"><span>${s[0]}</span><span class="v">${fmt(s[1])}</span></div><div class="track"><div class="fill" style="width:${Math.max(s[1]/mx*100,1)}%;background:#2563EB"></div></div></div>`).join('')+'</div><p class="note" style="margin-top:12px">Solo data del tracker nuevo es granular; antes del 9-jun el scroll se medía en ráfaga (no confiable).</p>';}
+ else if(k==='videodrop'){tt.textContent='Dónde se cae el video (detalle por minuto) · '+RAW.from+' → '+RAW.to;
+  const BUCKET=30,nB=Math.ceil(VIDEO_DUR/BUCKET);
+  const pos=C.vidPositions||[];
+  const buckets=new Array(nB).fill(0);
+  pos.forEach(p=>{buckets[Math.min(Math.floor(p/BUCKET),nB-1)]++;});
+  const total=pos.length||1;
+  const modaIdx=buckets.indexOf(Math.max(...buckets));
+  const fmtT=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+  let acc=0;
+  const rows=buckets.map((c,i)=>{acc+=c;const from=i*BUCKET,to=Math.min((i+1)*BUCKET,VIDEO_DUR);
+   return `<tr${i===modaIdx&&c>0?' style="background:#FFFBEB"':''}><td>${fmtT(from)}–${fmtT(to)}</td><td class="num">${c}</td><td class="num">${total?Math.round(c/total*100):0}%</td><td class="num">${acc}</td><td class="num">${total?Math.round(acc/total*100):0}%</td></tr>`;}).join('');
+  const modaLabel=fmtT(modaIdx*BUCKET)+'–'+fmtT(Math.min((modaIdx+1)*BUCKET,VIDEO_DUR));
+  html=`<p class="note" style="margin:0 0 12px"><b>Promedio:</b> ${fmtT(Math.round(pos.reduce((s,p)=>s+p,0)/(pos.length||1)))} · <b>Moda</b> (rango donde MÁS gente se cae): ${modaLabel} con ${buckets[modaIdx]} sesiones (resaltado abajo) · Total sesiones con ≥10s vistos: ${total}</p><div style="max-height:420px;overflow-y:auto"><table><thead><tr><th>Rango</th><th class="num">Se cayeron aquí</th><th class="num">%</th><th class="num">Acumulado</th><th class="num">% acum.</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note" style="margin-top:10px">"Se cayeron aquí" = sesiones cuya posición máxima vista cae en ese rango de 30s (no es que cerraron ahí, es lo más lejos que llegó el tracker). "Acumulado" = cuántas sesiones en total no pasaron de ese punto.</p>`;}
  tt.textContent=tt.textContent;mb.innerHTML=html;m.classList.add('on');
 }
 function closeM(){document.getElementById('modal').classList.remove('on');}
