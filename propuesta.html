@@ -136,12 +136,31 @@ async function load(){
   SCROLL_OK?sb('sarahi_cl_events',`select=session_id,event_name&event_name=in.(page_view,scroll_25,scroll_50,scroll_75,scroll_100)&ts=gte.${from}T00:00:00&ts=lte.${to}T23:59:59&limit=50000`):[]
  ]);
  RAW={from,to,adTo,acct,addaily,ads,split,pixel,utm,tags,appts,vid,scroll,SCROLL_OK};
- const [conv,wonOpps]=await Promise.all([
+ const [conv,oppsRaw,spendAllRaw]=await Promise.all([
   sb('sarahi_cl_v_platform_conversion','select=*'),
-  sb('sarahi_ghl_opportunities','select=monetary_value&status=eq.won')
+  sb('sarahi_ghl_opportunities','select=contact_id,monetary_value,stage_id&stage_id=in.(d6a03f9e-7f75-4276-8faf-1912d1e1a41b,0b67a749-02bf-4cc0-95f4-764cedb66d19,fa36893a-2976-42b5-a6e3-e7a9998e58dd,fbfc65dc-7d5b-43ea-88e8-1acd9e670293)'),
+  sb('sarahi_meta_account_daily','select=spend')
  ]);
  RAW.conv=conv;
- RAW.wonCount=(wonOpps||[]).length;RAW.wonRevenue=(wonOpps||[]).reduce((s,r)=>s+(+r.monetary_value||0),0);
+ // Ventas: mapeo de etapas reales del pipeline GHL "Oportunidades de Venta" (confirmado con Henry 18-ago-2026, va en mensaje a Sarahí)
+ const USD_MXN=18.5;
+ const ST_12K='d6a03f9e-7f75-4276-8faf-1912d1e1a41b';        // Cerrados (Pago Completo) 12000 MXN — valor tal cual
+ const ST_2500C='0b67a749-02bf-4cc0-95f4-764cedb66d19';       // Cerrados (Pago Completo) 2500 USD — ignora valor guardado, fijo $2500 USD por contacto único
+ const ST_MESES='fa36893a-2976-42b5-a6e3-e7a9998e58dd';       // Cerrados (Pago a Meses) 2500 USD — usa valor guardado = lo pagado hasta ahora (USD→MXN)
+ const ST_PARCIAL='fbfc65dc-7d5b-43ea-88e8-1acd9e670293';     // Reestructura - Pago Parcial — NO cuenta como cierre, solo suma a ingreso (ya en MXN)
+ const opps12k=(oppsRaw||[]).filter(o=>o.stage_id===ST_12K);
+ const opps2500c=(oppsRaw||[]).filter(o=>o.stage_id===ST_2500C);
+ const oppsMeses=(oppsRaw||[]).filter(o=>o.stage_id===ST_MESES);
+ const oppsParcial=(oppsRaw||[]).filter(o=>o.stage_id===ST_PARCIAL);
+ const uniq2500c=new Set(opps2500c.map(o=>o.contact_id)).size; // dedup: mismo contacto con 2 oportunidades = 1 venta
+ const rev12k=opps12k.reduce((s,o)=>s+(+o.monetary_value||0),0);
+ const rev2500c=uniq2500c*2500*USD_MXN;
+ const revMeses=oppsMeses.reduce((s,o)=>s+(+o.monetary_value||0)*USD_MXN,0);
+ const revParcial=oppsParcial.reduce((s,o)=>s+(+o.monetary_value||0),0);
+ const closedContacts=new Set([...opps12k,...opps2500c,...oppsMeses].map(o=>o.contact_id));
+ RAW.wonCount=closedContacts.size; // ventas cerradas (CAC) — pago parcial NO cuenta aquí
+ RAW.wonRevenue=rev12k+rev2500c+revMeses+revParcial; // ingreso total (ROAS/ventas) — SÍ incluye pago parcial
+ RAW.spendAllTime=(spendAllRaw||[]).reduce((s,r)=>s+(+r.spend||0),0); // gasto histórico total, acumulado no cambia con el periodo
  render();
  document.getElementById('stamp').textContent='Actualizado '+new Date().toLocaleString('es-MX');
 }
@@ -241,11 +260,11 @@ function render(){
  h+=card(7,'¿Costo por cita agendada?',citas?money2(costoLlam):'—',g('n','gasto ÷ citas reales del periodo'));
  const costoAsist=asist?C.spend/asist:0;
  h+=card(21,'¿Costo por llamada asistida?',asist?money2(costoAsist):'—',g('n','gasto ÷ '+fmt(asist)+' asistieron del periodo (calendario)'));
- h+=card(8,'¿Costo por venta cerrada? (CAC)','—',g('a','pendiente · fuente única será Oportunidades→Cerrado, esperando que Sarahí registre TODAS sus ventas ahí (tags y Oportunidades hoy no cuadran entre sí)'),{sm:true,pending:true});
+ h+=card(8,'¿Costo por venta cerrada? (CAC)',RAW.wonCount?money2(RAW.spendAllTime/RAW.wonCount):'—',g('n','gasto histórico total ÷ '+RAW.wonCount+' ventas cerradas · acumulado, no cambia con el periodo'),{sm:true});
  h+='</div>';
  h+='<div class="sech h-din">Dinero · ¿Estoy ganando?</div><div class="grid s-din">';
- h+=card(9,'¿Cuál es mi <abbr title="Return On Ad Spend: ingreso ÷ gasto en ads">ROAS</abbr>?','—',g('a','pendiente · sin fuente única de ventas todavía, no se reporta'),{pending:true});
- h+=card(12,'¿Cuánto vendí?','—',g('a','pendiente · fuente única será Oportunidades→Cerrado (hoy tags y Oportunidades no cuadran)'),{pending:true});
+ h+=card(9,'¿Cuál es mi <abbr title="Return On Ad Spend: ingreso ÷ gasto en ads">ROAS</abbr>?',RAW.spendAllTime?(RAW.wonRevenue/RAW.spendAllTime).toFixed(2)+'x':'—',g('n','ingreso acumulado ÷ gasto histórico total'));
+ h+=card(12,'¿Cuánto vendí?',money(RAW.wonRevenue),g('n',RAW.wonCount+' ventas cerradas + pagos parciales en curso · acumulado histórico'));
  h+='</div>';
  h+='<div class="sech h-com">Comportamiento en la clase · ¿Ven el video y dónde se caen?</div><div class="grid s-com">';
  h+=card(13,'¿En qué minuto se cae el video, en PROMEDIO?',C.vSess?Math.floor(C.vAvgPos/60)+':'+String(C.vAvgPos%60).padStart(2,'0'):'—',C.vSess?g('n','video dura 11:48 · clic para ver moda + distribución completa por minuto'):'',{drill:'videodrop'});
