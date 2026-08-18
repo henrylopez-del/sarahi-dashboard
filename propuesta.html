@@ -153,13 +153,15 @@ async function load(){
  const oppsMeses=(oppsRaw||[]).filter(o=>o.stage_id===ST_MESES);
  const oppsParcial=(oppsRaw||[]).filter(o=>o.stage_id===ST_PARCIAL);
  const uniq2500c=new Set(opps2500c.map(o=>o.contact_id)).size; // dedup: mismo contacto con 2 oportunidades = 1 venta
+ // Pago a meses SOLO cuenta como cierre cuando ya pagó el total ($2500 USD); si no, es igual que pago parcial: suma ingreso, no cuenta cierre.
+ const mesesFull=oppsMeses.filter(o=>(+o.monetary_value||0)>=2500);
  const rev12k=opps12k.reduce((s,o)=>s+(+o.monetary_value||0),0);
  const rev2500c=uniq2500c*2500*USD_MXN;
- const revMeses=oppsMeses.reduce((s,o)=>s+(+o.monetary_value||0)*USD_MXN,0);
+ const revMeses=oppsMeses.reduce((s,o)=>s+(+o.monetary_value||0)*USD_MXN,0); // ingreso siempre suma, esté completo o no
  const revParcial=oppsParcial.reduce((s,o)=>s+(+o.monetary_value||0),0);
- const closedContacts=new Set([...opps12k,...opps2500c,...oppsMeses].map(o=>o.contact_id));
- RAW.wonCount=closedContacts.size; // ventas cerradas (CAC) — pago parcial NO cuenta aquí
- RAW.wonRevenue=rev12k+rev2500c+revMeses+revParcial; // ingreso total (ROAS/ventas) — SÍ incluye pago parcial
+ const closedContacts=new Set([...opps12k,...opps2500c,...mesesFull].map(o=>o.contact_id));
+ RAW.wonCount=closedContacts.size; // ventas cerradas (CAC) — pago parcial y pago-a-meses incompleto NO cuentan aquí
+ RAW.wonRevenue=rev12k+rev2500c+revMeses+revParcial; // ingreso total (ROAS/ventas) — SÍ incluye parcial e incompleto
  RAW.spendAllTime=(spendAllRaw||[]).reduce((s,r)=>s+(+r.spend||0),0); // gasto histórico total, acumulado no cambia con el periodo
  render();
  document.getElementById('stamp').textContent='Actualizado '+new Date().toLocaleString('es-MX');
